@@ -8,7 +8,8 @@ const OrderSchema = new mongoose.Schema(
         product: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
         name: { type: String }, // Snapshot of name at time of purchase
         price: { type: Number }, // Snapshot of price at time of purchase
-        quantity: { type: Number, default: 1 }
+        quantity: { type: Number, default: 1 },
+        durationMonths: { type: Number } // snapshot of duration for expiry calculation
       }
     ],
     totalAmount: { type: Number, required: true }, // Amount AFTER discount
@@ -18,7 +19,7 @@ const OrderSchema = new mongoose.Schema(
     
     status: {
       type: String,
-      enum: ["pending", "paid", "failed", "completed", "cancelled"],
+      enum: ["pending", "paid", "failed", "completed", "cancelled", "delivered"],
       default: "pending"
     },
     paymentMethod: { type: String, default: "bank_transfer" },

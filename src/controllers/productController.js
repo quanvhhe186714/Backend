@@ -10,6 +10,19 @@ const getAllProducts = async (req, res) => {
   }
 };
 
+// Public: Get product by id
+const getProductById = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product || !product.isActive) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    res.status(200).json(product);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching product", error: error.message });
+  }
+};
+
 // Admin: Create Product
 const createProduct = async (req, res) => {
   try {
@@ -44,6 +57,7 @@ const deleteProduct = async (req, res) => {
 
 module.exports = {
   getAllProducts,
+  getProductById,
   createProduct,
   updateProduct,
   deleteProduct

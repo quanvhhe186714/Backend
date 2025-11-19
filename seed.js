@@ -48,33 +48,33 @@ const seedData = async () => {
         // 2. Create Products
         const products = await Product.insertMany([
             {
-                name: "Premium 1 Month",
-                description: "Experience Telegram at its best for 1 month.",
-                price: 4.99,
+                name: "Premium 1 Tháng",
+                description: "Trải nghiệm Telegram tốt nhất trong 1 tháng.",
+                price: 130000,
                 duration_months: 1,
                 features: ["Double Limits", "4 GB Uploads", "Faster Download", "No Ads"],
                 image: "https://cdn-icons-png.flaticon.com/512/2111/2111646.png"
             },
             {
-                name: "Premium 3 Months",
-                description: "Quarterly plan for dedicated users.",
-                price: 13.99,
+                name: "Premium 3 Tháng",
+                description: "Gói 3 tháng tiết kiệm.",
+                price: 389000,
                 duration_months: 3,
                 features: ["Double Limits", "4 GB Uploads", "Faster Download", "No Ads", "Unique Reactions"],
                 image: "https://cdn-icons-png.flaticon.com/512/2111/2111646.png"
             },
             {
-                name: "Premium 6 Months",
-                description: "Half-year access with great savings.",
-                price: 24.99,
+                name: "Premium 6 Tháng",
+                description: "Gói 6 tháng tối ưu chi phí.",
+                price: 549000,
                 duration_months: 6,
                 features: ["Double Limits", "4 GB Uploads", "Faster Download", "No Ads", "Premium Stickers", "Animated Emoji Status"],
                 image: "https://cdn-icons-png.flaticon.com/512/2111/2111646.png"
             },
             {
-                name: "Premium 1 Year",
-                description: "Best value. 365 days of premium features.",
-                price: 39.99,
+                name: "Premium 12 Tháng",
+                description: "Gói 12 tháng giá tốt nhất.",
+                price: 900000,
                 duration_months: 12,
                 features: ["All Premium Features", "Voice-to-Text", "Advanced Chat Management", "Profile Badge", "Animated Profile Pictures"],
                 image: "https://cdn-icons-png.flaticon.com/512/2111/2111646.png"
@@ -91,10 +91,10 @@ const seedData = async () => {
             usageLimit: 1000
         });
         await Coupon.create({
-            code: "SAVE5",
+            code: "SAVE50K",
             discountType: "amount",
-            discountValue: 5,
-            minOrderValue: 20,
+            discountValue: 50000, // 50,000 VND
+            minOrderValue: 200000,
             expirationDate: new Date("2025-12-31"),
             usageLimit: 50
         });

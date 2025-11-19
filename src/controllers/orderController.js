@@ -19,7 +19,8 @@ const createOrder = async (req, res) => {
         product: product._id,
         name: product.name,
         price: product.price,
-        quantity: item.quantity
+        quantity: item.quantity,
+        durationMonths: product.duration_months
       });
     }
 
@@ -67,6 +68,7 @@ const createOrder = async (req, res) => {
       totalAmount,
       couponCode: appliedCoupon ? appliedCoupon.code : null,
       paymentMethod,
+      paymentDetails: req.body.paymentDetails || {},
       status: "pending"
     });
 
