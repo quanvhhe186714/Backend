@@ -8,20 +8,14 @@ const UserSchema = new mongoose.Schema(
     password: { type: String, required: true },
     role: {
       type: String,
-      enum: ["admin", "manager", "student"],
-      default: "student",
+      enum: ["admin", "customer"],
+      default: "customer",
     },
     status: {
       type: String,
       enum: ["active", "blocked"],
       default: "active",
     },
-    joinedClubs: [
-      {
-        clubId: { type: mongoose.Schema.Types.ObjectId, ref: "Club" },
-        joinedAt: { type: Date, default: Date.now },
-      },
-    ],
     avatar: { type: String, default: "" },
     createdAt: { type: Date, default: Date.now },
   },

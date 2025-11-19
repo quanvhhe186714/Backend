@@ -2,8 +2,6 @@
 const User = require("../models/users");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const multer = require("multer");
-const path = require("path");
 const { upload } = require("../utils/Upload");
 
 // 🟢 Upload avatar lên Cloudinary
@@ -63,7 +61,7 @@ const registerUser = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      role, // role có thể được truyền vào hoặc để mặc định là 'student'
+      role: role || 'customer', 
     });
 
     await newUser.save();
@@ -113,7 +111,6 @@ const loginUser = async (req, res) => {
       role: user.role,
     };
 
-    // ❗️ Quan trọng: Lưu 'YOUR_JWT_SECRET' trong file .env để bảo mật
     const token = jwt.sign(payload, "YOUR_JWT_SECRET", { expiresIn: "1h" });
 
     res.status(200).json({
@@ -124,6 +121,7 @@ const loginUser = async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        avatar: user.avatar
       },
     });
   } catch (error) {
@@ -134,7 +132,6 @@ const loginUser = async (req, res) => {
 // 🟢 Lấy thông tin người dùng theo ID
 const getUserById = async (req, res) => {
   try {
-    // Dùng .select('-password') để không trả về mật khẩu
     const user = await User.findById(req.params.id).select("-password");
     if (!user) {
       return res.status(404).json({ message: "Không tìm thấy người dùng." });
@@ -146,6 +143,7 @@ const getUserById = async (req, res) => {
       .json({ message: "Lỗi server khi lấy thông tin người dùng", error });
   }
 };
+
 // 🟢 Đổi mật khẩu
 const changePassword = async (req, res) => {
   try {
@@ -169,15 +167,10 @@ const changePassword = async (req, res) => {
   }
 };
 
-// 🟢 Lấy thông tin cá nhân (người dùng đã đăng nhập) kèm các CLB đã tham gia
+// 🟢 Lấy thông tin cá nhân (người dùng đã đăng nhập)
 const getMyProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id)
-      .select("-password")
-      .populate({
-        path: "joinedClubs.clubId",
-        select: "name category logo status",
-      });
+    const user = await User.findById(req.user._id).select("-password");
     if (!user) {
       return res.status(404).json({ message: "Không tìm thấy người dùng." });
     }
@@ -220,7 +213,7 @@ const getAllUsers = async (req, res) => {
   try {
     const users = await User.find({})
       .select("-password")
-      .select("name email role status");
+      .select("name email role status avatar");
     res.status(200).json(users);
   } catch (error) {
     res
