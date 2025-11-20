@@ -6,7 +6,8 @@ const {
   getMyMessages,
   getAllConversations,
   getConversationMessages,
-  getUnreadCount
+  getUnreadCount,
+  deleteMessage
 } = require("../controllers/messageController");
 
 // User routes
@@ -17,6 +18,8 @@ router.get("/unread-count", protect, getUnreadCount);
 // Admin routes
 router.get("/conversations", protect, isAdmin, getAllConversations);
 router.get("/conversations/:conversationId", protect, isAdmin, getConversationMessages);
+// Route xóa tin nhắn - dùng pattern giống các route khác
+router.delete("/:messageId", protect, isAdmin, deleteMessage);
 
 module.exports = router;
 

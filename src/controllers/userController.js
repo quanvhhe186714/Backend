@@ -7,18 +7,66 @@ const { upload } = require("../utils/Upload");
 
 // 🟢 Upload avatar lên Cloudinary
 const uploadAvatar = async (req, res) => {
+  // Kiểm tra Cloudinary config
+  if (!process.env.CLOUDINARY_NAME || !process.env.CLOUDINARY_KEY || !process.env.CLOUDINARY_SECRET) {
+    console.error("❌ Cloudinary config missing!");
+    return res.status(500).json({ 
+      message: "Cloudinary configuration is missing. Please check environment variables.",
+      error: "CLOUDINARY_CONFIG_MISSING"
+    });
+  }
+
+  // Log request info để debug
+  console.log("📤 Upload request received:", {
+    hasFile: !!req.file,
+    contentType: req.headers['content-type'],
+    contentLength: req.headers['content-length'],
+    bodyKeys: Object.keys(req.body || {})
+  });
+
   upload.single("avatar")(req, res, async (err) => {
     try {
       if (err) {
         console.error("❌ Multer error:", err);
-        return res.status(400).json({ message: err.message });
+        console.error("❌ Multer error details:", {
+          message: err.message,
+          code: err.code,
+          field: err.field,
+          storageErrors: err.storageErrors
+        });
+        return res.status(400).json({ 
+          message: err.message || "Lỗi khi upload file",
+          error: err.code || "UPLOAD_ERROR",
+          details: err.storageErrors || err
+        });
       }
 
       if (!req.file) {
-        return res.status(400).json({ message: "Vui lòng chọn file ảnh" });
+        console.error("❌ No file received:", {
+          files: req.files,
+          body: req.body,
+          headers: req.headers
+        });
+        return res.status(400).json({ 
+          message: "Vui lòng chọn file ảnh",
+          received: {
+            hasFile: false,
+            body: req.body,
+            files: req.files
+          }
+        });
       }
 
-      const avatarUrl = req.file.path;
+      // Sử dụng secure_url để đảm bảo có full HTTPS URL
+      const avatarUrl = req.file.secure_url || req.file.path;
+      
+      // Log để debug
+      console.log("📸 Avatar upload info:", {
+        path: req.file.path,
+        secure_url: req.file.secure_url,
+        url: req.file.url,
+        finalUrl: avatarUrl
+      });
 
       const user = await User.findById(req.user._id);
       if (!user) {

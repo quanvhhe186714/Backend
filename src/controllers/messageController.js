@@ -233,11 +233,70 @@ const getUnreadCount = async (req, res) => {
   }
 };
 
+// Admin: Xóa tin nhắn (xóa vĩnh viễn khỏi database)
+const deleteMessage = async (req, res) => {
+  try {
+    const { messageId } = req.params;
+    const userId = req.user._id || req.user.id;
+    
+    console.log(`🗑️ Delete request received - MessageId: ${messageId}, UserId: ${userId}, Role: ${req.user.role}`);
+    
+    // Validate messageId - tránh conflict với các route khác
+    if (!messageId || messageId === "conversations" || messageId === "my-messages" || messageId === "unread-count") {
+      console.error(`❌ Invalid messageId (reserved route): ${messageId}`);
+      return res.status(400).json({ message: "ID tin nhắn không hợp lệ" });
+    }
+    
+    // Validate ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(messageId)) {
+      console.error(`❌ Invalid messageId format: ${messageId}`);
+      return res.status(400).json({ message: "ID tin nhắn không hợp lệ" });
+    }
+    
+    // Tìm tin nhắn
+    const message = await Message.findById(messageId);
+    if (!message) {
+      console.error(`❌ Message not found: ${messageId}`);
+      return res.status(404).json({ message: "Tin nhắn không tồn tại" });
+    }
+
+    console.log(`📝 Found message to delete:`, {
+      id: message._id,
+      content: message.content.substring(0, 50),
+      sender: message.sender,
+      conversationId: message.conversationId
+    });
+
+    // Xóa vĩnh viễn khỏi database
+    const deletedMessage = await Message.findByIdAndDelete(messageId);
+
+    if (deletedMessage) {
+      console.log(`✅ Đã xóa tin nhắn ID: ${messageId} khỏi database`);
+      res.status(200).json({ 
+        message: "Đã xóa tin nhắn thành công",
+        deletedMessageId: messageId
+      });
+    } else {
+      console.error(`❌ Failed to delete message: ${messageId}`);
+      res.status(500).json({ 
+        message: "Không thể xóa tin nhắn" 
+      });
+    }
+  } catch (error) {
+    console.error("❌ Error deleting message:", error);
+    res.status(500).json({ 
+      message: "Lỗi khi xóa tin nhắn", 
+      error: error.message 
+    });
+  }
+};
+
 module.exports = {
   sendMessage,
   getMyMessages,
   getAllConversations,
   getConversationMessages,
-  getUnreadCount
+  getUnreadCount,
+  deleteMessage
 };
 
