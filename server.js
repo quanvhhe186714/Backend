@@ -15,15 +15,14 @@ app.use("/uploads", express.static("uploads"));
 
 // CORS middleware
 app.use((req, res, next) => {
-  const allowedOrigins = [
-    "http://localhost:3000",
-    "http://localhost:3001",
-    "http://127.0.0.1:3000",
-    "http://127.0.0.1:3001"
-    "https://shopnambs-4bro.onrender.com", // nếu cần
-  "https://frontend-ten-snowy-70.vercel.app" // thêm domain Vercel ở đây
-  ];
-  
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "http://127.0.0.1:3000",
+  "http://127.0.0.1:3001",
+  "https://shopnambs-4bru.onrender.com",
+  "https://frontend-ten-snowy-70.vercel.app"
+];
   const origin = req.headers.origin;
   
   if (allowedOrigins.includes(origin)) {
