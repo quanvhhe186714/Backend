@@ -1,5 +1,6 @@
 // controllers/userController.js
 const User = require("../models/users");
+const Wallet = require("../models/wallet");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { upload } = require("../utils/Upload");
@@ -65,6 +66,7 @@ const registerUser = async (req, res) => {
     });
 
     await newUser.save();
+    await Wallet.create({ user: newUser._id });
 
     res.status(201).json({
       message: "Đăng ký thành công!",
