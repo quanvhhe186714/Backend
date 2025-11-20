@@ -20,6 +20,8 @@ app.use((req, res, next) => {
     "http://localhost:3001",
     "http://127.0.0.1:3000",
     "http://127.0.0.1:3001"
+    "https://shopnambs-4bro.onrender.com", // nếu cần
+  "https://frontend-ten-snowy-70.vercel.app" // thêm domain Vercel ở đây
   ];
   
   const origin = req.headers.origin;
