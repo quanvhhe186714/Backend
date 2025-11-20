@@ -53,7 +53,8 @@ const seedData = async () => {
                 price: 130000,
                 duration_months: 1,
                 features: ["Double Limits", "4 GB Uploads", "Faster Download", "No Ads"],
-                image: "https://cdn-icons-png.flaticon.com/512/2111/2111646.png"
+                image: "https://cdn-icons-png.flaticon.com/512/2111/2111646.png",
+                category: "OTHER"
             },
             {
                 name: "Premium 3 Tháng",
@@ -61,7 +62,8 @@ const seedData = async () => {
                 price: 389000,
                 duration_months: 3,
                 features: ["Double Limits", "4 GB Uploads", "Faster Download", "No Ads", "Unique Reactions"],
-                image: "https://cdn-icons-png.flaticon.com/512/2111/2111646.png"
+                image: "https://cdn-icons-png.flaticon.com/512/2111/2111646.png",
+                category: "OTHER"
             },
             {
                 name: "Premium 6 Tháng",
@@ -69,7 +71,8 @@ const seedData = async () => {
                 price: 549000,
                 duration_months: 6,
                 features: ["Double Limits", "4 GB Uploads", "Faster Download", "No Ads", "Premium Stickers", "Animated Emoji Status"],
-                image: "https://cdn-icons-png.flaticon.com/512/2111/2111646.png"
+                image: "https://cdn-icons-png.flaticon.com/512/2111/2111646.png",
+                category: "OTHER"
             },
             {
                 name: "Premium 12 Tháng",
@@ -77,7 +80,65 @@ const seedData = async () => {
                 price: 900000,
                 duration_months: 12,
                 features: ["All Premium Features", "Voice-to-Text", "Advanced Chat Management", "Profile Badge", "Animated Profile Pictures"],
-                image: "https://cdn-icons-png.flaticon.com/512/2111/2111646.png"
+                image: "https://cdn-icons-png.flaticon.com/512/2111/2111646.png",
+                category: "OTHER"
+            },
+            // VIA
+            {
+                name: "VIA Facebook US Trust",
+                description: "Tài khoản VIA FB US chất lượng, trust cao, dùng chạy ads/cày tool.",
+                price: 120000,
+                duration_months: 1,
+                features: ["Nguồn sạch", "Mail/Pass đầy đủ", "Bảo hành 24h"],
+                image: "https://cdn-icons-png.flaticon.com/512/733/733547.png",
+                category: "VIA"
+            },
+            {
+                name: "VIA Gmail Cổ",
+                description: "VIA Gmail tuổi cao, hạn chế checkpoint, phù hợp nuôi lâu dài.",
+                price: 95000,
+                duration_months: 1,
+                features: ["Trust cao", "Phục hồi dễ", "Bảo hành 24h"],
+                image: "https://cdn-icons-png.flaticon.com/512/281/281769.png",
+                category: "VIA"
+            },
+            // PROXY
+            {
+                name: "Proxy Residential 4G VN 1 ngày",
+                description: "Proxy dân cư 4G Việt Nam, đổi IP linh hoạt, ổn định.",
+                price: 30000,
+                duration_months: 1,
+                features: ["IP sạch", "Đổi IP nhanh", "Băng thông tốt"],
+                image: "https://cdn-icons-png.flaticon.com/512/2549/2549900.png",
+                category: "PROXY"
+            },
+            {
+                name: "Proxy Datacenter US 1 tháng",
+                description: "Proxy Datacenter US tốc độ cao, giá tốt cho automation.",
+                price: 150000,
+                duration_months: 1,
+                features: ["Tốc độ cao", "Ổn định", "Hỗ trợ HTTP/SOCKS5"],
+                image: "https://cdn-icons-png.flaticon.com/512/4248/4248443.png",
+                category: "PROXY"
+            },
+            // Dịch vụ MXH
+            {
+                name: "Tăng Follow TikTok (Real/Việt) 1k",
+                description: "Dịch vụ tăng follow TikTok thật, tăng đều, hạn chế tụt.",
+                price: 90000,
+                duration_months: 1,
+                features: ["Follow thật", "Bảo hành 7 ngày", "Tốc độ tùy chọn"],
+                image: "https://cdn-icons-png.flaticon.com/512/3046/3046127.png",
+                category: "DICH_VU_MXH"
+            },
+            {
+                name: "Tăng Like Fanpage 1k",
+                description: "Like fanpage chất lượng, hạn chế tụt, hỗ trợ target quốc gia.",
+                price: 70000,
+                duration_months: 1,
+                features: ["Nguồn thật", "Bảo hành 7 ngày", "Target được"],
+                image: "https://cdn-icons-png.flaticon.com/512/889/889221.png",
+                category: "DICH_VU_MXH"
             }
         ]);
         console.log("Products created");

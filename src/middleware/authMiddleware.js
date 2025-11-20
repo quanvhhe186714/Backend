@@ -15,7 +15,10 @@ const protect = async (req, res, next) => {
       token = req.headers.authorization.split(" ")[1];
 
       // 2. Giải mã token để lấy user ID
-      const decoded = jwt.verify(token, "YOUR_JWT_SECRET");
+      const decoded = jwt.verify(
+        token,
+        process.env.JWT_SECRET || "YOUR_JWT_SECRET"
+      );
 
       // 3. Lấy thông tin user từ DB và gán vào request
       // Dùng .select('-password') để không lấy mật khẩu

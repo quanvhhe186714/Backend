@@ -3,7 +3,12 @@ const Product = require("../models/product");
 // Public: Get all products
 const getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find({ isActive: true }).sort({ price: 1 });
+    const { category } = req.query;
+    const filter = { isActive: true };
+    if (category) {
+      filter.category = category;
+    }
+    const products = await Product.find(filter).sort({ price: 1 });
     res.status(200).json(products);
   } catch (error) {
     res.status(500).json({ message: "Error fetching products", error: error.message });

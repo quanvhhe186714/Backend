@@ -10,6 +10,11 @@ const ProductSchema = new mongoose.Schema(
     features: [{ type: String }], // List of features: "4K Quality", "No Ads"
     image: { type: String, default: "" },
     currency: { type: String, default: "VND" },
+    category: {
+      type: String,
+      enum: ["VIA", "PROXY", "DICH_VU_MXH", "OTHER"],
+      default: "OTHER"
+    },
     isActive: { type: Boolean, default: true }
   },
   { timestamps: true }
