@@ -23,7 +23,8 @@ const OrderSchema = new mongoose.Schema(
       default: "pending"
     },
     paymentMethod: { type: String, default: "bank_transfer" },
-    paymentDetails: { type: Object } // Store transaction ID etc.
+    paymentDetails: { type: Object }, // Store transaction ID etc.
+    walletCharged: { type: Boolean, default: false }
   },
   { timestamps: true }
 );

@@ -1,6 +1,7 @@
 const Order = require("../models/order");
 const Product = require("../models/product");
 const Coupon = require("../models/coupon");
+const Wallet = require("../models/wallet");
 
 // Customer: Create Order
 const createOrder = async (req, res) => {
@@ -59,7 +60,22 @@ const createOrder = async (req, res) => {
 
     const totalAmount = Math.max(0, subTotal - discountAmount);
 
-    // 3. Create Order
+    // 3. Ensure wallet balance is sufficient and deduct immediately
+    const wallet = await Wallet.findOne({ user: req.user.id });
+    if (!wallet) {
+      return res.status(400).json({ message: "Không tìm thấy ví của người dùng" });
+    }
+
+    if (wallet.balance < totalAmount) {
+      return res.status(400).json({
+        message: "Số dư ví không đủ. Vui lòng nạp thêm tiền trước khi đặt hàng.",
+      });
+    }
+
+    wallet.balance -= totalAmount;
+    await wallet.save();
+
+    // 4. Create Order
     const newOrder = new Order({
       user: req.user.id,
       items: orderItems,
@@ -69,12 +85,13 @@ const createOrder = async (req, res) => {
       couponCode: appliedCoupon ? appliedCoupon.code : null,
       paymentMethod,
       paymentDetails: req.body.paymentDetails || {},
-      status: "pending"
+      status: "pending",
+      walletCharged: true
     });
 
     const savedOrder = await newOrder.save();
 
-    // 4. Update Coupon Usage
+    // 5. Update Coupon Usage
     if (appliedCoupon) {
         appliedCoupon.usedCount += 1;
         await appliedCoupon.save();
@@ -110,8 +127,44 @@ const getAllOrders = async (req, res) => {
 const updateOrderStatus = async (req, res) => {
   try {
     const { status } = req.body;
-    const order = await Order.findByIdAndUpdate(req.params.id, { status }, { new: true });
+    const allowedStatuses = ["pending", "paid", "failed", "completed", "cancelled", "delivered"];
+    if (!allowedStatuses.includes(status)) {
+      return res.status(400).json({ message: "Invalid status provided" });
+    }
+
+    const order = await Order.findById(req.params.id);
     if (!order) return res.status(404).json({ message: "Order not found" });
+
+    const shouldChargeWallet = ["paid", "completed", "delivered"].includes(status);
+    const shouldRefundWallet = ["failed", "cancelled"].includes(status);
+
+    if (shouldChargeWallet && !order.walletCharged) {
+      const wallet = await Wallet.findOne({ user: order.user });
+      if (!wallet) {
+        return res.status(400).json({ message: "Wallet not found for this user" });
+      }
+      if (wallet.balance < order.totalAmount) {
+        return res
+          .status(400)
+          .json({ message: "Số dư ví không đủ để thanh toán đơn hàng này" });
+      }
+      wallet.balance -= order.totalAmount;
+      await wallet.save();
+      order.walletCharged = true;
+    }
+
+    if (shouldRefundWallet && order.walletCharged) {
+      const wallet = await Wallet.findOne({ user: order.user });
+      if (wallet) {
+        wallet.balance += order.totalAmount;
+        await wallet.save();
+      }
+      order.walletCharged = false;
+    }
+
+    order.status = status;
+    await order.save();
+
     res.status(200).json(order);
   } catch (error) {
     res.status(500).json({ message: "Error updating order", error: error.message });
