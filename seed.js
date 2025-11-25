@@ -102,6 +102,24 @@ const seedData = async () => {
                 image: "https://cdn-icons-png.flaticon.com/512/281/281769.png",
                 category: "VIA"
             },
+            {
+                name: "ACC NGOẠI CỔ 2007 LIVE ADS",
+                description: "ACC NGOẠI CỔ 2007 LIVE ADS CP MAIL FULL ID NGẮN ĐA SỐ CÓ THUÊ TICK XANH (HOTMAIL có thể bật 2FA, change all).",
+                price: 250000,
+                duration_months: 1,
+                features: ["Full info", "Có thể bật 2FA", "Đa số đã thuê tick xanh", "Cho phép đổi toàn bộ thông tin"],
+                image: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+                category: "VIA"
+            },
+            {
+                name: "ACC NGOẠI CỔ 2008-2016 LIVE ADS",
+                description: "ACC NGOẠI CỔ 2008-2016 LIVE ADS CP MAIL ĐA SỐ CÓ THUÊ TICK XANH (HOTMAIL có thể bật 2FA, change all).",
+                price: 300000,
+                duration_months: 1,
+                features: ["Độ tin cậy cao", "Có thể bật 2FA", "Mail sạch", "Đa số có tick xanh"],
+                image: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+                category: "VIA"
+            },
             // PROXY
             {
                 name: "Proxy Residential 4G VN 1 ngày",
