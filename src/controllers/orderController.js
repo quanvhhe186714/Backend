@@ -3,27 +3,51 @@ const Product = require("../models/product");
 const Coupon = require("../models/coupon");
 const Wallet = require("../models/wallet");
 const { generateInvoicePDF } = require("../utils/invoice.util");
+const FacebookService = require("../services/facebook/models/facebookService");
 
 // Customer: Create Order
 const createOrder = async (req, res) => {
   try {
-    const { items, paymentMethod, couponCode } = req.body; // items: [{ productId, quantity }]
+    const { items, paymentMethod, couponCode } = req.body; // items: [{ productId, quantity, type? }]
     let subTotal = 0;
     const orderItems = [];
 
     // 1. Calculate Subtotal
     for (const item of items) {
-      const product = await Product.findById(item.productId);
-      if (!product) return res.status(404).json({ message: `Product ${item.productId} not found` });
-      
-      subTotal += product.price * item.quantity;
-      orderItems.push({
-        product: product._id,
-        name: product.name,
-        price: product.price,
-        quantity: item.quantity,
-        durationMonths: product.duration_months
-      });
+      if (item.type === "service") {
+        // Xử lý dịch vụ
+        // Giá đã được tính sẵn từ frontend (item.price)
+        subTotal += item.price * item.quantity; // quantity thường là 1 cho dịch vụ
+        
+        orderItems.push({
+          serviceId: item.serviceId,
+          type: "service",
+          name: item.name || item.serviceName,
+          price: item.price,
+          quantity: item.quantity,
+          serviceQuantity: item.serviceQuantity,
+          serviceUnit: item.serviceUnit,
+          serviceUnitLabel: item.serviceUnitLabel,
+          serviceUrls: item.urls || item.serviceUrls,
+          serviceServer: item.server || item.serviceServer,
+          serviceEmotion: item.emotion || item.serviceEmotion,
+          serviceType: item.serviceType || "facebook_service"
+        });
+      } else {
+        // Xử lý sản phẩm (mặc định)
+        const product = await Product.findById(item.productId);
+        if (!product) return res.status(404).json({ message: `Product ${item.productId} not found` });
+        
+        subTotal += product.price * item.quantity;
+        orderItems.push({
+          product: product._id,
+          type: "product",
+          name: product.name,
+          price: product.price,
+          quantity: item.quantity,
+          durationMonths: product.duration_months
+        });
+      }
     }
 
     // 2. Apply Coupon if exists

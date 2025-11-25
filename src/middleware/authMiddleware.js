@@ -56,4 +56,7 @@ const isManager = (req, res, next) => {
   }
 };
 
-module.exports = {isManager, protect, isAdmin };
+// Alias cho isAdmin
+const admin = isAdmin;
+
+module.exports = { isManager, protect, isAdmin, admin };
