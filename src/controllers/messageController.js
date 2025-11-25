@@ -6,9 +6,12 @@ const User = require("../models/users");
 const sendMessage = async (req, res) => {
   try {
     const { content, receiverId } = req.body;
+    const files = req.files || [];
+    const hasText = content && content.trim();
+    const hasAttachments = files.length > 0;
     
-    if (!content || !content.trim()) {
-      return res.status(400).json({ message: "Nội dung tin nhắn không được để trống" });
+    if (!hasText && !hasAttachments) {
+      return res.status(400).json({ message: "Tin nhắn phải có nội dung hoặc tệp đính kèm" });
     }
 
     const senderId = req.user._id || req.user.id;
@@ -35,12 +38,21 @@ const sendMessage = async (req, res) => {
       conversationId = `admin_${senderId}`;
     }
 
+    const attachments = files.map((file) => ({
+      url: `/uploads/chat/${file.filename}`,
+      originalName: file.originalname,
+      mimeType: file.mimetype,
+      size: file.size,
+      type: file.mimetype.startsWith("image/") ? "image" : "file"
+    }));
+
     const message = new Message({
       sender: senderId,
       receiver: receiverId || null, // null = gửi cho admin/page
-      content: content.trim(),
+      content: hasText ? content.trim() : "",
       isFromAdmin,
-      conversationId // Set trực tiếp để đảm bảo đúng
+      conversationId, // Set trực tiếp để đảm bảo đúng
+      attachments
     });
 
     await message.save();

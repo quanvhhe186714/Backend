@@ -9,9 +9,19 @@ const {
   getUnreadCount,
   deleteMessage
 } = require("../controllers/messageController");
+const { uploadChatAttachments } = require("../utils/chatUpload");
+
+const handleChatUpload = (req, res, next) => {
+  uploadChatAttachments.array("attachments", 5)(req, res, (err) => {
+    if (err) {
+      return res.status(400).json({ message: err.message || "Upload file thất bại" });
+    }
+    next();
+  });
+};
 
 // User routes
-router.post("/", protect, sendMessage);
+router.post("/", protect, handleChatUpload, sendMessage);
 router.get("/my-messages", protect, getMyMessages);
 router.get("/unread-count", protect, getUnreadCount);
 
