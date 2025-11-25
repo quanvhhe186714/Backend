@@ -2,6 +2,7 @@ const Order = require("../models/order");
 const Product = require("../models/product");
 const Coupon = require("../models/coupon");
 const Wallet = require("../models/wallet");
+const { generateInvoicePDF } = require("../utils/invoice.util");
 
 // Customer: Create Order
 const createOrder = async (req, res) => {
@@ -163,7 +164,20 @@ const updateOrderStatus = async (req, res) => {
     }
 
     order.status = status;
+    // Save status
     await order.save();
+
+    // Generate invoice automatically when order becomes paid or delivered
+    if (["paid", "delivered"].includes(order.status) && !order.invoicePath) {
+      try {
+        const invoiceUrl = await generateInvoicePDF(order._id);
+        order.invoicePath = invoiceUrl;
+        await order.save();
+      } catch (e) {
+        // Do not fail the request if invoice generation fails
+        console.error("Invoice generation error:", e?.message || e);
+      }
+    }
 
     res.status(200).json(order);
   } catch (error) {

@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "forceConsistentCasingInFileNames": false
+  },
+  "include": ["src/**/*", "config/**/*", "server.js"]
+}
+
