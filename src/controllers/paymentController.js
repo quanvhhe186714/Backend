@@ -7,26 +7,33 @@ const buildVietQrImageUrl = ({ bin, accountNo, accountName, amount, content }) =
   return `${base}?${params.toString()}`;
 };
 
-// GET /payments/qr?amount=100000&content=MMOS-ORDER123&bank=mb (optional: mb or cake)
+// GET /payments/qr?amount=100000&content=MMOS-ORDER123&bank=vietinbank (optional: vietinbank, momo)
 const getVietQr = async (req, res) => {
   try {
-    const { amount, content, bank = "mb" } = req.query;
+    const { amount, content, bank = "vietinbank" } = req.query;
     
     // Cấu hình ngân hàng
     let bin, accountNo, accountName, phone;
+    const bankLower = bank.toLowerCase();
     
-    if (bank.toLowerCase() === "cake") {
-      // CAKE Bank
-      bin = process.env.CAKE_BANK_BIN || "970422"; // Có thể cần điều chỉnh BIN của CAKE
-      accountNo = process.env.CAKE_BANK_ACCOUNT || "0334443570";
-      accountName = process.env.CAKE_BANK_ACCOUNT_NAME || "NGO VAN NAM";
-      phone = process.env.CAKE_BANK_PHONE || "";
+    if (bankLower === "momo") {
+      // MoMo
+      bin = process.env.MOMO_BIN || "970422"; // MoMo BIN code
+      accountNo = process.env.MOMO_ACCOUNT || "0392728529";
+      accountName = process.env.MOMO_ACCOUNT_NAME || "VŨ HỒNG QUÂN";
+      phone = process.env.MOMO_PHONE || "0392728529";
+    } else if (bankLower === "vietinbank" || bankLower === "viettinbank") {
+      // VietinBank
+      bin = process.env.VIETINBANK_BIN || "970415"; // VietinBank BIN code
+      accountNo = process.env.VIETINBANK_ACCOUNT || "107876717017";
+      accountName = process.env.VIETINBANK_ACCOUNT_NAME || "VU HONG QUAN";
+      phone = process.env.VIETINBANK_PHONE || "";
     } else {
-      // MB Bank (mặc định)
-      bin = process.env.MB_BANK_BIN || "970422"; // MB Bank BIN code
-      accountNo = process.env.MB_BANK_ACCOUNT || "03355778899";
-      accountName = process.env.MB_BANK_ACCOUNT_NAME || "NGO VAN NAM";
-      phone = process.env.MB_BANK_PHONE || "03355778899";
+      // Fallback về VietinBank nếu không khớp
+      bin = process.env.VIETINBANK_BIN || "970415";
+      accountNo = process.env.VIETINBANK_ACCOUNT || "107876717017";
+      accountName = process.env.VIETINBANK_ACCOUNT_NAME || "VU HONG QUAN";
+      phone = process.env.VIETINBANK_PHONE || "";
     }
 
     if (!accountNo) {

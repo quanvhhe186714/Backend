@@ -1,0 +1,78 @@
+# 🔄 Hướng dẫn cập nhật file .env
+
+## Cập nhật thông tin bank của Quân
+
+Thay thế các dòng cấu hình bank cũ bằng thông tin mới:
+
+### ❌ XÓA các dòng sau:
+
+```env
+# MB Bank (Mặc định)
+MB_BANK_BIN=970422
+MB_BANK_ACCOUNT=03355778899
+MB_BANK_ACCOUNT_NAME=NGO VAN NAM
+MB_BANK_PHONE=03355778899
+
+# CAKE Bank (Tùy chọn)
+CAKE_BANK_BIN=970422
+CAKE_BANK_ACCOUNT=0334443570
+CAKE_BANK_ACCOUNT_NAME=NGO VAN NAM
+```
+
+### ✅ THÊM các dòng sau:
+
+```env
+# ============================================
+# Payment Configuration - VietinBank
+# ============================================
+VIETINBANK_BIN=970415
+VIETINBANK_ACCOUNT=107876717017
+VIETINBANK_ACCOUNT_NAME=VU HONG QUAN
+VIETINBANK_PHONE=
+
+# ============================================
+# Payment Configuration - MoMo
+# ============================================
+MOMO_BIN=970422
+MOMO_ACCOUNT=0392728529
+MOMO_ACCOUNT_NAME=VŨ HỒNG QUÂN
+MOMO_PHONE=0392728529
+```
+
+## 📝 File .env hoàn chỉnh mẫu:
+
+```env
+PORT=9999
+MONGO_URI=mongodb+srv://quan2004:quan2004@nambs.afmynnz.mongodb.net/?appName=NamBS
+JWT_SECRET=your_secret_key
+
+# ============================================
+# Payment Configuration - VietinBank
+# ============================================
+VIETINBANK_BIN=970415
+VIETINBANK_ACCOUNT=107876717017
+VIETINBANK_ACCOUNT_NAME=VU HONG QUAN
+VIETINBANK_PHONE=
+
+# ============================================
+# Payment Configuration - MoMo
+# ============================================
+MOMO_BIN=970422
+MOMO_ACCOUNT=0392728529
+MOMO_ACCOUNT_NAME=VŨ HỒNG QUÂN
+MOMO_PHONE=0392728529
+
+# ============================================
+# Cloudinary Configuration (nếu có)
+# ============================================
+CLOUDINARY_NAME=your_cloudinary_name
+CLOUDINARY_KEY=your_cloudinary_api_key
+CLOUDINARY_SECRET=your_cloudinary_api_secret
+```
+
+## ⚠️ Lưu ý:
+
+1. Sau khi cập nhật, **khởi động lại server** để áp dụng thay đổi
+2. Code đã được cập nhật để sử dụng VietinBank và MoMo thay vì MB Bank và CAKE Bank
+3. Nếu deploy lên Render, cập nhật các biến môi trường trong Render dashboard
+

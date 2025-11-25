@@ -9,20 +9,33 @@ const ensureWallet = async (userId) => {
   return wallet;
 };
 
-const getBankInfo = (bankCode = "mb") => {
-  if (bankCode === "cake") {
+const getBankInfo = (bankCode = "vietinbank") => {
+  const code = bankCode.toLowerCase();
+  
+  if (code === "momo") {
     return {
-      bank: "CAKE",
-      accountName: process.env.CAKE_BANK_ACCOUNT_NAME || "NGO VAN NAM",
-      accountNumber: process.env.CAKE_BANK_ACCOUNT || "0334443570",
-      bin: process.env.CAKE_BANK_BIN || "970422",
+      bank: "MoMo",
+      accountName: process.env.MOMO_ACCOUNT_NAME || "VŨ HỒNG QUÂN",
+      accountNumber: process.env.MOMO_ACCOUNT || "0392728529",
+      bin: process.env.MOMO_BIN || "970422",
+      phone: process.env.MOMO_PHONE || "0392728529",
+    };
+  } else if (code === "vietinbank" || code === "viettinbank") {
+    return {
+      bank: "VietinBank",
+      accountName: process.env.VIETINBANK_ACCOUNT_NAME || "VU HONG QUAN",
+      accountNumber: process.env.VIETINBANK_ACCOUNT || "107876717017",
+      bin: process.env.VIETINBANK_BIN || "970415",
+      phone: process.env.VIETINBANK_PHONE || "",
     };
   }
+  // Fallback về VietinBank nếu không khớp
   return {
-    bank: "MB Bank",
-    accountName: process.env.MB_BANK_ACCOUNT_NAME || "NGO VAN NAM",
-    accountNumber: process.env.MB_BANK_ACCOUNT || "03355778899",
-    bin: process.env.MB_BANK_BIN || "970422",
+    bank: "VietinBank",
+    accountName: process.env.VIETINBANK_ACCOUNT_NAME || "VU HONG QUAN",
+    accountNumber: process.env.VIETINBANK_ACCOUNT || "107876717017",
+    bin: process.env.VIETINBANK_BIN || "970415",
+    phone: process.env.VIETINBANK_PHONE || "",
   };
 };
 
@@ -46,7 +59,7 @@ const getWalletInfo = async (req, res) => {
 
 const initiateTopup = async (req, res) => {
   try {
-    const { amount, method = "bank_transfer", bank = "mb", note = "" } = req.body;
+    const { amount, method = "bank_transfer", bank = "vietinbank", note = "" } = req.body;
 
     if (!amount || Number(amount) <= 0) {
       return res.status(400).json({ message: "Số tiền không hợp lệ" });

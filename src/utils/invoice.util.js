@@ -146,7 +146,7 @@ async function generateInvoicePDF(orderId) {
   doc
     .fontSize(20)
     .fillColor("#222")
-    .text("ShopNamBS - Hóa đơn mua hàng", { align: "left" })
+    .text("WEB BUFF MXH - Hóa đơn mua hàng", { align: "left" })
     .moveDown(0.5);
   if (hasVN) doc.font("VN-Regular");
   doc
