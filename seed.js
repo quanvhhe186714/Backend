@@ -108,7 +108,7 @@ const seedData = async () => {
                 price: 250000,
                 duration_months: 1,
                 features: ["Full info", "Có thể bật 2FA", "Đa số đã thuê tick xanh", "Cho phép đổi toàn bộ thông tin"],
-                image: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+                image: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
                 category: "VIA"
             },
             {
@@ -117,7 +117,7 @@ const seedData = async () => {
                 price: 300000,
                 duration_months: 1,
                 features: ["Độ tin cậy cao", "Có thể bật 2FA", "Mail sạch", "Đa số có tick xanh"],
-                image: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+                image: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
                 category: "VIA"
             },
             // PROXY
