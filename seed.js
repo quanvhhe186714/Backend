@@ -157,15 +157,6 @@ const seedData = async () => {
                 features: ["Nguồn thật", "Bảo hành 7 ngày", "Target được"],
                 image: "https://cdn-icons-png.flaticon.com/512/889/889221.png",
                 category: "DICH_VU_MXH"
-            },
-            {
-                name: "Clone Telegram",
-                description: "Tài khoản Telegram clone chất lượng, đầy đủ thông tin, sử dụng ổn định.",
-                price: 65000,
-                duration_months: 1,
-                features: ["Clone chất lượng", "Full thông tin", "Bảo hành 24h", "Sử dụng ổn định"],
-                image: "https://cdn-icons-png.flaticon.com/512/2111/2111646.png",
-                category: "DICH_VU_MXH"
             }
         ]);
         console.log("Products created");
