@@ -56,7 +56,8 @@ const sendMessage = async (req, res) => {
     }
 
     const attachments = files.map((file) => ({
-      url: `/uploads/chat/${file.filename}`,
+      // Ưu tiên dùng Cloudinary URL (cho Render), fallback về local path (cho dev)
+      url: file.cloudinaryUrl || `/uploads/chat/${file.filename}`,
       originalName: file.originalname,
       mimeType: file.mimetype,
       size: file.size,
@@ -131,10 +132,11 @@ const sendMessage = async (req, res) => {
               
               // Chỉ coi là invoice nếu:
               // 1. Có "invoice" trong tên file hoặc đường dẫn
-              // 2. Hoặc nằm trong thư mục /invoices/
+              // 2. Hoặc nằm trong thư mục /invoices/ (local) hoặc mmos/invoices (Cloudinary)
               if (urlLower.includes("invoice") || 
                   nameLower.includes("invoice") ||
-                  urlLower.includes("/invoices/")) {
+                  urlLower.includes("/invoices/") ||
+                  urlLower.includes("mmos/invoices")) {
                 invoiceFiles.push(file);
               } else {
                 // PDF nhưng không phải invoice - là file của người bán

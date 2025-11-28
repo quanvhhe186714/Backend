@@ -1,27 +1,21 @@
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const cloudinary = require("../../config/cloudinary");
+const { Readable } = require("stream");
 
+// Sử dụng memory storage để có thể upload lên Cloudinary
+// Trên Render, filesystem là ephemeral nên cần lưu lên Cloudinary
+const storage = multer.memoryStorage();
+
+// Fallback: tạo thư mục local nếu cần (cho dev)
 const CHAT_UPLOAD_DIR = path.join(__dirname, "..", "..", "uploads", "chat");
-
 function ensureDir(dir) {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
 }
-
 ensureDir(CHAT_UPLOAD_DIR);
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, CHAT_UPLOAD_DIR);
-  },
-  filename: (req, file, cb) => {
-    const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1e6)}`;
-    const ext = path.extname(file.originalname) || "";
-    cb(null, `${uniqueName}${ext}`);
-  },
-});
 
 const allowedMimes = new Set([
   "image/jpeg",
@@ -57,6 +51,87 @@ const uploadChatAttachments = multer({
   },
 });
 
-module.exports = { uploadChatAttachments };
+// Middleware để upload file lên Cloudinary sau khi multer xử lý
+const uploadToCloudinary = async (req, res, next) => {
+  if (!req.files || req.files.length === 0) {
+    return next();
+  }
+
+  // Kiểm tra xem có Cloudinary config không
+  const hasCloudinary = process.env.CLOUDINARY_NAME && 
+                        process.env.CLOUDINARY_KEY && 
+                        process.env.CLOUDINARY_SECRET;
+
+  if (!hasCloudinary) {
+    // Không có Cloudinary config - lưu local (cho dev)
+    console.warn("⚠️ Cloudinary not configured, saving files locally (files will be lost on Render restart)");
+    try {
+      for (const file of req.files) {
+        const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1e6)}`;
+        const ext = path.extname(file.originalname) || "";
+        const filename = `${uniqueName}${ext}`;
+        const filepath = path.join(CHAT_UPLOAD_DIR, filename);
+        
+        fs.writeFileSync(filepath, file.buffer);
+        file.filename = filename;
+        file.cloudinaryUrl = null; // Không có Cloudinary URL
+      }
+      return next();
+    } catch (error) {
+      console.error("Error saving files locally:", error);
+      return res.status(500).json({
+        message: "Lỗi khi lưu file",
+        error: error.message,
+      });
+    }
+  }
+
+  // Có Cloudinary config - upload lên Cloudinary
+  try {
+    const uploadPromises = req.files.map(async (file) => {
+      return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          {
+            folder: "mmos/chat",
+            resource_type: "auto", // Tự động detect loại file
+            use_filename: true,
+            unique_filename: true,
+          },
+          (error, result) => {
+            if (error) {
+              console.error("Cloudinary upload error:", error);
+              reject(error);
+            } else {
+              // Lưu Cloudinary URL vào file object
+              file.cloudinaryUrl = result.secure_url;
+              file.cloudinaryPublicId = result.public_id;
+              // Tạo filename fallback (nếu cần)
+              file.filename = path.basename(result.public_id);
+              resolve(result);
+            }
+          }
+        );
+
+        // Tạo stream từ buffer
+        const bufferStream = new Readable();
+        bufferStream.push(file.buffer);
+        bufferStream.push(null);
+        bufferStream.pipe(stream);
+      });
+    });
+
+    await Promise.all(uploadPromises);
+    console.log(`✅ Uploaded ${req.files.length} file(s) to Cloudinary`);
+    next();
+  } catch (error) {
+    console.error("Error uploading to Cloudinary:", error);
+    return res.status(500).json({
+      message: "Lỗi khi upload file lên Cloudinary",
+      error: error.message,
+    });
+  }
+};
+
+module.exports = { uploadChatAttachments, uploadToCloudinary };
 
 

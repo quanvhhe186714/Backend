@@ -10,14 +10,15 @@ const {
   getMessagesByOrderId,
   deleteMessage
 } = require("../controllers/messageController");
-const { uploadChatAttachments } = require("../utils/chatUpload");
+const { uploadChatAttachments, uploadToCloudinary } = require("../utils/chatUpload");
 
 const handleChatUpload = (req, res, next) => {
-  uploadChatAttachments.array("attachments", 5)(req, res, (err) => {
+  uploadChatAttachments.array("attachments", 5)(req, res, async (err) => {
     if (err) {
       return res.status(400).json({ message: err.message || "Upload file thất bại" });
     }
-    next();
+    // Upload lên Cloudinary sau khi multer xử lý
+    await uploadToCloudinary(req, res, next);
   });
 };
 

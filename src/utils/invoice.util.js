@@ -4,6 +4,7 @@ const https = require("https");
 const PDFDocument = require("pdfkit");
 const Order = require("../models/order");
 const User = require("../models/users");
+const cloudinary = require("../../config/cloudinary");
 
 const BASE_DIR = path.resolve(__dirname, "..", "..");
 const INVOICE_DIR = path.join(BASE_DIR, "invoices");
@@ -226,7 +227,43 @@ async function generateInvoicePDF(orderId) {
   doc.end();
 
   await new Promise((resolve) => stream.on("finish", resolve));
-  return `/invoices/${filename}`;
+  
+  // Upload invoice lên Cloudinary (quan trọng cho Render - filesystem ephemeral)
+  const hasCloudinary = process.env.CLOUDINARY_NAME && 
+                        process.env.CLOUDINARY_KEY && 
+                        process.env.CLOUDINARY_SECRET;
+  
+  if (hasCloudinary) {
+    try {
+      const uploadResult = await cloudinary.uploader.upload(filepath, {
+        folder: "mmos/invoices",
+        resource_type: "raw", // PDF là raw file
+        use_filename: true,
+        unique_filename: false,
+        overwrite: false,
+      });
+      
+      // Xóa file local sau khi upload (tiết kiệm dung lượng)
+      try {
+        fs.unlinkSync(filepath);
+      } catch (unlinkError) {
+        console.warn("Could not delete local invoice file:", unlinkError);
+      }
+      
+      console.log(`✅ Invoice uploaded to Cloudinary: ${uploadResult.secure_url}`);
+      // Trả về Cloudinary URL
+      return uploadResult.secure_url;
+    } catch (cloudinaryError) {
+      console.error("Error uploading invoice to Cloudinary:", cloudinaryError);
+      // Fallback: trả về local path nếu Cloudinary fail
+      console.warn("⚠️ Falling back to local invoice path (file will be lost on Render restart)");
+      return `/invoices/${filename}`;
+    }
+  } else {
+    // Không có Cloudinary config - trả về local path (cho dev)
+    console.warn("⚠️ Cloudinary not configured, invoice saved locally (will be lost on Render restart)");
+    return `/invoices/${filename}`;
+  }
 }
 
 module.exports = {
