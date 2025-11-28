@@ -114,28 +114,54 @@ const sendMessage = async (req, res) => {
           console.log(`📦 Tự động liên kết file với đơn hàng ${targetOrder._id} của user ${receiverId || orderId}`);
         }
         
-        // CHỈ cập nhật invoicePath nếu file là PDF (hóa đơn)
-        // Các file khác (txt, docx, etc.) sẽ chỉ được lưu trong message và hiển thị như file của người bán
+        // Xử lý file: chỉ cập nhật invoicePath nếu file RÕ RÀNG là invoice
+        // Tất cả file (kể cả file thứ 2, 3...) đều được lưu trong message và hiển thị như file của người bán
         if (targetOrder && ["paid", "completed", "delivered"].includes(targetOrder.status)) {
-          // Tìm file PDF đầu tiên trong attachments
-          const invoiceFile = attachments.find(file => 
-            file.mimeType === "application/pdf" || 
-            file.originalName.toLowerCase().endsWith(".pdf") ||
-            file.url.toLowerCase().includes("invoice") ||
-            file.originalName.toLowerCase().includes("invoice")
-          );
+          // Phân loại file: invoice vs file của người bán
+          const invoiceFiles = [];
+          const sellerFiles = [];
           
-          // Chỉ cập nhật invoicePath nếu tìm thấy file PDF
-          if (invoiceFile) {
-            // Chỉ cập nhật nếu chưa có invoicePath hoặc đang gửi file invoice mới
-            if (!targetOrder.invoicePath || invoiceFile.url !== targetOrder.invoicePath) {
-              targetOrder.invoicePath = invoiceFile.url;
-              await targetOrder.save();
-              console.log(`✅ Đã tự động cập nhật invoicePath cho đơn hàng ${targetOrder._id}: ${invoiceFile.url}`);
+          attachments.forEach(file => {
+            const isPDF = file.mimeType === "application/pdf" || 
+                         file.originalName.toLowerCase().endsWith(".pdf");
+            
+            if (isPDF) {
+              const urlLower = file.url.toLowerCase();
+              const nameLower = file.originalName.toLowerCase();
+              
+              // Chỉ coi là invoice nếu:
+              // 1. Có "invoice" trong tên file hoặc đường dẫn
+              // 2. Hoặc nằm trong thư mục /invoices/
+              if (urlLower.includes("invoice") || 
+                  nameLower.includes("invoice") ||
+                  urlLower.includes("/invoices/")) {
+                invoiceFiles.push(file);
+              } else {
+                // PDF nhưng không phải invoice - là file của người bán
+                sellerFiles.push(file);
+              }
+            } else {
+              // File không phải PDF - là file của người bán
+              sellerFiles.push(file);
             }
-          } else {
-            // File không phải PDF - chỉ là file của người bán, không cập nhật invoicePath
-            console.log(`📎 File không phải PDF - lưu như file của người bán cho đơn hàng ${targetOrder._id}`);
+          });
+          
+          // Xử lý invoice: chỉ cập nhật invoicePath nếu chưa có
+          if (invoiceFiles.length > 0) {
+            const firstInvoice = invoiceFiles[0];
+            if (!targetOrder.invoicePath) {
+              targetOrder.invoicePath = firstInvoice.url;
+              await targetOrder.save();
+              console.log(`✅ Đã cập nhật invoicePath cho đơn hàng ${targetOrder._id}: ${firstInvoice.url}`);
+            } else {
+              console.log(`⚠️ Đơn hàng ${targetOrder._id} đã có invoice tự động, không ghi đè bằng file admin gửi`);
+            }
+          }
+          
+          // Tất cả file (invoice và seller files) đều được lưu trong message.attachments
+          // và sẽ hiển thị ở phần "Files từ người bán" (trừ file invoice đã được dùng cho invoicePath)
+          if (sellerFiles.length > 0) {
+            console.log(`📎 Đã lưu ${sellerFiles.length} file của người bán cho đơn hàng ${targetOrder._id}`);
           }
         }
       } catch (error) {
