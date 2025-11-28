@@ -234,10 +234,54 @@ const getDashboardStats = async (req, res) => {
     }
 }
 
+// Admin: Regenerate Invoice (tạo lại invoice cho đơn hàng)
+const regenerateInvoice = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const order = await Order.findById(id);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    // Chỉ tạo invoice cho đơn hàng đã thanh toán
+    if (!["paid", "completed", "delivered"].includes(order.status)) {
+      return res.status(400).json({ 
+        message: "Chỉ có thể tạo invoice cho đơn hàng đã thanh toán" 
+      });
+    }
+
+    // Tạo lại invoice
+    try {
+      const invoiceUrl = await generateInvoicePDF(order._id);
+      order.invoicePath = invoiceUrl;
+      await order.save();
+      
+      res.status(200).json({
+        message: "✅ Đã tạo lại invoice thành công",
+        invoicePath: invoiceUrl,
+        order: order
+      });
+    } catch (invoiceError) {
+      console.error("Invoice generation error:", invoiceError);
+      res.status(500).json({
+        message: "Lỗi khi tạo invoice",
+        error: invoiceError.message
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ 
+      message: "Error regenerating invoice", 
+      error: error.message 
+    });
+  }
+};
+
 module.exports = {
   createOrder,
   getMyOrders,
   getAllOrders,
   updateOrderStatus,
-  getDashboardStats
+  getDashboardStats,
+  regenerateInvoice
 };
