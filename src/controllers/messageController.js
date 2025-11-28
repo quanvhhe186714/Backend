@@ -75,7 +75,7 @@ const sendMessage = async (req, res) => {
 
     await message.save();
     
-    // Nếu admin gửi file trong chat, tự động cập nhật invoicePath cho đơn hàng
+    // Nếu admin gửi file trong chat, tự động liên kết với đơn hàng
     if (isFromAdmin && hasAttachments && attachments.length > 0) {
       try {
         let targetOrder = null;
@@ -105,25 +105,42 @@ const sendMessage = async (req, res) => {
               status: { $in: ["paid", "completed", "delivered"] }
             }).sort({ createdAt: -1 });
           }
-          
-          // Nếu tìm thấy đơn hàng, cập nhật orderId cho message
-          if (targetOrder) {
-            message.orderId = targetOrder._id;
-            await message.save();
-            console.log(`📦 Tự động liên kết file với đơn hàng ${targetOrder._id} của user ${receiverId}`);
-          }
         }
         
-        // Cập nhật invoicePath nếu tìm thấy đơn hàng phù hợp
+        // Nếu tìm thấy đơn hàng, cập nhật orderId cho message để liên kết file với đơn hàng
+        if (targetOrder) {
+          message.orderId = targetOrder._id;
+          await message.save();
+          console.log(`📦 Tự động liên kết file với đơn hàng ${targetOrder._id} của user ${receiverId || orderId}`);
+        }
+        
+        // CHỈ cập nhật invoicePath nếu file là PDF (hóa đơn)
+        // Các file khác (txt, docx, etc.) sẽ chỉ được lưu trong message và hiển thị như file của người bán
         if (targetOrder && ["paid", "completed", "delivered"].includes(targetOrder.status)) {
-          const firstFile = attachments[0];
-          targetOrder.invoicePath = firstFile.url;
-          await targetOrder.save();
-          console.log(`✅ Đã tự động cập nhật invoicePath cho đơn hàng ${targetOrder._id}: ${firstFile.url}`);
+          // Tìm file PDF đầu tiên trong attachments
+          const invoiceFile = attachments.find(file => 
+            file.mimeType === "application/pdf" || 
+            file.originalName.toLowerCase().endsWith(".pdf") ||
+            file.url.toLowerCase().includes("invoice") ||
+            file.originalName.toLowerCase().includes("invoice")
+          );
+          
+          // Chỉ cập nhật invoicePath nếu tìm thấy file PDF
+          if (invoiceFile) {
+            // Chỉ cập nhật nếu chưa có invoicePath hoặc đang gửi file invoice mới
+            if (!targetOrder.invoicePath || invoiceFile.url !== targetOrder.invoicePath) {
+              targetOrder.invoicePath = invoiceFile.url;
+              await targetOrder.save();
+              console.log(`✅ Đã tự động cập nhật invoicePath cho đơn hàng ${targetOrder._id}: ${invoiceFile.url}`);
+            }
+          } else {
+            // File không phải PDF - chỉ là file của người bán, không cập nhật invoicePath
+            console.log(`📎 File không phải PDF - lưu như file của người bán cho đơn hàng ${targetOrder._id}`);
+          }
         }
       } catch (error) {
         // Không fail request nếu cập nhật invoice thất bại
-        console.error("Lỗi khi cập nhật invoicePath:", error);
+        console.error("Lỗi khi xử lý file:", error);
       }
     }
     
