@@ -7,6 +7,7 @@ const {
   getAllConversations,
   getConversationMessages,
   getUnreadCount,
+  getMessagesByOrderId,
   deleteMessage
 } = require("../controllers/messageController");
 const { uploadChatAttachments } = require("../utils/chatUpload");
@@ -28,6 +29,8 @@ router.get("/unread-count", protect, getUnreadCount);
 // Admin routes
 router.get("/conversations", protect, isAdmin, getAllConversations);
 router.get("/conversations/:conversationId", protect, isAdmin, getConversationMessages);
+// Get messages by orderId (for both admin and user)
+router.get("/order/:orderId", protect, getMessagesByOrderId);
 // Route xóa tin nhắn - dùng pattern giống các route khác
 router.delete("/:messageId", protect, isAdmin, deleteMessage);
 

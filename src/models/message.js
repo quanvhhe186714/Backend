@@ -45,6 +45,12 @@ const MessageSchema = new mongoose.Schema(
       type: String,
       required: true,
       index: true
+    },
+    orderId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Order",
+      default: null, // Optional: link message to a specific order
+      index: true
     }
   },
   { timestamps: true }

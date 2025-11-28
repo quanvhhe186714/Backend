@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
 const Message = require("../models/message");
 const User = require("../models/users");
+const Order = require("../models/order");
 
 // Gửi tin nhắn (user gửi cho admin hoặc admin gửi cho user)
 const sendMessage = async (req, res) => {
   try {
-    const { content, receiverId } = req.body;
+    const { content, receiverId, orderId } = req.body;
     const files = req.files || [];
     const hasText = content && content.trim();
     const hasAttachments = files.length > 0;
@@ -19,6 +20,22 @@ const sendMessage = async (req, res) => {
     
     if (!sender) {
       return res.status(404).json({ message: "Người gửi không tồn tại" });
+    }
+
+    // Validate orderId if provided
+    let order = null;
+    if (orderId) {
+      if (!mongoose.Types.ObjectId.isValid(orderId)) {
+        return res.status(400).json({ message: "ID đơn hàng không hợp lệ" });
+      }
+      order = await Order.findById(orderId);
+      if (!order) {
+        return res.status(404).json({ message: "Đơn hàng không tồn tại" });
+      }
+      // Verify order belongs to the user (if not admin)
+      if (sender.role !== "admin" && order.user.toString() !== senderId.toString()) {
+        return res.status(403).json({ message: "Bạn không có quyền truy cập đơn hàng này" });
+      }
     }
 
     // Nếu là admin gửi cho user cụ thể
@@ -52,10 +69,63 @@ const sendMessage = async (req, res) => {
       content: hasText ? content.trim() : "",
       isFromAdmin,
       conversationId, // Set trực tiếp để đảm bảo đúng
-      attachments
+      attachments,
+      orderId: orderId || null
     });
 
     await message.save();
+    
+    // Nếu admin gửi file trong chat, tự động cập nhật invoicePath cho đơn hàng
+    if (isFromAdmin && hasAttachments && attachments.length > 0) {
+      try {
+        let targetOrder = null;
+        
+        // Nếu có orderId được chỉ định, dùng order đó
+        if (orderId && order) {
+          targetOrder = order;
+        } 
+        // Nếu không có orderId nhưng admin đang chat với một user cụ thể
+        else if (receiverId && receiver) {
+          // Tự động tìm đơn hàng gần nhất của user có status paid/completed/delivered
+          // Ưu tiên đơn hàng chưa có invoicePath, nếu không có thì lấy đơn hàng mới nhất
+          targetOrder = await Order.findOne({
+            user: receiverId,
+            status: { $in: ["paid", "completed", "delivered"] },
+            $or: [
+              { invoicePath: { $exists: false } },
+              { invoicePath: null },
+              { invoicePath: "" }
+            ]
+          }).sort({ createdAt: -1 });
+          
+          // Nếu không tìm thấy đơn hàng chưa có invoice, lấy đơn hàng mới nhất đã thanh toán
+          if (!targetOrder) {
+            targetOrder = await Order.findOne({
+              user: receiverId,
+              status: { $in: ["paid", "completed", "delivered"] }
+            }).sort({ createdAt: -1 });
+          }
+          
+          // Nếu tìm thấy đơn hàng, cập nhật orderId cho message
+          if (targetOrder) {
+            message.orderId = targetOrder._id;
+            await message.save();
+            console.log(`📦 Tự động liên kết file với đơn hàng ${targetOrder._id} của user ${receiverId}`);
+          }
+        }
+        
+        // Cập nhật invoicePath nếu tìm thấy đơn hàng phù hợp
+        if (targetOrder && ["paid", "completed", "delivered"].includes(targetOrder.status)) {
+          const firstFile = attachments[0];
+          targetOrder.invoicePath = firstFile.url;
+          await targetOrder.save();
+          console.log(`✅ Đã tự động cập nhật invoicePath cho đơn hàng ${targetOrder._id}: ${firstFile.url}`);
+        }
+      } catch (error) {
+        // Không fail request nếu cập nhật invoice thất bại
+        console.error("Lỗi khi cập nhật invoicePath:", error);
+      }
+    }
     
     // Populate sender info
     await message.populate("sender", "name email avatar role");
@@ -245,6 +315,42 @@ const getUnreadCount = async (req, res) => {
   }
 };
 
+// Lấy tin nhắn theo orderId (để xem file đã gửi cho đơn hàng)
+const getMessagesByOrderId = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const userId = req.user._id || req.user.id;
+    const isAdmin = req.user.role === "admin";
+    
+    if (!mongoose.Types.ObjectId.isValid(orderId)) {
+      return res.status(400).json({ message: "ID đơn hàng không hợp lệ" });
+    }
+
+    // Verify order exists and user has access
+    const Order = require("../models/order");
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: "Đơn hàng không tồn tại" });
+    }
+
+    // Check access: admin or order owner
+    if (!isAdmin && order.user.toString() !== userId.toString()) {
+      return res.status(403).json({ message: "Bạn không có quyền truy cập đơn hàng này" });
+    }
+
+    // Get messages with this orderId
+    const messages = await Message.find({ orderId })
+      .populate("sender", "name email avatar role")
+      .populate("receiver", "name email avatar")
+      .sort({ createdAt: 1 });
+
+    res.status(200).json(messages);
+  } catch (error) {
+    console.error("Error getting messages by orderId:", error);
+    res.status(500).json({ message: "Lỗi khi lấy tin nhắn", error: error.message });
+  }
+};
+
 // Admin: Xóa tin nhắn (xóa vĩnh viễn khỏi database)
 const deleteMessage = async (req, res) => {
   try {
@@ -309,6 +415,7 @@ module.exports = {
   getAllConversations,
   getConversationMessages,
   getUnreadCount,
+  getMessagesByOrderId,
   deleteMessage
 };
 
