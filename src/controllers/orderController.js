@@ -277,11 +277,67 @@ const regenerateInvoice = async (req, res) => {
   }
 };
 
+// Admin: Regenerate All Invoices (tạo lại tất cả invoice có local path)
+const regenerateAllInvoices = async (req, res) => {
+  try {
+    // Tìm tất cả đơn hàng có invoicePath là local path (bắt đầu bằng /invoices/)
+    const ordersWithLocalInvoice = await Order.find({
+      status: { $in: ["paid", "completed", "delivered"] },
+      invoicePath: { $regex: "^/invoices/" } // Local path
+    });
+
+    if (ordersWithLocalInvoice.length === 0) {
+      return res.status(200).json({
+        message: "Không có invoice nào cần tạo lại",
+        count: 0
+      });
+    }
+
+    const results = {
+      success: [],
+      failed: []
+    };
+
+    // Regenerate từng invoice
+    for (const order of ordersWithLocalInvoice) {
+      try {
+        const invoiceUrl = await generateInvoicePDF(order._id);
+        order.invoicePath = invoiceUrl;
+        await order.save();
+        
+        results.success.push({
+          orderId: order._id,
+          invoicePath: invoiceUrl
+        });
+      } catch (error) {
+        console.error(`Error regenerating invoice for order ${order._id}:`, error);
+        results.failed.push({
+          orderId: order._id,
+          error: error.message
+        });
+      }
+    }
+
+    res.status(200).json({
+      message: `Đã tạo lại ${results.success.length}/${ordersWithLocalInvoice.length} invoice`,
+      success: results.success.length,
+      failed: results.failed.length,
+      details: results
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      message: "Error regenerating all invoices", 
+      error: error.message 
+    });
+  }
+};
+
 module.exports = {
   createOrder,
   getMyOrders,
   getAllOrders,
   updateOrderStatus,
   getDashboardStats,
-  regenerateInvoice
+  regenerateInvoice,
+  regenerateAllInvoices
 };

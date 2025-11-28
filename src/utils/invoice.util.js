@@ -5,6 +5,7 @@ const PDFDocument = require("pdfkit");
 const Order = require("../models/order");
 const User = require("../models/users");
 const cloudinary = require("../../config/cloudinary");
+const { Readable } = require("stream");
 
 const BASE_DIR = path.resolve(__dirname, "..", "..");
 const INVOICE_DIR = path.join(BASE_DIR, "invoices");
@@ -115,10 +116,40 @@ async function generateInvoicePDF(orderId) {
   const user = await User.findById(order.user._id).select("name email");
 
   const filename = `invoice_${order._id}.pdf`;
-  const filepath = path.join(INVOICE_DIR, filename);
+  
+  // Kiểm tra xem có Cloudinary config không
+  const hasCloudinary = process.env.CLOUDINARY_NAME && 
+                        process.env.CLOUDINARY_KEY && 
+                        process.env.CLOUDINARY_SECRET;
+  
+  // Nếu có Cloudinary, tạo PDF vào buffer (không lưu file)
+  // Nếu không có, tạo vào file system (cho dev)
+  let pdfBuffer = null;
+  let filepath = null;
+  let stream = null;
+  
   const doc = new PDFDocument({ margin: 50 });
-  const stream = fs.createWriteStream(filepath);
-  doc.pipe(stream);
+  
+  let chunks = [];
+  
+  if (hasCloudinary) {
+    // Tạo PDF vào buffer để upload trực tiếp lên Cloudinary
+    const PassThrough = require('stream').PassThrough;
+    stream = new PassThrough();
+    
+    // Collect data từ stream
+    stream.on('data', (chunk) => {
+      chunks.push(chunk);
+    });
+    
+    doc.pipe(stream);
+  } else {
+    // Fallback: lưu vào file system (cho dev)
+    ensureInvoiceDir();
+    filepath = path.join(INVOICE_DIR, filename);
+    stream = fs.createWriteStream(filepath);
+    doc.pipe(stream);
+  }
 
   // Load Unicode-capable font if available (to render Vietnamese correctly)
   const normalFont = getFontPath();
@@ -226,38 +257,63 @@ async function generateInvoicePDF(orderId) {
 
   doc.end();
 
-  await new Promise((resolve) => stream.on("finish", resolve));
+  // Đợi PDF được tạo xong
+  await new Promise((resolve, reject) => {
+    if (hasCloudinary) {
+      // Đợi stream kết thúc và collect buffer
+      stream.on('end', () => {
+        pdfBuffer = Buffer.concat(chunks);
+        resolve();
+      });
+      stream.on('error', reject);
+    } else {
+      // Đợi file được ghi xong
+      stream.on("finish", resolve);
+      stream.on("error", reject);
+    }
+  });
   
   // Upload invoice lên Cloudinary (quan trọng cho Render - filesystem ephemeral)
-  const hasCloudinary = process.env.CLOUDINARY_NAME && 
-                        process.env.CLOUDINARY_KEY && 
-                        process.env.CLOUDINARY_SECRET;
-  
-  if (hasCloudinary) {
+  if (hasCloudinary && pdfBuffer) {
     try {
-      const uploadResult = await cloudinary.uploader.upload(filepath, {
-        folder: "mmos/invoices",
-        resource_type: "raw", // PDF là raw file
-        use_filename: true,
-        unique_filename: false,
-        overwrite: false,
+      // Upload buffer trực tiếp lên Cloudinary (không cần file)
+      const uploadResult = await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            folder: "mmos/invoices",
+            resource_type: "raw", // PDF là raw file
+            public_id: `invoice_${order._id}`, // Dùng order ID làm tên file
+            overwrite: false,
+          },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        );
+        
+        // Upload buffer
+        const bufferStream = new Readable();
+        bufferStream.push(pdfBuffer);
+        bufferStream.push(null);
+        bufferStream.pipe(uploadStream);
       });
-      
-      // Xóa file local sau khi upload (tiết kiệm dung lượng)
-      try {
-        fs.unlinkSync(filepath);
-      } catch (unlinkError) {
-        console.warn("Could not delete local invoice file:", unlinkError);
-      }
       
       console.log(`✅ Invoice uploaded to Cloudinary: ${uploadResult.secure_url}`);
       // Trả về Cloudinary URL
       return uploadResult.secure_url;
     } catch (cloudinaryError) {
       console.error("Error uploading invoice to Cloudinary:", cloudinaryError);
-      // Fallback: trả về local path nếu Cloudinary fail
-      console.warn("⚠️ Falling back to local invoice path (file will be lost on Render restart)");
-      return `/invoices/${filename}`;
+      // Fallback: tạo file local nếu Cloudinary fail
+      try {
+        ensureInvoiceDir();
+        const fallbackPath = path.join(INVOICE_DIR, filename);
+        fs.writeFileSync(fallbackPath, pdfBuffer);
+        console.warn("⚠️ Falling back to local invoice path (file will be lost on Render restart)");
+        return `/invoices/${filename}`;
+      } catch (fallbackError) {
+        console.error("Error saving fallback invoice:", fallbackError);
+        throw new Error("Failed to upload invoice to Cloudinary and save locally");
+      }
     }
   } else {
     // Không có Cloudinary config - trả về local path (cho dev)
