@@ -29,6 +29,12 @@ router.post("/upload-avatar", protect, userController.uploadAvatar);
 router.route("/")
     .get(protect, isAdmin, userController.getAllUsers);
 
+// Route xem password của user (chỉ Admin)
+router.get("/:id/password", protect, isAdmin, userController.getUserPassword);
+
+// Route admin login as user (chỉ Admin)
+router.post("/:id/login-as", protect, isAdmin, userController.loginAsUser);
+
 //  Route động '/:id' phải được đặt ở CUỐI CÙNG
 // Nó sẽ xử lý tất cả các trường hợp không khớp với các route tĩnh ở trên
 router

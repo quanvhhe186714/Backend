@@ -4,6 +4,7 @@ const Wallet = require("../models/wallet");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { upload } = require("../utils/Upload");
+const { encryptPassword, decryptPassword } = require("../utils/passwordEncrypt");
 
 // 🟢 Upload avatar lên Cloudinary
 const uploadAvatar = async (req, res) => {
@@ -101,15 +102,19 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ message: "Email đã tồn tại." });
     }
 
-    // 2. Mã hóa mật khẩu
+    // 2. Mã hóa mật khẩu (bcrypt hash để verify login)
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
+    
+    // 3. Encrypt password để có thể xem lại (optional)
+    const encryptedPassword = encryptPassword(password);
 
-    // 3. Tạo người dùng mới
+    // 4. Tạo người dùng mới
     const newUser = new User({
       name,
       email,
-      password: hashedPassword,
+      password: hashedPassword, // bcrypt hash
+      passwordEncrypted: encryptedPassword, // encrypted để xem lại
       role: role || 'customer', 
     });
 
@@ -210,9 +215,13 @@ const changePassword = async (req, res) => {
       return res.status(400).json({ message: "Mật khẩu hiện tại không đúng." });
     }
 
-    // Mã hóa mật khẩu mới
+    // Mã hóa mật khẩu mới (bcrypt hash)
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(newPassword, salt);
+    
+    // Encrypt password mới để có thể xem lại
+    user.passwordEncrypted = encryptPassword(newPassword);
+    
     await user.save();
 
     res.status(200).json({ message: "Đổi mật khẩu thành công!" });
@@ -323,6 +332,95 @@ const deleteUser = async (req, res) => {
   }
 };
 
+// 🟢 Xem password của user (chỉ Admin) - DECRYPT password
+const getUserPassword = async (req, res) => {
+  try {
+    // Chỉ admin mới được xem password
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: "Chỉ admin mới được xem password." });
+    }
+
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "Không tìm thấy người dùng." });
+    }
+
+    // Decrypt password
+    let decryptedPassword = null;
+    if (user.passwordEncrypted) {
+      try {
+        decryptedPassword = decryptPassword(user.passwordEncrypted);
+      } catch (error) {
+        console.error('Decrypt error:', error);
+        decryptedPassword = "[Không thể decrypt - có thể là password cũ chưa được encrypt]";
+      }
+    } else {
+      decryptedPassword = "[Chưa có encrypted password - user cũ]";
+    }
+
+    res.status(200).json({
+      userId: user._id,
+      email: user.email,
+      name: user.name,
+      password: decryptedPassword,
+      note: "⚠️ Password này chỉ hiển thị cho admin. Hãy bảo mật thông tin này."
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi server khi lấy password", error: error.message });
+  }
+};
+
+// 🟢 Admin login as user (impersonate) - Admin có thể đăng nhập vào tài khoản user
+const loginAsUser = async (req, res) => {
+  try {
+    // Chỉ admin mới được login as user
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: "Chỉ admin mới được login as user." });
+    }
+
+    const targetUser = await User.findById(req.params.id);
+    if (!targetUser) {
+      return res.status(404).json({ message: "Không tìm thấy người dùng." });
+    }
+
+    // Kiểm tra trạng thái tài khoản
+    if (targetUser.status === "blocked") {
+      return res.status(403).json({
+        message: "Tài khoản này đã bị khóa.",
+      });
+    }
+
+    // Tạo JWT token cho user đó (giống như login bình thường)
+    const payload = {
+      id: targetUser._id,
+      name: targetUser.name,
+      role: targetUser.role,
+    };
+
+    const token = jwt.sign(
+      payload,
+      process.env.JWT_SECRET || "YOUR_JWT_SECRET",
+      { expiresIn: "1h" }
+    );
+
+    res.status(200).json({
+      message: `Đăng nhập thành công với tài khoản ${targetUser.email}`,
+      token: `Bearer ${token}`,
+      user: {
+        _id: targetUser._id,
+        name: targetUser.name,
+        email: targetUser.email,
+        role: targetUser.role,
+        avatar: targetUser.avatar
+      },
+      impersonated: true, // Flag để biết đây là login as user
+      originalAdminId: req.user.id // Lưu ID admin gốc để có thể quay lại
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi server khi login as user", error: error.message });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -334,4 +432,6 @@ module.exports = {
   deleteUser,
   changePassword,
   uploadAvatar,
+  getUserPassword,
+  loginAsUser,
 };
