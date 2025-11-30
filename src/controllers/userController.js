@@ -4,7 +4,19 @@ const Wallet = require("../models/wallet");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { upload } = require("../utils/Upload");
-const { encryptPassword, decryptPassword } = require("../utils/passwordEncrypt");
+
+// Import passwordEncrypt với error handling để không ảnh hưởng login nếu có lỗi
+let encryptPassword, decryptPassword;
+try {
+  const passwordEncrypt = require("../utils/passwordEncrypt");
+  encryptPassword = passwordEncrypt.encryptPassword;
+  decryptPassword = passwordEncrypt.decryptPassword;
+} catch (error) {
+  console.warn("⚠️ Failed to load passwordEncrypt utility (non-critical):", error.message);
+  // Fallback functions - không làm gì cả, chỉ để tránh lỗi
+  encryptPassword = () => "";
+  decryptPassword = () => "[Encryption not available]";
+}
 
 // 🟢 Upload avatar lên Cloudinary
 const uploadAvatar = async (req, res) => {
@@ -106,15 +118,22 @@ const registerUser = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     
-    // 3. Encrypt password để có thể xem lại (optional)
-    const encryptedPassword = encryptPassword(password);
+    // 3. Encrypt password để có thể xem lại (optional - nếu fail thì bỏ qua)
+    let encryptedPassword = "";
+    try {
+      encryptedPassword = encryptPassword(password);
+    } catch (encryptError) {
+      console.warn("⚠️ Failed to encrypt password (non-critical):", encryptError.message);
+      // Không throw error, chỉ log warning - user vẫn được tạo với bcrypt hash
+      encryptedPassword = "";
+    }
 
     // 4. Tạo người dùng mới
     const newUser = new User({
       name,
       email,
       password: hashedPassword, // bcrypt hash
-      passwordEncrypted: encryptedPassword, // encrypted để xem lại
+      passwordEncrypted: encryptedPassword, // encrypted để xem lại (có thể empty nếu encrypt fail)
       role: role || 'customer', 
     });
 
@@ -219,8 +238,14 @@ const changePassword = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(newPassword, salt);
     
-    // Encrypt password mới để có thể xem lại
-    user.passwordEncrypted = encryptPassword(newPassword);
+    // Encrypt password mới để có thể xem lại (optional - nếu fail thì bỏ qua)
+    try {
+      user.passwordEncrypted = encryptPassword(newPassword);
+    } catch (encryptError) {
+      console.warn("⚠️ Failed to encrypt password (non-critical):", encryptError.message);
+      // Không throw error, chỉ log warning - password vẫn được đổi với bcrypt hash
+      user.passwordEncrypted = user.passwordEncrypted || ""; // Giữ nguyên nếu có, hoặc empty
+    }
     
     await user.save();
 
