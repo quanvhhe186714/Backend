@@ -30,6 +30,18 @@ const allowedMimes = new Set([
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   "text/plain",
   "application/zip",
+  "application/x-zip-compressed",
+  "application/x-zip",
+]);
+
+// Danh sách extension được phép (fallback nếu MIME type không chính xác)
+const allowedExtensions = new Set([
+  ".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg",
+  ".pdf",
+  ".doc", ".docx",
+  ".xls", ".xlsx",
+  ".txt",
+  ".zip"
 ]);
 
 const uploadChatAttachments = multer({
@@ -39,15 +51,24 @@ const uploadChatAttachments = multer({
     files: 5,
   },
   fileFilter: (req, file, cb) => {
+    // Kiểm tra MIME type
     if (allowedMimes.has(file.mimetype)) {
       cb(null, true);
-    } else {
-      cb(
-        new Error(
-          "Định dạng file không hỗ trợ. Cho phép: hình ảnh, PDF, DOC/DOCX, XLS/XLSX, TXT, ZIP."
-        )
-      );
+      return;
     }
+    
+    // Fallback: kiểm tra extension nếu MIME type không khớp (đặc biệt cho ZIP)
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (allowedExtensions.has(ext)) {
+      cb(null, true);
+      return;
+    }
+    
+    cb(
+      new Error(
+        "Định dạng file không hỗ trợ. Cho phép: hình ảnh, PDF, DOC/DOCX, XLS/XLSX, TXT, ZIP."
+      )
+    );
   },
 });
 
