@@ -296,13 +296,28 @@ const updateMyProfile = async (req, res) => {
 
 // === CHỨC NĂNG CỦA ADMIN ===
 
-// 🟢 Lấy tất cả người dùng (chỉ Admin)
+// 🟢 Lấy tất cả người dùng (chỉ Admin) - bao gồm wallet balance
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.find({})
       .select("-password")
       .select("name email role status avatar");
-    res.status(200).json(users);
+    
+    // Lấy wallet balance cho mỗi user
+    const usersWithBalance = await Promise.all(
+      users.map(async (user) => {
+        let wallet = await Wallet.findOne({ user: user._id });
+        if (!wallet) {
+          wallet = await Wallet.create({ user: user._id, balance: 0 });
+        }
+        return {
+          ...user.toObject(),
+          balance: wallet.balance
+        };
+      })
+    );
+
+    res.status(200).json(usersWithBalance);
   } catch (error) {
     res
       .status(500)
@@ -446,6 +461,341 @@ const loginAsUser = async (req, res) => {
   }
 };
 
+// 🟢 Admin: Lấy số dư ví của user (chỉ Admin)
+const getUserWalletBalance = async (req, res) => {
+  try {
+    // Chỉ admin mới được xem balance
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: "Chỉ admin mới được xem số dư ví." });
+    }
+
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "Không tìm thấy người dùng." });
+    }
+
+    // Tìm hoặc tạo wallet cho user
+    let wallet = await Wallet.findOne({ user: user._id });
+    if (!wallet) {
+      wallet = await Wallet.create({ user: user._id, balance: 0 });
+    }
+
+    res.status(200).json({
+      userId: user._id,
+      email: user.email,
+      name: user.name,
+      balance: wallet.balance,
+      currency: wallet.currency || "VND"
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi server khi lấy số dư ví", error: error.message });
+  }
+};
+
+// 🟢 Admin: Cập nhật số dư ví của user (chỉ Admin) - có thể cộng hoặc trừ
+const updateUserWalletBalance = async (req, res) => {
+  try {
+    // Chỉ admin mới được cập nhật balance
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: "Chỉ admin mới được cập nhật số dư ví." });
+    }
+
+    const { amount, operation } = req.body; // operation: 'add' hoặc 'subtract'
+    const userId = req.params.id;
+
+    if (!amount || isNaN(amount)) {
+      return res.status(400).json({ message: "Số tiền không hợp lệ." });
+    }
+
+    if (!['add', 'subtract'].includes(operation)) {
+      return res.status(400).json({ message: "Operation phải là 'add' hoặc 'subtract'." });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Không tìm thấy người dùng." });
+    }
+
+    // Tìm hoặc tạo wallet cho user
+    let wallet = await Wallet.findOne({ user: userId });
+    if (!wallet) {
+      wallet = await Wallet.create({ user: userId, balance: 0 });
+    }
+
+    const amountNum = parseFloat(amount);
+    const oldBalance = wallet.balance;
+
+    if (operation === 'add') {
+      wallet.balance += amountNum;
+    } else if (operation === 'subtract') {
+      if (wallet.balance < amountNum) {
+        return res.status(400).json({ 
+          message: `Số dư hiện tại (${oldBalance}) không đủ để trừ ${amountNum}.` 
+        });
+      }
+      wallet.balance -= amountNum;
+    }
+
+    await wallet.save();
+
+    res.status(200).json({
+      message: `Đã ${operation === 'add' ? 'cộng' : 'trừ'} ${amountNum} vào ví của ${user.email}`,
+      userId: user._id,
+      email: user.email,
+      name: user.name,
+      oldBalance,
+      newBalance: wallet.balance,
+      operation,
+      amount: amountNum
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi server khi cập nhật số dư ví", error: error.message });
+  }
+};
+
+// 🟢 Admin: Xóa lịch sử mua hàng của user (chỉ Admin) - Hard delete (giữ lại để tương thích)
+const deleteUserOrderHistory = async (req, res) => {
+  try {
+    // Chỉ admin mới được xóa lịch sử mua hàng
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: "Chỉ admin mới được xóa lịch sử mua hàng." });
+    }
+
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "Không tìm thấy người dùng." });
+    }
+
+    const Order = require("../models/order");
+    const result = await Order.deleteMany({ user: user._id });
+
+    res.status(200).json({
+      message: `Đã xóa ${result.deletedCount} đơn hàng của ${user.email}`,
+      userId: user._id,
+      email: user.email,
+      name: user.name,
+      deletedCount: result.deletedCount
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi server khi xóa lịch sử mua hàng", error: error.message });
+  }
+};
+
+// 🟢 Admin: Lấy đơn hàng của user (chỉ Admin) - có thể filter theo status
+const getUserOrders = async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: "Chỉ admin mới được xem đơn hàng của user." });
+    }
+
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "Không tìm thấy người dùng." });
+    }
+
+    const Order = require("../models/order");
+    const { status, includeDeleted } = req.query;
+    
+    let query = { user: user._id };
+    
+    // Filter theo status nếu có
+    if (status) {
+      query.status = status;
+    }
+    
+    // Bao gồm đơn hàng đã xóa nếu includeDeleted=true
+    // Sử dụng $ne: true để match cả document cũ không có trường isDeleted
+    if (includeDeleted !== 'true') {
+      query.isDeleted = { $ne: true };
+    }
+
+    const orders = await Order.find(query)
+      .populate('user', 'name email')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      userId: user._id,
+      email: user.email,
+      name: user.name,
+      orders
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi server khi lấy đơn hàng", error: error.message });
+  }
+};
+
+// 🟢 Admin: Lấy lịch sử thanh toán (transactions) của user (chỉ Admin)
+const getUserTransactions = async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: "Chỉ admin mới được xem lịch sử thanh toán của user." });
+    }
+
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "Không tìm thấy người dùng." });
+    }
+
+    const Transaction = require("../models/transaction");
+    const { status, includeDeleted } = req.query;
+    
+    let query = { user: user._id };
+    
+    // Filter theo status nếu có
+    if (status) {
+      query.status = status;
+    }
+    
+    // Bao gồm transaction đã xóa nếu includeDeleted=true
+    // Sử dụng $ne: true để match cả document cũ không có trường isDeleted
+    if (includeDeleted !== 'true') {
+      query.isDeleted = { $ne: true };
+    }
+
+    const transactions = await Transaction.find(query)
+      .populate('user', 'name email')
+      .populate('confirmedBy', 'name email')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      userId: user._id,
+      email: user.email,
+      name: user.name,
+      transactions
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi server khi lấy lịch sử thanh toán", error: error.message });
+  }
+};
+
+// 🟢 Admin: Xóa mềm đơn hàng (chỉ Admin)
+const softDeleteOrder = async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: "Chỉ admin mới được xóa đơn hàng." });
+    }
+
+    const Order = require("../models/order");
+    const order = await Order.findById(req.params.id); // Sửa từ orderId thành id
+    
+    if (!order) {
+      return res.status(404).json({ message: "Không tìm thấy đơn hàng." });
+    }
+
+    if (order.isDeleted) {
+      return res.status(400).json({ message: "Đơn hàng đã bị xóa trước đó." });
+    }
+
+    order.isDeleted = true;
+    order.deletedAt = new Date();
+    order.deletedBy = req.user._id;
+    await order.save();
+
+    res.status(200).json({
+      message: "Đã xóa đơn hàng thành công",
+      order
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi server khi xóa đơn hàng", error: error.message });
+  }
+};
+
+// 🟢 Admin: Khôi phục đơn hàng (chỉ Admin)
+const restoreOrder = async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: "Chỉ admin mới được khôi phục đơn hàng." });
+    }
+
+    const Order = require("../models/order");
+    const order = await Order.findById(req.params.id); // Sửa từ orderId thành id
+    
+    if (!order) {
+      return res.status(404).json({ message: "Không tìm thấy đơn hàng." });
+    }
+
+    if (!order.isDeleted) {
+      return res.status(400).json({ message: "Đơn hàng chưa bị xóa." });
+    }
+
+    order.isDeleted = false;
+    order.deletedAt = null;
+    order.deletedBy = null;
+    await order.save();
+
+    res.status(200).json({
+      message: "Đã khôi phục đơn hàng thành công",
+      order
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi server khi khôi phục đơn hàng", error: error.message });
+  }
+};
+
+// 🟢 Admin: Xóa mềm transaction (chỉ Admin)
+const softDeleteTransaction = async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: "Chỉ admin mới được xóa giao dịch." });
+    }
+
+    const Transaction = require("../models/transaction");
+    const transaction = await Transaction.findById(req.params.id); // Sửa từ transactionId thành id
+    
+    if (!transaction) {
+      return res.status(404).json({ message: "Không tìm thấy giao dịch." });
+    }
+
+    if (transaction.isDeleted) {
+      return res.status(400).json({ message: "Giao dịch đã bị xóa trước đó." });
+    }
+
+    transaction.isDeleted = true;
+    transaction.deletedAt = new Date();
+    transaction.deletedBy = req.user._id;
+    await transaction.save();
+
+    res.status(200).json({
+      message: "Đã xóa giao dịch thành công",
+      transaction
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi server khi xóa giao dịch", error: error.message });
+  }
+};
+
+// 🟢 Admin: Khôi phục transaction (chỉ Admin)
+const restoreTransaction = async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: "Chỉ admin mới được khôi phục giao dịch." });
+    }
+
+    const Transaction = require("../models/transaction");
+    const transaction = await Transaction.findById(req.params.id); // Sửa từ transactionId thành id
+    
+    if (!transaction) {
+      return res.status(404).json({ message: "Không tìm thấy giao dịch." });
+    }
+
+    if (!transaction.isDeleted) {
+      return res.status(400).json({ message: "Giao dịch chưa bị xóa." });
+    }
+
+    transaction.isDeleted = false;
+    transaction.deletedAt = null;
+    transaction.deletedBy = null;
+    await transaction.save();
+
+    res.status(200).json({
+      message: "Đã khôi phục giao dịch thành công",
+      transaction
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi server khi khôi phục giao dịch", error: error.message });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -459,4 +809,13 @@ module.exports = {
   uploadAvatar,
   getUserPassword,
   loginAsUser,
+  getUserWalletBalance,
+  updateUserWalletBalance,
+  deleteUserOrderHistory,
+  getUserOrders,
+  getUserTransactions,
+  softDeleteOrder,
+  restoreOrder,
+  softDeleteTransaction,
+  restoreTransaction,
 };

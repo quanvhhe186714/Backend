@@ -35,7 +35,10 @@ const OrderSchema = new mongoose.Schema(
     paymentMethod: { type: String, default: "bank_transfer" },
     paymentDetails: { type: Object }, // Store transaction ID etc.
     walletCharged: { type: Boolean, default: false },
-    invoicePath: { type: String } // Relative path to generated invoice file
+    invoicePath: { type: String }, // Relative path to generated invoice file
+    isDeleted: { type: Boolean, default: false }, // Soft delete flag
+    deletedAt: { type: Date }, // When was it deleted
+    deletedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" } // Who deleted it
   },
   { timestamps: true }
 );

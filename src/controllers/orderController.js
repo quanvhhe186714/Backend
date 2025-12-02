@@ -131,7 +131,8 @@ const createOrder = async (req, res) => {
 // Customer: Get My Orders
 const getMyOrders = async (req, res) => {
   try {
-    const orders = await Order.find({ user: req.user.id }).sort({ createdAt: -1 });
+    // Chỉ lấy đơn hàng chưa bị xóa (sử dụng $ne: true để match cả document cũ không có trường isDeleted)
+    const orders = await Order.find({ user: req.user.id, isDeleted: { $ne: true } }).sort({ createdAt: -1 });
     res.status(200).json(orders);
   } catch (error) {
     res.status(500).json({ message: "Error fetching orders", error: error.message });
@@ -141,7 +142,9 @@ const getMyOrders = async (req, res) => {
 // Admin: Get All Orders
 const getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find().populate("user", "name email").sort({ createdAt: -1 });
+    // Mặc định chỉ lấy đơn hàng chưa bị xóa
+    const query = { isDeleted: { $ne: true } };
+    const orders = await Order.find(query).populate("user", "name email").sort({ createdAt: -1 });
     res.status(200).json(orders);
   } catch (error) {
     res.status(500).json({ message: "Error fetching all orders", error: error.message });

@@ -46,6 +46,9 @@ const TransactionSchema = new mongoose.Schema(
     confirmedAt: {
       type: Date,
     },
+    isDeleted: { type: Boolean, default: false }, // Soft delete flag
+    deletedAt: { type: Date }, // When was it deleted
+    deletedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" } // Who deleted it
   },
   { timestamps: true }
 );

@@ -101,7 +101,8 @@ const initiateTopup = async (req, res) => {
 
 const getUserTransactions = async (req, res) => {
   try {
-    const transactions = await Transaction.find({ user: req.user._id }).sort({
+    // Chỉ lấy transaction chưa bị xóa
+    const transactions = await Transaction.find({ user: req.user._id, isDeleted: { $ne: true } }).sort({
       createdAt: -1,
     });
     res.status(200).json(transactions);
@@ -115,7 +116,8 @@ const getUserTransactions = async (req, res) => {
 
 const getAllTransactions = async (_req, res) => {
   try {
-    const transactions = await Transaction.find({})
+    // Mặc định chỉ lấy transaction chưa bị xóa
+    const transactions = await Transaction.find({ isDeleted: { $ne: true } })
       .populate("user", "name email")
       .populate("confirmedBy", "name email")
       .sort({ createdAt: -1 });
