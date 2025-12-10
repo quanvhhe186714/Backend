@@ -51,7 +51,9 @@ const MessageSchema = new mongoose.Schema(
       ref: "Order",
       default: null, // Optional: link message to a specific order
       index: true
-    }
+    },
+    createdAt: { type: Date, immutable: false },
+    updatedAt: { type: Date }
   },
   { timestamps: true }
 );

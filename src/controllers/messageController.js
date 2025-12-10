@@ -454,6 +454,57 @@ const deleteMessage = async (req, res) => {
   }
 };
 
+// Admin: update message timestamp (affects attachment "sentAt" display)
+const updateMessageTimestamp = async (req, res) => {
+  try {
+    const { messageId } = req.params;
+    const { sentAt } = req.body;
+
+    if (!sentAt) {
+      return res.status(400).json({ message: "Thiếu thời gian gửi" });
+    }
+
+    const parsedDate = new Date(sentAt);
+    if (isNaN(parsedDate.getTime())) {
+      return res.status(400).json({ message: "Thời gian không hợp lệ" });
+    }
+
+    const message = await Message.findById(messageId);
+    if (!message) {
+      return res.status(404).json({ message: "Tin nhắn không tồn tại" });
+    }
+
+    // Only allow updating admin messages (files from seller/admin)
+    if (!message.isFromAdmin) {
+      return res.status(403).json({ message: "Chỉ chỉnh được tin nhắn từ admin" });
+    }
+
+    const updated = await Message.findOneAndUpdate(
+      { _id: messageId, isFromAdmin: true },
+      {
+        $set: {
+          createdAt: parsedDate,
+          updatedAt: parsedDate
+        }
+      },
+      {
+        new: true,
+        timestamps: false,
+        strict: false
+      }
+    ).lean();
+
+    if (!updated) {
+      return res.status(404).json({ message: "Không tìm thấy tin nhắn admin để cập nhật" });
+    }
+
+    res.status(200).json(updated);
+  } catch (error) {
+    console.error("Error updating message timestamp:", error);
+    res.status(500).json({ message: "Lỗi khi cập nhật thời gian", error: error.message });
+  }
+};
+
 module.exports = {
   sendMessage,
   getMyMessages,
@@ -461,6 +512,7 @@ module.exports = {
   getConversationMessages,
   getUnreadCount,
   getMessagesByOrderId,
-  deleteMessage
+  deleteMessage,
+  updateMessageTimestamp
 };
 

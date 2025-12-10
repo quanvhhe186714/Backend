@@ -8,7 +8,8 @@ const {
   getConversationMessages,
   getUnreadCount,
   getMessagesByOrderId,
-  deleteMessage
+  deleteMessage,
+  updateMessageTimestamp
 } = require("../controllers/messageController");
 const { uploadChatAttachments, uploadToCloudinary } = require("../utils/chatUpload");
 
@@ -34,6 +35,8 @@ router.get("/conversations/:conversationId", protect, isAdmin, getConversationMe
 router.get("/order/:orderId", protect, getMessagesByOrderId);
 // Route xóa tin nhắn - dùng pattern giống các route khác
 router.delete("/:messageId", protect, isAdmin, deleteMessage);
+// Admin: update message/file sent time
+router.put("/:messageId/timestamp", protect, isAdmin, updateMessageTimestamp);
 
 module.exports = router;
 
