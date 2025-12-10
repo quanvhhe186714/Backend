@@ -280,6 +280,43 @@ const regenerateInvoice = async (req, res) => {
   }
 };
 
+// Admin: Update order purchase time
+const updateOrderTimestamp = async (req, res) => {
+  try {
+    const { purchasedAt } = req.body;
+
+    if (!purchasedAt) {
+      return res.status(400).json({ message: "Thiếu thời gian đơn hàng" });
+    }
+
+    const parsedDate = new Date(purchasedAt);
+    if (isNaN(parsedDate.getTime())) {
+      return res.status(400).json({ message: "Thời gian không hợp lệ" });
+    }
+
+    const order = await Order.findById(req.params.id);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    // Update createdAt/updatedAt without auto timestamps
+    const updatedOrder = await Order.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: {
+          createdAt: parsedDate,
+          updatedAt: parsedDate
+        }
+      },
+      { new: true, timestamps: false }
+    ).populate("user", "name email");
+
+    res.status(200).json(updatedOrder);
+  } catch (error) {
+    res.status(500).json({ message: "Error updating order time", error: error.message });
+  }
+};
+
 // Admin: Regenerate All Invoices (tạo lại tất cả invoice có local path)
 const regenerateAllInvoices = async (req, res) => {
   try {
@@ -342,5 +379,6 @@ module.exports = {
   updateOrderStatus,
   getDashboardStats,
   regenerateInvoice,
-  regenerateAllInvoices
+  regenerateAllInvoices,
+  updateOrderTimestamp
 };

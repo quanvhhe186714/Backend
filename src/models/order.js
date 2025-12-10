@@ -38,7 +38,9 @@ const OrderSchema = new mongoose.Schema(
     invoicePath: { type: String }, // Relative path to generated invoice file
     isDeleted: { type: Boolean, default: false }, // Soft delete flag
     deletedAt: { type: Date }, // When was it deleted
-    deletedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" } // Who deleted it
+    deletedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Who deleted it
+    createdAt: { type: Date, immutable: false },
+    updatedAt: { type: Date }
   },
   { timestamps: true }
 );

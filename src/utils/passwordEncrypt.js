@@ -27,7 +27,6 @@ function encryptPassword(password) {
     throw new Error('Failed to encrypt password');
   }
 }
-
 /**
  * Decrypt password
  */
