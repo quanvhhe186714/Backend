@@ -21,7 +21,7 @@ const allowedOrigins = [
   "http://localhost:3001",
   "http://127.0.0.1:3000",
   "http://127.0.0.1:3001",
-  "https://shopnambs-4bru.onrender.com",
+  "https://backend-cy6b.onrender.com",
   "https://frontend-ten-snowy-70.vercel.app",
   "https://shopnambs.id.vn"
 ];
