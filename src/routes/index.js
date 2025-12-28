@@ -7,6 +7,7 @@ const paymentRouter = require("./payments");
 const messageRouter = require("./messages");
 const walletRouter = require("./wallet");
 const fileRouter = require("./files");
+const customQRRouter = require("./customQR");
 const facebookServiceRouter = require("../services/facebook/routes/facebookServices");
 
 const router = express.Router();
@@ -18,6 +19,7 @@ router.use("/payments", paymentRouter);
 router.use("/messages", messageRouter);
 router.use("/wallet", walletRouter);
 router.use("/files", fileRouter);
+router.use("/custom-qr", customQRRouter);
 router.use("/facebook-services", facebookServiceRouter);
 
 module.exports = router;

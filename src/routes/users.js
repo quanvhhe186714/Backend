@@ -50,6 +50,12 @@ router.get("/:id/orders", protect, isAdmin, userController.getUserOrders);
 // Route lấy lịch sử thanh toán của user (chỉ Admin)
 router.get("/:id/transactions", protect, isAdmin, userController.getUserTransactions);
 
+// Route promote user lên admin (chỉ Admin)
+router.post("/:id/promote", protect, isAdmin, userController.promoteUser);
+
+// Route demote admin về customer (chỉ Admin)
+router.post("/:id/demote", protect, isAdmin, userController.demoteUser);
+
 //  Route động '/:id' phải được đặt ở CUỐI CÙNG
 // Nó sẽ xử lý tất cả các trường hợp không khớp với các route tĩnh ở trên
 router

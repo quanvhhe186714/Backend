@@ -6,12 +6,16 @@ const {
   createService,
   updateService,
   deleteService,
-  calculatePrice
+  calculatePrice,
+  getPriceTable,
+  getServiceStatus
 } = require("../controllers/facebookServiceController");
 const { protect, admin } = require("../middleware/authMiddleware");
 
 // Public routes
 router.get("/", getAllServices);
+router.get("/:id/price-table", getPriceTable);
+router.get("/:id/status", getServiceStatus);
 router.get("/:id", getServiceById);
 router.post("/calculate", calculatePrice);
 

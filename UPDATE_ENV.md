@@ -23,20 +23,12 @@ CAKE_BANK_ACCOUNT_NAME=NGO VAN NAM
 
 ```env
 # ============================================
-# Payment Configuration - VietinBank
+# Payment Configuration - MB Bank
 # ============================================
-VIETINBANK_BIN=970415
-VIETINBANK_ACCOUNT=107876717017
-VIETINBANK_ACCOUNT_NAME=VU HONG QUAN
-VIETINBANK_PHONE=
-
-# ============================================
-# Payment Configuration - MoMo
-# ============================================
-MOMO_BIN=970422
-MOMO_ACCOUNT=0392728529
-MOMO_ACCOUNT_NAME=VŨ HỒNG QUÂN
-MOMO_PHONE=0392728529
+MB_BANK_BIN=970422
+MB_BANK_ACCOUNT=39397939686879
+MB_BANK_ACCOUNT_NAME=NGUYEN THANH NHAN
+MB_BANK_PHONE=
 ```
 
 ## 📝 File .env hoàn chỉnh mẫu:
@@ -47,20 +39,12 @@ MONGO_URI=mongodb+srv://quan2004:quan2004@nambs.afmynnz.mongodb.net/?appName=Nam
 JWT_SECRET=your_secret_key
 
 # ============================================
-# Payment Configuration - VietinBank
+# Payment Configuration - MB Bank
 # ============================================
-VIETINBANK_BIN=970415
-VIETINBANK_ACCOUNT=107876717017
-VIETINBANK_ACCOUNT_NAME=VU HONG QUAN
-VIETINBANK_PHONE=
-
-# ============================================
-# Payment Configuration - MoMo
-# ============================================
-MOMO_BIN=970422
-MOMO_ACCOUNT=0392728529
-MOMO_ACCOUNT_NAME=VŨ HỒNG QUÂN
-MOMO_PHONE=0392728529
+MB_BANK_BIN=970422
+MB_BANK_ACCOUNT=39397939686879
+MB_BANK_ACCOUNT_NAME=NGUYEN THANH NHAN
+MB_BANK_PHONE=
 
 # ============================================
 # Cloudinary Configuration (nếu có)
@@ -73,6 +57,7 @@ CLOUDINARY_SECRET=your_cloudinary_api_secret
 ## ⚠️ Lưu ý:
 
 1. Sau khi cập nhật, **khởi động lại server** để áp dụng thay đổi
-2. Code đã được cập nhật để sử dụng VietinBank và MoMo thay vì MB Bank và CAKE Bank
+2. Code đã được cập nhật để chỉ sử dụng MB Bank (NGUYEN THANH NHAN)
 3. Nếu deploy lên Render, cập nhật các biến môi trường trong Render dashboard
+4. Để sử dụng MB Bank, gọi API với `bank=mb` hoặc `bank=mbbank` hoặc `bank=mb bank` (mặc định là `mb`)
 

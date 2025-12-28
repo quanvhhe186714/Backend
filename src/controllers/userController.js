@@ -796,6 +796,84 @@ const restoreTransaction = async (req, res) => {
   }
 };
 
+// 🟢 Admin: Promote user lên admin (chỉ Admin)
+const promoteUser = async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: "Chỉ admin mới được promote user." });
+    }
+
+    const targetUser = await User.findById(req.params.id);
+    if (!targetUser) {
+      return res.status(404).json({ message: "Không tìm thấy người dùng." });
+    }
+
+    // Không cho phép promote chính mình
+    if (targetUser._id.toString() === req.user._id.toString()) {
+      return res.status(400).json({ message: "Bạn không thể promote chính mình." });
+    }
+
+    // Kiểm tra user đã là admin chưa
+    if (targetUser.role === 'admin') {
+      return res.status(400).json({ message: "Người dùng này đã là admin." });
+    }
+
+    targetUser.role = 'admin';
+    await targetUser.save();
+
+    res.status(200).json({
+      message: `Đã promote ${targetUser.email} lên admin thành công`,
+      user: {
+        _id: targetUser._id,
+        name: targetUser.name,
+        email: targetUser.email,
+        role: targetUser.role
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi server khi promote user", error: error.message });
+  }
+};
+
+// 🟢 Admin: Demote admin về customer (chỉ Admin)
+const demoteUser = async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: "Chỉ admin mới được demote user." });
+    }
+
+    const targetUser = await User.findById(req.params.id);
+    if (!targetUser) {
+      return res.status(404).json({ message: "Không tìm thấy người dùng." });
+    }
+
+    // Không cho phép demote chính mình
+    if (targetUser._id.toString() === req.user._id.toString()) {
+      return res.status(400).json({ message: "Bạn không thể demote chính mình." });
+    }
+
+    // Kiểm tra user đã là customer chưa
+    if (targetUser.role === 'customer') {
+      return res.status(400).json({ message: "Người dùng này đã là customer." });
+    }
+
+    targetUser.role = 'customer';
+    await targetUser.save();
+
+    res.status(200).json({
+      message: `Đã demote ${targetUser.email} về customer thành công`,
+      user: {
+        _id: targetUser._id,
+        name: targetUser.name,
+        email: targetUser.email,
+        role: targetUser.role
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi server khi demote user", error: error.message });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -818,4 +896,6 @@ module.exports = {
   restoreOrder,
   softDeleteTransaction,
   restoreTransaction,
+  promoteUser,
+  demoteUser,
 };

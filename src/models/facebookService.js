@@ -94,6 +94,35 @@ const FacebookServiceSchema = new mongoose.Schema(
     displayOrder: {
       type: Number,
       default: 0
+    },
+    // Trạng thái dịch vụ
+    status: {
+      type: String,
+      enum: ["stable", "dropping", "slow", "maintenance"],
+      default: "stable"
+    },
+    // Tỉ lệ tuột (%)
+    dropRate: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 100
+    },
+    // Bảng giá mẫu với các mức số lượng
+    priceTable: [{
+      quantity: {
+        type: Number,
+        required: true
+      },
+      price: {
+        type: Number,
+        required: true
+      }
+    }],
+    // Số ngày bảo hành
+    warrantyDays: {
+      type: Number,
+      default: 30
     }
   },
   { timestamps: true }

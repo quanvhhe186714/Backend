@@ -372,6 +372,58 @@ const regenerateAllInvoices = async (req, res) => {
   }
 };
 
+// 🟢 Download invoice gốc (PDF)
+const downloadInvoice = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id)
+      .populate('user', 'name email');
+
+    if (!order) {
+      return res.status(404).json({ message: "Không tìm thấy đơn hàng" });
+    }
+
+    // Kiểm tra quyền: user chỉ có thể download invoice của chính mình, admin có thể download tất cả
+    if (req.user.role !== 'admin' && order.user._id.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Bạn không có quyền download invoice này" });
+    }
+
+    if (!order.invoicePath) {
+      return res.status(404).json({ message: "Invoice chưa được tạo cho đơn hàng này" });
+    }
+
+    // Nếu invoicePath là Cloudinary URL, redirect hoặc trả về URL
+    if (order.invoicePath.startsWith('http://') || order.invoicePath.startsWith('https://')) {
+      return res.status(200).json({
+        message: "Invoice URL",
+        invoiceUrl: order.invoicePath,
+        downloadUrl: order.invoicePath
+      });
+    }
+
+    // Nếu là local file, đọc và trả về file
+    const fs = require("fs");
+    const path = require("path");
+    const invoicePath = path.join(__dirname, "..", "..", order.invoicePath);
+
+    if (!fs.existsSync(invoicePath)) {
+      return res.status(404).json({ message: "File invoice không tồn tại trên server" });
+    }
+
+    // Set headers để download file
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="invoice_${order._id}.pdf"`);
+    
+    // Đọc và stream file
+    const fileStream = fs.createReadStream(invoicePath);
+    fileStream.pipe(res);
+  } catch (error) {
+    res.status(500).json({ 
+      message: "Lỗi server khi download invoice", 
+      error: error.message 
+    });
+  }
+};
+
 module.exports = {
   createOrder,
   getMyOrders,
@@ -380,5 +432,6 @@ module.exports = {
   getDashboardStats,
   regenerateInvoice,
   regenerateAllInvoices,
-  updateOrderTimestamp
+  updateOrderTimestamp,
+  downloadInvoice
 };

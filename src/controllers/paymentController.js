@@ -7,33 +7,27 @@ const buildVietQrImageUrl = ({ bin, accountNo, accountName, amount, content }) =
   return `${base}?${params.toString()}`;
 };
 
-// GET /payments/qr?amount=100000&content=MMOS-ORDER123&bank=vietinbank (optional: vietinbank, momo)
+// GET /payments/qr?amount=100000&content=MMOS-ORDER123&bank=mb (optional: mb, mbbank, mb bank)
 const getVietQr = async (req, res) => {
   try {
-    const { amount, content, bank = "vietinbank" } = req.query;
+    const { amount, content, bank = "mb" } = req.query;
     
     // Cấu hình ngân hàng
     let bin, accountNo, accountName, phone;
     const bankLower = bank.toLowerCase();
     
-    if (bankLower === "momo") {
-      // MoMo
-      bin = process.env.MOMO_BIN || "970422"; // MoMo BIN code
-      accountNo = process.env.MOMO_ACCOUNT || "0392728529";
-      accountName = process.env.MOMO_ACCOUNT_NAME || "VŨ HỒNG QUÂN";
-      phone = process.env.MOMO_PHONE || "0392728529";
-    } else if (bankLower === "vietinbank" || bankLower === "viettinbank") {
-      // VietinBank
-      bin = process.env.VIETINBANK_BIN || "970415"; // VietinBank BIN code
-      accountNo = process.env.VIETINBANK_ACCOUNT || "107876717017";
-      accountName = process.env.VIETINBANK_ACCOUNT_NAME || "VU HONG QUAN";
-      phone = process.env.VIETINBANK_PHONE || "";
+    if (bankLower === "mb" || bankLower === "mbbank" || bankLower === "mb bank") {
+      // MB Bank
+      bin = process.env.MB_BANK_BIN || "970422"; // MB Bank BIN code
+      accountNo = process.env.MB_BANK_ACCOUNT || "39397939686879";
+      accountName = process.env.MB_BANK_ACCOUNT_NAME || "NGUYEN THANH NHAN";
+      phone = process.env.MB_BANK_PHONE || "";
     } else {
-      // Fallback về VietinBank nếu không khớp
-      bin = process.env.VIETINBANK_BIN || "970415";
-      accountNo = process.env.VIETINBANK_ACCOUNT || "107876717017";
-      accountName = process.env.VIETINBANK_ACCOUNT_NAME || "VU HONG QUAN";
-      phone = process.env.VIETINBANK_PHONE || "";
+      // Fallback về MB Bank nếu không khớp
+      bin = process.env.MB_BANK_BIN || "970422";
+      accountNo = process.env.MB_BANK_ACCOUNT || "39397939686879";
+      accountName = process.env.MB_BANK_ACCOUNT_NAME || "NGUYEN THANH NHAN";
+      phone = process.env.MB_BANK_PHONE || "";
     }
 
     if (!accountNo) {
