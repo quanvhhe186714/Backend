@@ -1,6 +1,12 @@
 const multer = require("multer");
 const cloudinary = require("../../config/cloudinary");
 
+// Validate cloudinary trước khi sử dụng
+if (!cloudinary || !cloudinary.uploader) {
+  console.error("❌ Cloudinary is not properly configured!");
+  throw new Error("Cloudinary configuration is missing or invalid. Please check your environment variables.");
+}
+
 // Import CloudinaryStorage - thử cách import trực tiếp
 // Với multer-storage-cloudinary v2.x, có thể cần dùng cách này:
 let CloudinaryStorage;
@@ -24,14 +30,21 @@ try {
 }
 
 // ⚙️ Cấu hình storage upload thẳng lên Cloudinary
-const storage = new CloudinaryStorage({
-  cloudinary,
-  params: {
-    folder: "mmos/custom-qr", // 📁 tên thư mục trên Cloudinary cho QR codes
-    allowed_formats: ["jpg", "jpeg", "png", "gif", "webp"],
-    transformation: [{ width: 500, height: 500, crop: "limit" }], // Resize ảnh
-  },
-});
+let storage;
+try {
+  storage = new CloudinaryStorage({
+    cloudinary,
+    params: {
+      folder: "mmos/custom-qr", // 📁 tên thư mục trên Cloudinary cho QR codes
+      allowed_formats: ["jpg", "jpeg", "png", "gif", "webp"],
+      transformation: [{ width: 500, height: 500, crop: "limit" }], // Resize ảnh
+    },
+  });
+  console.log("✅ CloudinaryStorage initialized successfully");
+} catch (error) {
+  console.error("❌ Error initializing CloudinaryStorage:", error);
+  throw new Error(`Failed to initialize CloudinaryStorage: ${error.message}`);
+}
 
 const upload = multer({
   storage,
