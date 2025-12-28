@@ -454,6 +454,160 @@ const deleteMessage = async (req, res) => {
   }
 };
 
+// Admin: Create fake message
+const createFakeMessage = async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: "Chỉ admin mới được tạo tin nhắn ảo" });
+    }
+
+    const { content, senderName, senderAvatar, conversationId, orderId, createdAt } = req.body;
+
+    if (!content || !conversationId) {
+      return res.status(400).json({ message: "Nội dung và conversationId là bắt buộc" });
+    }
+
+    // Validate conversationId format
+    if (!conversationId.startsWith('admin_')) {
+      return res.status(400).json({ message: "conversationId phải bắt đầu bằng 'admin_'" });
+    }
+
+    // Extract userId from conversationId (format: admin_<userId>)
+    const userId = conversationId.replace('admin_', '');
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "conversationId không hợp lệ" });
+    }
+
+    // Check if user exists
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Người dùng không tồn tại" });
+    }
+
+    // Validate orderId if provided
+    if (orderId) {
+      if (!mongoose.Types.ObjectId.isValid(orderId)) {
+        return res.status(400).json({ message: "ID đơn hàng không hợp lệ" });
+      }
+      const order = await Order.findById(orderId);
+      if (!order) {
+        return res.status(404).json({ message: "Đơn hàng không tồn tại" });
+      }
+    }
+
+    // Create a fake user for the sender if senderName is provided
+    let fakeSenderId = userId; // Default to the conversation user
+    if (senderName) {
+      // Try to find or create a fake user with the given name
+      let fakeUser = await User.findOne({ name: senderName, role: { $ne: 'admin' } });
+      if (!fakeUser) {
+        // Create a temporary fake user (you might want to mark these differently)
+        fakeUser = new User({
+          name: senderName,
+          email: `fake_${Date.now()}@fake.com`,
+          password: 'fake', // Won't be used
+          role: 'customer',
+          avatar: senderAvatar || null
+        });
+        await fakeUser.save();
+      }
+      fakeSenderId = fakeUser._id;
+    }
+
+    const message = new Message({
+      sender: fakeSenderId,
+      receiver: null,
+      content: content.trim(),
+      isFromAdmin: false, // Fake messages appear as from customer
+      isFake: true,
+      conversationId,
+      orderId: orderId || null,
+      createdAt: createdAt ? new Date(createdAt) : new Date(),
+      updatedAt: createdAt ? new Date(createdAt) : new Date()
+    });
+
+    await message.save();
+    await message.populate("sender", "name email avatar role");
+
+    res.status(201).json({
+      message: "Tạo tin nhắn ảo thành công",
+      fakeMessage: message
+    });
+  } catch (error) {
+    console.error("Error creating fake message:", error);
+    res.status(500).json({ 
+      message: "Lỗi server khi tạo tin nhắn ảo", 
+      error: error.message 
+    });
+  }
+};
+
+// Admin: Get all fake messages
+const getAllFakeMessages = async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: "Chỉ admin mới được xem tin nhắn ảo" });
+    }
+
+    const { conversationId, orderId } = req.query;
+    let query = { isFake: true };
+
+    if (conversationId) {
+      query.conversationId = conversationId;
+    }
+
+    if (orderId) {
+      query.orderId = orderId;
+    }
+
+    const fakeMessages = await Message.find(query)
+      .populate("sender", "name email avatar role")
+      .populate("receiver", "name email avatar")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(fakeMessages);
+  } catch (error) {
+    console.error("Error getting fake messages:", error);
+    res.status(500).json({ 
+      message: "Lỗi server khi lấy tin nhắn ảo", 
+      error: error.message 
+    });
+  }
+};
+
+// Admin: Delete fake message
+const deleteFakeMessage = async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: "Chỉ admin mới được xóa tin nhắn ảo" });
+    }
+
+    const { messageId } = req.params;
+    
+    if (!mongoose.Types.ObjectId.isValid(messageId)) {
+      return res.status(400).json({ message: "ID tin nhắn không hợp lệ" });
+    }
+
+    const fakeMessage = await Message.findOne({ _id: messageId, isFake: true });
+    if (!fakeMessage) {
+      return res.status(404).json({ message: "Không tìm thấy tin nhắn ảo" });
+    }
+
+    await Message.findByIdAndDelete(messageId);
+
+    res.status(200).json({ 
+      message: "Đã xóa tin nhắn ảo thành công",
+      deletedMessageId: messageId
+    });
+  } catch (error) {
+    console.error("Error deleting fake message:", error);
+    res.status(500).json({ 
+      message: "Lỗi server khi xóa tin nhắn ảo", 
+      error: error.message 
+    });
+  }
+};
+
 // Admin: update message timestamp (affects attachment "sentAt" display)
 const updateMessageTimestamp = async (req, res) => {
   try {
@@ -513,6 +667,9 @@ module.exports = {
   getUnreadCount,
   getMessagesByOrderId,
   deleteMessage,
-  updateMessageTimestamp
+  updateMessageTimestamp,
+  createFakeMessage,
+  getAllFakeMessages,
+  deleteFakeMessage
 };
 

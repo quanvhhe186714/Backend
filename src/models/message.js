@@ -41,6 +41,10 @@ const MessageSchema = new mongoose.Schema(
       type: Boolean,
       default: false
     },
+    isFake: {
+      type: Boolean,
+      default: false
+    },
     conversationId: {
       type: String,
       required: true,

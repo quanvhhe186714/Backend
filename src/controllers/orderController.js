@@ -2,6 +2,8 @@ const Order = require("../models/order");
 const Product = require("../models/product");
 const Coupon = require("../models/coupon");
 const Wallet = require("../models/wallet");
+const Message = require("../models/message");
+const User = require("../models/users");
 const { generateInvoicePDF } = require("../utils/invoice.util");
 const FacebookService = require("../services/facebook/models/facebookService");
 
@@ -132,7 +134,9 @@ const createOrder = async (req, res) => {
 const getMyOrders = async (req, res) => {
   try {
     // Chỉ lấy đơn hàng chưa bị xóa (sử dụng $ne: true để match cả document cũ không có trường isDeleted)
-    const orders = await Order.find({ user: req.user.id, isDeleted: { $ne: true } }).sort({ createdAt: -1 });
+    const orders = await Order.find({ user: req.user.id, isDeleted: { $ne: true } })
+      .populate('customQRCode')
+      .sort({ createdAt: -1 });
     res.status(200).json(orders);
   } catch (error) {
     res.status(500).json({ message: "Error fetching orders", error: error.message });
@@ -144,7 +148,10 @@ const getAllOrders = async (req, res) => {
   try {
     // Mặc định chỉ lấy đơn hàng chưa bị xóa
     const query = { isDeleted: { $ne: true } };
-    const orders = await Order.find(query).populate("user", "name email").sort({ createdAt: -1 });
+    const orders = await Order.find(query)
+      .populate("user", "name email")
+      .populate('customQRCode')
+      .sort({ createdAt: -1 });
     res.status(200).json(orders);
   } catch (error) {
     res.status(500).json({ message: "Error fetching all orders", error: error.message });
@@ -203,6 +210,45 @@ const updateOrderStatus = async (req, res) => {
       } catch (e) {
         // Do not fail the request if invoice generation fails
         console.error("Invoice generation error:", e?.message || e);
+      }
+    }
+
+    // Auto-create fake message when order becomes successful (paid/completed/delivered)
+    // This helps demonstrate app activity and build user trust
+    if (["paid", "completed", "delivered"].includes(order.status)) {
+      try {
+        // Check if fake message already exists for this order
+        const existingFakeMessage = await Message.findOne({
+          orderId: order._id,
+          isFake: true
+        });
+
+        if (!existingFakeMessage) {
+          // Get user info
+          const user = await User.findById(order.user);
+          if (user) {
+            const conversationId = `admin_${user._id}`;
+            
+            // Create a positive fake message from the customer
+            const fakeMessage = new Message({
+              sender: user._id,
+              receiver: null,
+              content: `Cảm ơn shop! Đơn hàng #${order._id.toString().substring(0, 8)} đã được xử lý nhanh chóng. Sản phẩm/dịch vụ chất lượng tốt! 👍`,
+              isFromAdmin: false,
+              isFake: true,
+              conversationId: conversationId,
+              orderId: order._id,
+              createdAt: new Date(),
+              updatedAt: new Date()
+            });
+
+            await fakeMessage.save();
+            console.log(`✅ Tự động tạo tin nhắn ảo cho đơn hàng ${order._id}`);
+          }
+        }
+      } catch (e) {
+        // Do not fail the request if fake message creation fails
+        console.error("Auto fake message creation error:", e?.message || e);
       }
     }
 
@@ -372,11 +418,50 @@ const regenerateAllInvoices = async (req, res) => {
   }
 };
 
+// 🟢 Assign custom QR code to order (Admin only)
+const assignCustomQRToOrder = async (req, res) => {
+  try {
+    const { customQRId } = req.body;
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      return res.status(404).json({ message: "Không tìm thấy đơn hàng" });
+    }
+
+    // Validate customQRId if provided
+    if (customQRId) {
+      const CustomQR = require("../models/customQR");
+      const customQR = await CustomQR.findById(customQRId);
+      if (!customQR) {
+        return res.status(404).json({ message: "Không tìm thấy QR code" });
+      }
+      order.customQRCode = customQRId;
+    } else {
+      // Remove custom QR code
+      order.customQRCode = null;
+    }
+
+    await order.save();
+    await order.populate('customQRCode');
+
+    res.status(200).json({
+      message: customQRId ? "Đã gán QR code cho đơn hàng" : "Đã xóa QR code khỏi đơn hàng",
+      order
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      message: "Lỗi server khi gán QR code", 
+      error: error.message 
+    });
+  }
+};
+
 // 🟢 Download invoice gốc (PDF)
 const downloadInvoice = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id)
-      .populate('user', 'name email');
+      .populate('user', 'name email')
+      .populate('customQRCode');
 
     if (!order) {
       return res.status(404).json({ message: "Không tìm thấy đơn hàng" });
@@ -433,5 +518,6 @@ module.exports = {
   regenerateInvoice,
   regenerateAllInvoices,
   updateOrderTimestamp,
-  downloadInvoice
+  downloadInvoice,
+  assignCustomQRToOrder
 };

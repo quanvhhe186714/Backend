@@ -9,7 +9,10 @@ const {
   getUnreadCount,
   getMessagesByOrderId,
   deleteMessage,
-  updateMessageTimestamp
+  updateMessageTimestamp,
+  createFakeMessage,
+  getAllFakeMessages,
+  deleteFakeMessage
 } = require("../controllers/messageController");
 const { uploadChatAttachments, uploadToCloudinary } = require("../utils/chatUpload");
 
@@ -37,6 +40,11 @@ router.get("/order/:orderId", protect, getMessagesByOrderId);
 router.delete("/:messageId", protect, isAdmin, deleteMessage);
 // Admin: update message/file sent time
 router.put("/:messageId/timestamp", protect, isAdmin, updateMessageTimestamp);
+
+// Admin: Fake messages routes
+router.post("/fake", protect, isAdmin, createFakeMessage);
+router.get("/fake", protect, isAdmin, getAllFakeMessages);
+router.delete("/fake/:messageId", protect, isAdmin, deleteFakeMessage);
 
 module.exports = router;
 
