@@ -22,6 +22,24 @@ const handleUploadError = (err, req, res, next) => {
       errorMessage = "Tên field không đúng. Phải là 'qrImage'";
     }
     
+    // Đảm bảo CORS headers được set trước khi trả về error
+    const origin = req.headers.origin;
+    const allowedOrigins = [
+      "http://localhost:3000",
+      "http://localhost:3001",
+      "http://127.0.0.1:3000",
+      "http://127.0.0.1:3001",
+      "https://backend-cy6b.onrender.com",
+      "https://frontend-ten-snowy-70.vercel.app",
+      "https://shopnambs.id.vn"
+    ];
+    if (allowedOrigins.includes(origin)) {
+      res.header("Access-Control-Allow-Origin", origin);
+    }
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH");
+    res.header("Access-Control-Allow-Credentials", "true");
+    
     return res.status(statusCode).json({ 
       message: errorMessage,
       error: err.code || "UPLOAD_ERROR"

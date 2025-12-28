@@ -6,6 +6,23 @@ const createCustomQR = async (req, res) => {
     // Validate file (required cho create)
     if (!req.file) {
       console.error("No file uploaded. Request body:", req.body);
+      // Set CORS headers before error response
+      const origin = req.headers.origin;
+      const allowedOrigins = [
+        "http://localhost:3000",
+        "http://localhost:3001",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:3001",
+        "https://backend-cy6b.onrender.com",
+        "https://frontend-ten-snowy-70.vercel.app",
+        "https://shopnambs.id.vn"
+      ];
+      if (allowedOrigins.includes(origin)) {
+        res.header("Access-Control-Allow-Origin", origin);
+      }
+      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+      res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH");
+      res.header("Access-Control-Allow-Credentials", "true");
       return res.status(400).json({ message: "Vui lòng chọn file ảnh QR code" });
     }
 
@@ -47,6 +64,23 @@ const createCustomQR = async (req, res) => {
     });
   } catch (error) {
     console.error("Error creating custom QR:", error);
+    // Set CORS headers before error response
+    const origin = req.headers.origin;
+    const allowedOrigins = [
+      "http://localhost:3000",
+      "http://localhost:3001",
+      "http://127.0.0.1:3000",
+      "http://127.0.0.1:3001",
+      "https://backend-cy6b.onrender.com",
+      "https://frontend-ten-snowy-70.vercel.app",
+      "https://shopnambs.id.vn"
+    ];
+    if (allowedOrigins.includes(origin)) {
+      res.header("Access-Control-Allow-Origin", origin);
+    }
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH");
+    res.header("Access-Control-Allow-Credentials", "true");
     res.status(500).json({ 
       message: error.message || "Lỗi server khi tạo QR code tùy chỉnh", 
       error: error.message 
