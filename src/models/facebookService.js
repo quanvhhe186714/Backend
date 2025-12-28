@@ -123,10 +123,25 @@ const FacebookServiceSchema = new mongoose.Schema(
     warrantyDays: {
       type: Number,
       default: 30
+    },
+    // Số người đánh giá (null = tự động tính)
+    totalReviewers: {
+      type: Number,
+      default: null
     }
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("FacebookService", FacebookServiceSchema);
+let FacebookServiceModel;
+try {
+  if (mongoose.models.FacebookService) {
+    FacebookServiceModel = mongoose.models.FacebookService;
+  } else {
+    FacebookServiceModel = mongoose.model("FacebookService", FacebookServiceSchema);
+  }
+} catch (error) {
+  FacebookServiceModel = mongoose.models.FacebookService;
+}
+module.exports = FacebookServiceModel;
 

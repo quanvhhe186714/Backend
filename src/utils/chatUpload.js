@@ -78,10 +78,11 @@ const uploadToCloudinary = async (req, res, next) => {
     return next();
   }
 
-  // Kiểm tra xem có Cloudinary config không
-  const hasCloudinary = process.env.CLOUDINARY_NAME && 
-                        process.env.CLOUDINARY_KEY && 
-                        process.env.CLOUDINARY_SECRET;
+  // Kiểm tra xem có Cloudinary config không (hỗ trợ cả CLOUDINARY_URL và các biến riêng lẻ)
+  const hasCloudinary = process.env.CLOUDINARY_URL || 
+                        (process.env.CLOUDINARY_NAME && 
+                         process.env.CLOUDINARY_KEY && 
+                         process.env.CLOUDINARY_SECRET);
 
   if (!hasCloudinary) {
     // Không có Cloudinary config - lưu local (cho dev)

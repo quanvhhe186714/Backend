@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Message = require("../models/message");
 const User = require("../models/users");
 const Order = require("../models/order");
+const { generateResponse } = require("../services/geminiService");
 
 // Gửi tin nhắn (user gửi cho admin hoặc admin gửi cho user)
 const sendMessage = async (req, res) => {
@@ -176,6 +177,112 @@ const sendMessage = async (req, res) => {
     await message.populate("sender", "name email avatar role");
     if (receiver) {
       await message.populate("receiver", "name email avatar");
+    }
+
+    // Auto-reply với AI nếu user (không phải admin) gửi tin nhắn có text
+    if (!isFromAdmin && hasText && conversationId) {
+      // Chạy async, không block response
+      (async () => {
+        try {
+          // Lấy admin user để dùng làm sender cho tin nhắn AI
+          const adminUser = await User.findOne({ role: "admin" });
+          if (!adminUser) {
+            console.warn("No admin user found for AI auto-reply");
+            return;
+          }
+
+          // Tin nhắn AI mặc định
+          const defaultMessage = "Xin chào! Cảm ơn bạn đã liên hệ. Chúng tôi đã nhận được tin nhắn của bạn và sẽ phản hồi sớm nhất có thể. Nếu cần hỗ trợ khẩn cấp, vui lòng liên hệ trực tiếp với admin.";
+
+          // Kiểm tra xem admin đã trả lời trong 10 phút gần nhất không (không tính tin nhắn AI mặc định)
+          const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
+          const recentAdminMessage = await Message.findOne({
+            conversationId: conversationId,
+            isFromAdmin: true,
+            sender: adminUser._id,
+            createdAt: { $gte: tenMinutesAgo },
+            content: { $ne: defaultMessage } // Loại trừ tin nhắn AI mặc định
+          }).sort({ createdAt: -1 });
+
+          // Nếu admin đã trả lời trong 10 phút gần nhất → AI không trả lời
+          if (recentAdminMessage) {
+            console.log(`⏸️ AI: Admin đã trả lời trong 10 phút gần nhất, AI không trả lời.`);
+            return;
+          }
+
+          // Tạo tin nhắn AI mặc định ngay lập tức
+          const aiMessage = new Message({
+            sender: adminUser._id,
+            receiver: senderId,
+            content: defaultMessage,
+            isFromAdmin: true,
+            isFake: false, // Tin nhắn thật từ AI
+            conversationId: conversationId,
+            orderId: orderId || null
+          });
+
+          await aiMessage.save();
+          console.log(`✅ AI: Đã gửi tin nhắn mặc định cho user ${senderId} trong conversation ${conversationId}`);
+
+          // Sau 10 phút, nếu admin chưa trả lời, AI sẽ trả lời lại bằng Gemini (nếu có)
+          setTimeout(async () => {
+            try {
+              // Kiểm tra lại xem admin đã trả lời chưa (không tính tin nhắn AI mặc định)
+              const checkTime = new Date(Date.now() - 10 * 60 * 1000);
+              const adminReplied = await Message.findOne({
+                conversationId: conversationId,
+                isFromAdmin: true,
+                sender: adminUser._id,
+                createdAt: { $gte: checkTime },
+                content: { $ne: defaultMessage } // Loại trừ tin nhắn AI mặc định
+              });
+
+              // Nếu admin chưa trả lời sau 10 phút, AI trả lời bằng Gemini
+              if (!adminReplied && process.env.GEMINI_API_KEY) {
+                // Lấy conversation history (không bao gồm tin nhắn AI mặc định vừa tạo)
+                const history = await Message.find({ 
+                  conversationId: conversationId,
+                  _id: { $ne: aiMessage._id } // Loại bỏ tin nhắn AI mặc định
+                })
+                  .sort({ createdAt: -1 })
+                  .limit(20)
+                  .select("content isFromAdmin createdAt")
+                  .lean();
+                history.reverse();
+
+                // Gọi Gemini API để tạo phản hồi thông minh hơn
+                const aiResponse = await generateResponse(
+                  content.trim(),
+                  history,
+                  orderId || null
+                );
+
+                if (aiResponse && aiResponse.trim() && aiResponse.trim() !== defaultMessage) {
+                  // Tạo tin nhắn AI thông minh hơn
+                  const smartAiMessage = new Message({
+                    sender: adminUser._id,
+                    receiver: senderId,
+                    content: aiResponse.trim(),
+                    isFromAdmin: true,
+                    isFake: false,
+                    conversationId: conversationId,
+                    orderId: orderId || null
+                  });
+
+                  await smartAiMessage.save();
+                  console.log(`✅ AI: Đã gửi tin nhắn thông minh (Gemini) cho user ${senderId} sau 10 phút`);
+                }
+              }
+            } catch (error) {
+              console.error("Error in delayed AI reply:", error);
+            }
+          }, 10 * 60 * 1000); // 10 phút
+
+        } catch (error) {
+          // Không fail request nếu AI auto-reply thất bại
+          console.error("Error in AI auto-reply:", error);
+        }
+      })();
     }
 
     res.status(201).json(message);

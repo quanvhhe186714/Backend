@@ -1,65 +1,54 @@
 const CustomQR = require("../models/customQR");
-const { upload } = require("../utils/Upload");
 
 // 🟢 Tạo QR code tùy chỉnh mới (Admin only)
 const createCustomQR = async (req, res) => {
   try {
-    if (req.user.role !== 'admin') {
-      return res.status(403).json({ message: "Chỉ admin mới được tạo QR code tùy chỉnh." });
+    // Validate file (required cho create)
+    if (!req.file) {
+      console.error("No file uploaded. Request body:", req.body);
+      return res.status(400).json({ message: "Vui lòng chọn file ảnh QR code" });
     }
 
-    upload.single("qrImage")(req, res, async (err) => {
-      try {
-        if (err) {
-          return res.status(400).json({ 
-            message: err.message || "Lỗi khi upload file",
-            error: err.code || "UPLOAD_ERROR"
-          });
-        }
+    // Validate và parse request body
+    const { name, transactionCode, content, amount, bank, accountName, accountNo, orderId, isActive } = req.body;
+    
+    if (!name || name.trim() === '') {
+      return res.status(400).json({ message: "Tên QR code là bắt buộc" });
+    }
 
-        if (!req.file) {
-          return res.status(400).json({ message: "Vui lòng chọn file ảnh QR code" });
-        }
+    // Lấy imageUrl từ file đã upload
+    const imageUrl = req.file.secure_url || req.file.path;
+    
+    if (!imageUrl) {
+      console.error("No imageUrl from uploaded file:", req.file);
+      return res.status(400).json({ message: "Lỗi khi lấy URL ảnh từ file đã upload" });
+    }
 
-        const { name, transactionCode, content, amount, bank, accountName, accountNo, orderId, isActive } = req.body;
-        
-        if (!name) {
-          return res.status(400).json({ message: "Tên QR code là bắt buộc" });
-        }
+    // Tạo QR code mới
+    const customQR = new CustomQR({
+      name: name.trim(),
+      imageUrl,
+      transactionCode: transactionCode || "",
+      content: content || "",
+      amount: amount ? parseFloat(amount) : null,
+      bank: bank || "mb",
+      accountName: accountName || "",
+      accountNo: accountNo || "",
+      orderId: orderId || null,
+      createdBy: req.user._id,
+      isActive: isActive !== undefined ? (isActive === 'true' || isActive === true) : true
+    });
 
-        const imageUrl = req.file.secure_url || req.file.path;
+    await customQR.save();
 
-        const customQR = new CustomQR({
-          name,
-          imageUrl,
-          transactionCode: transactionCode || "",
-          content: content || "",
-          amount: amount ? parseFloat(amount) : null,
-          bank: bank || "mb",
-          accountName: accountName || "",
-          accountNo: accountNo || "",
-          orderId: orderId || null,
-          createdBy: req.user._id,
-          isActive: isActive !== undefined ? isActive === 'true' || isActive === true : true
-        });
-
-        await customQR.save();
-
-        res.status(201).json({
-          message: "Tạo QR code tùy chỉnh thành công",
-          customQR
-        });
-      } catch (error) {
-        console.error("Error creating custom QR:", error);
-        res.status(500).json({ 
-          message: "Lỗi server khi tạo QR code tùy chỉnh", 
-          error: error.message 
-        });
-      }
+    res.status(201).json({
+      message: "Tạo QR code tùy chỉnh thành công",
+      customQR
     });
   } catch (error) {
+    console.error("Error creating custom QR:", error);
     res.status(500).json({ 
-      message: "Lỗi server khi tạo QR code tùy chỉnh", 
+      message: error.message || "Lỗi server khi tạo QR code tùy chỉnh", 
       error: error.message 
     });
   }
@@ -120,61 +109,48 @@ const getCustomQRById = async (req, res) => {
 // 🟢 Cập nhật QR code (Admin only)
 const updateCustomQR = async (req, res) => {
   try {
-    if (req.user.role !== 'admin') {
-      return res.status(403).json({ message: "Chỉ admin mới được cập nhật QR code." });
+    // Tìm QR code cần update
+    const customQR = await CustomQR.findById(req.params.id);
+    if (!customQR) {
+      return res.status(404).json({ message: "Không tìm thấy QR code" });
     }
 
-    // Nếu có file mới, upload lên Cloudinary trước
-    upload.single("qrImage")(req, res, async (err) => {
-      try {
-        if (err) {
-          return res.status(400).json({ 
-            message: err.message || "Lỗi khi upload file",
-            error: err.code || "UPLOAD_ERROR"
-          });
-        }
-
-        const customQR = await CustomQR.findById(req.params.id);
-        if (!customQR) {
-          return res.status(404).json({ message: "Không tìm thấy QR code" });
-        }
-
-        // Nếu có file mới, cập nhật imageUrl
-        if (req.file) {
-          const imageUrl = req.file.secure_url || req.file.path;
-          customQR.imageUrl = imageUrl;
-        }
-
-        // Cập nhật các field khác
-        if (req.body.name) customQR.name = req.body.name;
-        if (req.body.transactionCode !== undefined) customQR.transactionCode = req.body.transactionCode;
-        if (req.body.content !== undefined) customQR.content = req.body.content;
-        if (req.body.amount !== undefined) customQR.amount = req.body.amount ? parseFloat(req.body.amount) : null;
-        if (req.body.bank) customQR.bank = req.body.bank;
-        if (req.body.accountName !== undefined) customQR.accountName = req.body.accountName;
-        if (req.body.accountNo !== undefined) customQR.accountNo = req.body.accountNo;
-        if (req.body.orderId !== undefined) customQR.orderId = req.body.orderId || null;
-        if (req.body.isActive !== undefined) {
-          customQR.isActive = req.body.isActive === 'true' || req.body.isActive === true;
-        }
-
-        customQR.updatedAt = new Date();
-        await customQR.save();
-
-        res.status(200).json({
-          message: "Cập nhật QR code thành công",
-          customQR
-        });
-      } catch (error) {
-        res.status(500).json({ 
-          message: "Lỗi server khi cập nhật QR code", 
-          error: error.message 
-        });
+    // Nếu có file mới, cập nhật imageUrl
+    if (req.file) {
+      const imageUrl = req.file.secure_url || req.file.path;
+      if (!imageUrl) {
+        console.error("No imageUrl from uploaded file:", req.file);
+        return res.status(400).json({ message: "Lỗi khi lấy URL ảnh từ file đã upload" });
       }
+      customQR.imageUrl = imageUrl;
+    }
+
+    // Cập nhật các field khác
+    if (req.body.name !== undefined) customQR.name = req.body.name.trim();
+    if (req.body.transactionCode !== undefined) customQR.transactionCode = req.body.transactionCode;
+    if (req.body.content !== undefined) customQR.content = req.body.content;
+    if (req.body.amount !== undefined) {
+      customQR.amount = req.body.amount ? parseFloat(req.body.amount) : null;
+    }
+    if (req.body.bank !== undefined) customQR.bank = req.body.bank;
+    if (req.body.accountName !== undefined) customQR.accountName = req.body.accountName;
+    if (req.body.accountNo !== undefined) customQR.accountNo = req.body.accountNo;
+    if (req.body.orderId !== undefined) customQR.orderId = req.body.orderId || null;
+    if (req.body.isActive !== undefined) {
+      customQR.isActive = req.body.isActive === 'true' || req.body.isActive === true;
+    }
+
+    customQR.updatedAt = new Date();
+    await customQR.save();
+
+    res.status(200).json({
+      message: "Cập nhật QR code thành công",
+      customQR
     });
   } catch (error) {
+    console.error("Error updating custom QR:", error);
     res.status(500).json({ 
-      message: "Lỗi server khi cập nhật QR code", 
+      message: error.message || "Lỗi server khi cập nhật QR code", 
       error: error.message 
     });
   }

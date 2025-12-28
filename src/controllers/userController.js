@@ -20,11 +20,14 @@ try {
 
 // 🟢 Upload avatar lên Cloudinary
 const uploadAvatar = async (req, res) => {
-  // Kiểm tra Cloudinary config
-  if (!process.env.CLOUDINARY_NAME || !process.env.CLOUDINARY_KEY || !process.env.CLOUDINARY_SECRET) {
+  // Kiểm tra Cloudinary config (hỗ trợ cả CLOUDINARY_URL và các biến riêng lẻ)
+  const hasCloudinaryConfig = process.env.CLOUDINARY_URL || 
+    (process.env.CLOUDINARY_NAME && process.env.CLOUDINARY_KEY && process.env.CLOUDINARY_SECRET);
+  
+  if (!hasCloudinaryConfig) {
     console.error("❌ Cloudinary config missing!");
     return res.status(500).json({ 
-      message: "Cloudinary configuration is missing. Please check environment variables.",
+      message: "Cloudinary configuration is missing. Please set CLOUDINARY_URL or CLOUDINARY_NAME, CLOUDINARY_KEY, CLOUDINARY_SECRET.",
       error: "CLOUDINARY_CONFIG_MISSING"
     });
   }

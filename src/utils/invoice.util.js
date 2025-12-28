@@ -117,10 +117,11 @@ async function generateInvoicePDF(orderId) {
 
   const filename = `invoice_${order._id}.pdf`;
   
-  // Kiểm tra xem có Cloudinary config không
-  const hasCloudinary = process.env.CLOUDINARY_NAME && 
-                        process.env.CLOUDINARY_KEY && 
-                        process.env.CLOUDINARY_SECRET;
+  // Kiểm tra xem có Cloudinary config không (hỗ trợ cả CLOUDINARY_URL và các biến riêng lẻ)
+  const hasCloudinary = process.env.CLOUDINARY_URL || 
+                        (process.env.CLOUDINARY_NAME && 
+                         process.env.CLOUDINARY_KEY && 
+                         process.env.CLOUDINARY_SECRET);
   
   // Nếu có Cloudinary, tạo PDF vào buffer (không lưu file)
   // Nếu không có, tạo vào file system (cho dev)

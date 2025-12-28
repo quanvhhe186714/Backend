@@ -1,4 +1,5 @@
 const Product = require("../models/product");
+const Category = require("../models/category");
 
 // Public: Get all products
 const getAllProducts = async (req, res) => {
@@ -6,7 +7,7 @@ const getAllProducts = async (req, res) => {
     const { category } = req.query;
     const filter = { isActive: true };
     if (category) {
-      filter.category = category;
+      filter.category = category.toUpperCase();
     }
     const products = await Product.find(filter).sort({ price: 1 });
     res.status(200).json(products);
@@ -31,6 +32,21 @@ const getProductById = async (req, res) => {
 // Admin: Create Product
 const createProduct = async (req, res) => {
   try {
+    // Validate category if provided
+    if (req.body.category) {
+      const categoryCode = req.body.category.toUpperCase();
+      const category = await Category.findOne({ code: categoryCode, isActive: true });
+      if (!category) {
+        return res.status(400).json({ 
+          message: `Category "${categoryCode}" does not exist or is inactive` 
+        });
+      }
+      req.body.category = categoryCode;
+    } else {
+      // Default to OTHER if not provided
+      req.body.category = "OTHER";
+    }
+
     const newProduct = new Product(req.body);
     const savedProduct = await newProduct.save();
     res.status(201).json(savedProduct);
@@ -42,7 +58,23 @@ const createProduct = async (req, res) => {
 // Admin: Update Product
 const updateProduct = async (req, res) => {
   try {
-    const updatedProduct = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    // Validate category if provided
+    if (req.body.category) {
+      const categoryCode = req.body.category.toUpperCase();
+      const category = await Category.findOne({ code: categoryCode, isActive: true });
+      if (!category) {
+        return res.status(400).json({ 
+          message: `Category "${categoryCode}" does not exist or is inactive` 
+        });
+      }
+      req.body.category = categoryCode;
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      req.params.id, 
+      req.body, 
+      { new: true, runValidators: true }
+    );
     if (!updatedProduct) return res.status(404).json({ message: "Product not found" });
     res.status(200).json(updatedProduct);
   } catch (error) {

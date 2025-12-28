@@ -120,5 +120,15 @@ const FacebookServiceSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("FacebookService", FacebookServiceSchema);
+let FacebookServiceModel;
+try {
+  if (mongoose.models.FacebookService) {
+    FacebookServiceModel = mongoose.models.FacebookService;
+  } else {
+    FacebookServiceModel = mongoose.model("FacebookService", FacebookServiceSchema);
+  }
+} catch (error) {
+  FacebookServiceModel = mongoose.models.FacebookService;
+}
+module.exports = FacebookServiceModel;
 

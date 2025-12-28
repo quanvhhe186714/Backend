@@ -12,10 +12,10 @@ const ProductSchema = new mongoose.Schema(
     currency: { type: String, default: "VND" },
     category: {
       type: String,
-      enum: ["VIA", "PROXY", "DICH_VU_MXH", "OTHER"],
       default: "OTHER"
     },
-    isActive: { type: Boolean, default: true }
+    isActive: { type: Boolean, default: true },
+    totalReviewers: { type: Number, default: null } // Số người đánh giá (null = tự động tính)
   },
   { timestamps: true }
 );
