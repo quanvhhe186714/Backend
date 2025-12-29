@@ -48,6 +48,14 @@ const handleUploadError = (err, req, res, next) => {
   next();
 };
 
+// Public route - không cần authentication
+router.get("/public", customQRController.getPublicCustomQRs);
+
+// QR đang publish cho trang \"Thanh toán qua QR\" - yêu cầu user đã đăng nhập
+router.get("/published", protect, customQRController.getPublishedCustomQRs);
+// Lấy chi tiết đầy đủ của QR đang publish (khi user chọn QR)
+router.get("/published/:id", protect, customQRController.getPublishedQRDetail);
+
 // Tất cả routes đều yêu cầu admin
 // POST: Create - file là required
 router.post("/", protect, isAdmin, upload.single("qrImage"), handleUploadError, customQRController.createCustomQR);
@@ -56,6 +64,8 @@ router.get("/:id", protect, customQRController.getCustomQRById);
 // PUT: Update - file là optional
 router.put("/:id", protect, isAdmin, upload.single("qrImage"), handleUploadError, customQRController.updateCustomQR);
 router.delete("/:id", protect, isAdmin, customQRController.deleteCustomQR);
+router.post("/:id/publish", protect, isAdmin, customQRController.publishCustomQR);
+router.post("/:id/unpublish", protect, isAdmin, customQRController.unpublishCustomQR);
 
 module.exports = router;
 

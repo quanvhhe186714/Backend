@@ -48,7 +48,12 @@ const TransactionSchema = new mongoose.Schema(
     },
     isDeleted: { type: Boolean, default: false }, // Soft delete flag
     deletedAt: { type: Date }, // When was it deleted
-    deletedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" } // Who deleted it
+    deletedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Who deleted it
+    customQRId: { 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: "CustomQR",
+      default: null 
+    } // Link to CustomQR if payment was made via custom QR
   },
   { timestamps: true }
 );

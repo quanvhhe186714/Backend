@@ -150,6 +150,124 @@ const getAllCustomQRs = async (req, res) => {
   }
 };
 
+// 🟢 Publish một QR code để hiển thị trên trang \"Thanh toán qua QR\" (Admin only)
+const publishCustomQR = async (req, res) => {
+  try {
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ message: "Chỉ admin mới được publish QR code." });
+    }
+
+    const { id } = req.params;
+
+    const customQR = await CustomQR.findById(id);
+    if (!customQR) {
+      return res.status(404).json({ message: "Không tìm thấy QR code" });
+    }
+
+    // Chỉ cho phép publish QR đang active
+    if (!customQR.isActive) {
+      return res.status(400).json({ message: "Chỉ có thể publish QR đang ở trạng thái kích hoạt." });
+    }
+
+    // Cho phép nhiều QR cùng publish (bỏ logic tự động unpublish các QR khác)
+    customQR.isPublished = true;
+    customQR.publishedAt = new Date();
+    customQR.publishedBy = req.user._id;
+
+    await customQR.save();
+
+    res.status(200).json({
+      message: "Publish QR code thành công",
+      customQR,
+    });
+  } catch (error) {
+    console.error("Error publishing custom QR:", error);
+    res.status(500).json({
+      message: "Lỗi server khi publish QR code",
+      error: error.message,
+    });
+  }
+};
+
+// 🟢 Gỡ publish QR code (Admin only)
+const unpublishCustomQR = async (req, res) => {
+  try {
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ message: "Chỉ admin mới được gỡ publish QR code." });
+    }
+
+    const { id } = req.params;
+
+    const customQR = await CustomQR.findById(id);
+    if (!customQR) {
+      return res.status(404).json({ message: "Không tìm thấy QR code" });
+    }
+
+    customQR.isPublished = false;
+    await customQR.save();
+
+    res.status(200).json({
+      message: "Gỡ publish QR code thành công",
+      customQR,
+    });
+  } catch (error) {
+    console.error("Error unpublishing custom QR:", error);
+    res.status(500).json({
+      message: "Lỗi server khi gỡ publish QR code",
+      error: error.message,
+    });
+  }
+};
+
+// 🟢 Lấy QR code đang được publish cho trang \"Thanh toán qua QR\"
+// Endpoint này dành cho user đã đăng nhập (đã được bảo vệ ở route)
+// Ẩn thông tin nhạy cảm (accountName, accountNo, transactionCode, content) cho đến khi user chọn QR
+const getPublishedCustomQRs = async (req, res) => {
+  try {
+    const customQRs = await CustomQR.find({ isPublished: true, isActive: true })
+      .populate('createdBy', 'name email')
+      .select('-accountName -accountNo -transactionCode -content') // Ẩn thông tin nhạy cảm
+      .sort({ publishedAt: -1 });
+
+    // Log để debug
+    console.log(`Found ${customQRs.length} published QR codes`);
+
+    res.status(200).json(customQRs);
+  } catch (error) {
+    console.error("Error getting published custom QR codes:", error);
+    res.status(500).json({
+      message: "Lỗi server khi lấy QR code đã publish",
+      error: error.message,
+    });
+  }
+};
+
+// 🟢 Lấy chi tiết đầy đủ của QR code đang publish (khi user chọn QR)
+const getPublishedQRDetail = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const customQR = await CustomQR.findOne({ 
+      _id: id, 
+      isPublished: true, 
+      isActive: true 
+    })
+      .populate('createdBy', 'name email');
+
+    if (!customQR) {
+      return res.status(404).json({ message: "Không tìm thấy QR code hoặc QR code không còn được publish" });
+    }
+
+    res.status(200).json(customQR);
+  } catch (error) {
+    console.error("Error getting published QR detail:", error);
+    res.status(500).json({
+      message: "Lỗi server khi lấy chi tiết QR code",
+      error: error.message,
+    });
+  }
+};
+
 // 🟢 Lấy QR code theo ID
 const getCustomQRById = async (req, res) => {
   try {
@@ -270,11 +388,34 @@ const deleteCustomQR = async (req, res) => {
   }
 };
 
+// 🟢 Lấy danh sách QR codes công khai (Public - không cần auth)
+const getPublicCustomQRs = async (req, res) => {
+  try {
+    // Chỉ trả về QR codes đang active
+    const customQRs = await CustomQR.find({ isActive: true })
+      .select('-createdBy -orderId') // Không trả về thông tin nhạy cảm
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(customQRs);
+  } catch (error) {
+    console.error("Error getting public custom QR codes:", error);
+    res.status(500).json({ 
+      message: "Lỗi server khi lấy danh sách QR code công khai", 
+      error: error.message 
+    });
+  }
+};
+
 module.exports = {
   createCustomQR,
   getAllCustomQRs,
   getCustomQRById,
   updateCustomQR,
-  deleteCustomQR
+  deleteCustomQR,
+  getPublicCustomQRs,
+  publishCustomQR,
+  unpublishCustomQR,
+  getPublishedCustomQRs,
+  getPublishedQRDetail,
 };
 

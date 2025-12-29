@@ -7,6 +7,7 @@ const {
   getUserTransactions,
   getAllTransactions,
   updateTransactionStatus,
+  recordPaymentFromQR,
 } = require("../controllers/walletController");
 const userController = require("../controllers/userController");
 
@@ -14,6 +15,7 @@ const userController = require("../controllers/userController");
 router.get("/", protect, getWalletInfo);
 router.post("/topup", protect, initiateTopup);
 router.get("/transactions", protect, getUserTransactions);
+router.post("/record-payment", protect, recordPaymentFromQR);
 
 // Admin routes
 router.get("/admin/transactions", protect, isAdmin, getAllTransactions);

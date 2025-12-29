@@ -1,5 +1,6 @@
 const Wallet = require("../models/wallet");
 const Transaction = require("../models/transaction");
+const CustomQR = require("../models/customQR");
 
 const ensureWallet = async (userId) => {
   let wallet = await Wallet.findOne({ user: userId });
@@ -181,11 +182,79 @@ const updateTransactionStatus = async (req, res) => {
   }
 };
 
+// 🟢 Ghi nhận thanh toán từ QR code tùy chỉnh
+const recordPaymentFromQR = async (req, res) => {
+  try {
+    const { customQRId, note = "" } = req.body;
+
+    if (!customQRId) {
+      return res.status(400).json({ message: "Vui lòng cung cấp ID QR code" });
+    }
+
+    // Tìm QR code
+    const customQR = await CustomQR.findById(customQRId);
+    if (!customQR) {
+      return res.status(404).json({ message: "Không tìm thấy QR code" });
+    }
+
+    if (!customQR.isActive) {
+      return res.status(400).json({ message: "QR code này không còn hoạt động" });
+    }
+
+    // Đảm bảo wallet tồn tại
+    const wallet = await ensureWallet(req.user._id);
+
+    // Tạo mã tham chiếu duy nhất
+    const referenceCode = `QR-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+
+    // Lấy thông tin từ CustomQR
+    const amount = customQR.amount || 0;
+    const content = customQR.content || customQR.transactionCode || "";
+    const accountName = customQR.accountName || "";
+    const accountNo = customQR.accountNo || "";
+    const bank = customQR.bank || "mb";
+
+    // Tạo transaction mới
+    const transaction = await Transaction.create({
+      user: req.user._id,
+      wallet: wallet._id,
+      amount: Number(amount),
+      method: "bank_transfer",
+      bank: bank,
+      referenceCode: referenceCode,
+      note: note || content,
+      status: "pending",
+      customQRId: customQR._id,
+    });
+
+    res.status(201).json({
+      message: "Ghi nhận thanh toán thành công",
+      transaction: {
+        ...transaction.toObject(),
+        customQR: {
+          _id: customQR._id,
+          name: customQR.name,
+          accountName: accountName,
+          accountNo: accountNo,
+          bank: bank,
+        },
+      },
+    });
+  } catch (error) {
+    console.error("Error recording payment from QR:", error);
+    res.status(500).json({
+      message: "Không thể ghi nhận thanh toán",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getWalletInfo,
   initiateTopup,
   getUserTransactions,
   getAllTransactions,
   updateTransactionStatus,
+  recordPaymentFromQR,
 };
 

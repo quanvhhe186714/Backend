@@ -37,6 +37,9 @@ const CustomQRSchema = new mongoose.Schema(
     }, // Số tài khoản - chỉ số
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // Admin tạo QR
     isActive: { type: Boolean, default: true }, // Trạng thái active
+    isPublished: { type: Boolean, default: false }, // QR đang được publish lên trang thanh toán
+    publishedAt: { type: Date }, // Thời gian publish
+    publishedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Admin publish QR
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
   },
