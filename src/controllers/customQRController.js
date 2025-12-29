@@ -1,4 +1,5 @@
 const CustomQR = require("../models/customQR");
+const mongoose = require("mongoose");
 
 // 🟢 Tạo QR code tùy chỉnh mới (Admin only)
 const createCustomQR = async (req, res) => {
@@ -33,12 +34,26 @@ const createCustomQR = async (req, res) => {
       return res.status(400).json({ message: "Tên QR code là bắt buộc" });
     }
 
+    // Validate số tài khoản - chỉ cho phép số (0-9)
+    if (accountNo && accountNo.trim() !== '') {
+      if (!/^[0-9]+$/.test(accountNo)) {
+        return res.status(400).json({ message: "Số tài khoản chỉ được chứa số (0-9)" });
+      }
+    }
+
     // Lấy imageUrl từ file đã upload
     const imageUrl = req.file.secure_url || req.file.path;
     
     if (!imageUrl) {
       console.error("No imageUrl from uploaded file:", req.file);
       return res.status(400).json({ message: "Lỗi khi lấy URL ảnh từ file đã upload" });
+    }
+
+    // Xử lý orderId - cho phép cả ObjectId và string
+    let processedOrderId = null;
+    if (orderId && orderId.trim() !== '') {
+      // Cho phép lưu dưới dạng string hoặc ObjectId (model sẽ tự xử lý)
+      processedOrderId = orderId;
     }
 
     // Tạo QR code mới
@@ -51,7 +66,7 @@ const createCustomQR = async (req, res) => {
       bank: bank || "mb",
       accountName: accountName || "",
       accountNo: accountNo || "",
-      orderId: orderId || null,
+      orderId: processedOrderId,
       createdBy: req.user._id,
       isActive: isActive !== undefined ? (isActive === 'true' || isActive === true) : true
     });
@@ -108,11 +123,26 @@ const getAllCustomQRs = async (req, res) => {
 
     const customQRs = await CustomQR.find(query)
       .populate('createdBy', 'name email')
-      .populate('orderId', 'totalAmount status')
       .sort({ createdAt: -1 });
 
-    res.status(200).json(customQRs);
+    // Populate orderId chỉ khi nó là ObjectId hợp lệ
+    const customQRsWithPopulated = await Promise.all(
+      customQRs.map(async (qr) => {
+        if (qr.orderId && mongoose.Types.ObjectId.isValid(qr.orderId)) {
+          try {
+            await qr.populate('orderId', 'totalAmount status');
+          } catch (populateError) {
+            // Nếu populate lỗi (orderId không tồn tại), giữ nguyên orderId
+            console.warn(`Cannot populate orderId ${qr.orderId}:`, populateError.message);
+          }
+        }
+        return qr;
+      })
+    );
+
+    res.status(200).json(customQRsWithPopulated);
   } catch (error) {
+    console.error("Error getting custom QR codes:", error);
     res.status(500).json({ 
       message: "Lỗi server khi lấy danh sách QR code", 
       error: error.message 
@@ -124,15 +154,25 @@ const getAllCustomQRs = async (req, res) => {
 const getCustomQRById = async (req, res) => {
   try {
     const customQR = await CustomQR.findById(req.params.id)
-      .populate('createdBy', 'name email')
-      .populate('orderId', 'totalAmount status');
+      .populate('createdBy', 'name email');
 
     if (!customQR) {
       return res.status(404).json({ message: "Không tìm thấy QR code" });
     }
 
+    // Populate orderId chỉ khi nó là ObjectId hợp lệ
+    if (customQR.orderId && mongoose.Types.ObjectId.isValid(customQR.orderId)) {
+      try {
+        await customQR.populate('orderId', 'totalAmount status');
+      } catch (populateError) {
+        // Nếu populate lỗi, giữ nguyên orderId
+        console.warn(`Cannot populate orderId ${customQR.orderId}:`, populateError.message);
+      }
+    }
+
     res.status(200).json(customQR);
   } catch (error) {
+    console.error("Error getting custom QR by ID:", error);
     res.status(500).json({ 
       message: "Lỗi server khi lấy QR code", 
       error: error.message 
@@ -159,6 +199,13 @@ const updateCustomQR = async (req, res) => {
       customQR.imageUrl = imageUrl;
     }
 
+    // Validate số tài khoản nếu có cập nhật - chỉ cho phép số (0-9)
+    if (req.body.accountNo !== undefined && req.body.accountNo && req.body.accountNo.trim() !== '') {
+      if (!/^[0-9]+$/.test(req.body.accountNo)) {
+        return res.status(400).json({ message: "Số tài khoản chỉ được chứa số (0-9)" });
+      }
+    }
+
     // Cập nhật các field khác
     if (req.body.name !== undefined) customQR.name = req.body.name.trim();
     if (req.body.transactionCode !== undefined) customQR.transactionCode = req.body.transactionCode;
@@ -169,7 +216,17 @@ const updateCustomQR = async (req, res) => {
     if (req.body.bank !== undefined) customQR.bank = req.body.bank;
     if (req.body.accountName !== undefined) customQR.accountName = req.body.accountName;
     if (req.body.accountNo !== undefined) customQR.accountNo = req.body.accountNo;
-    if (req.body.orderId !== undefined) customQR.orderId = req.body.orderId || null;
+    
+    // Xử lý orderId - cho phép cả ObjectId và string
+    if (req.body.orderId !== undefined) {
+      if (req.body.orderId === '' || req.body.orderId === null) {
+        customQR.orderId = null;
+      } else {
+        // Cho phép lưu dưới dạng string hoặc ObjectId (model sẽ tự xử lý)
+        customQR.orderId = req.body.orderId;
+      }
+    }
+    
     if (req.body.isActive !== undefined) {
       customQR.isActive = req.body.isActive === 'true' || req.body.isActive === true;
     }

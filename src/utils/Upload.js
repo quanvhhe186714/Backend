@@ -1,5 +1,7 @@
 const multer = require("multer");
-const cloudinary = require("../../config/cloudinary");
+// Import cloudinary trực tiếp để đảm bảo format đúng cho multer-storage-cloudinary
+const cloudinaryModule = require("cloudinary");
+const cloudinary = cloudinaryModule.v2;
 
 // Validate cloudinary trước khi sử dụng
 if (!cloudinary || !cloudinary.uploader) {
@@ -7,20 +9,16 @@ if (!cloudinary || !cloudinary.uploader) {
   throw new Error("Cloudinary configuration is missing or invalid. Please check your environment variables.");
 }
 
-// Import CloudinaryStorage - thử cách import trực tiếp
-// Với multer-storage-cloudinary v2.x, có thể cần dùng cách này:
+// Import CloudinaryStorage
 let CloudinaryStorage;
 try {
-  // Cách 1: Destructuring (theo documentation)
   const msc = require("multer-storage-cloudinary");
   CloudinaryStorage = msc.CloudinaryStorage;
   
-  // Nếu không có, thử các cách khác
   if (!CloudinaryStorage || typeof CloudinaryStorage !== 'function') {
     CloudinaryStorage = msc.default || msc;
   }
   
-  // Validate cuối cùng
   if (!CloudinaryStorage || typeof CloudinaryStorage !== 'function') {
     throw new Error('Cannot find CloudinaryStorage constructor');
   }
@@ -30,19 +28,31 @@ try {
 }
 
 // ⚙️ Cấu hình storage upload thẳng lên Cloudinary
+// multer-storage-cloudinary cần cloudinary object có v2 property
 let storage;
 try {
+  // Tạo object với v2 property để multer-storage-cloudinary có thể truy cập cloudinary.v2.uploader
+  const cloudinaryForStorage = {
+    v2: cloudinary
+  };
+  
   storage = new CloudinaryStorage({
-    cloudinary,
+    cloudinary: cloudinaryForStorage,
     params: {
       folder: "mmos/custom-qr", // 📁 tên thư mục trên Cloudinary cho QR codes
       allowed_formats: ["jpg", "jpeg", "png", "gif", "webp"],
-      transformation: [{ width: 500, height: 500, crop: "limit" }], // Resize ảnh
+      // Không resize ảnh QR code để đảm bảo mã QR vẫn quét được
+      // Chỉ giới hạn kích thước file (5MB) ở multer limits
     },
   });
   console.log("✅ CloudinaryStorage initialized successfully");
 } catch (error) {
   console.error("❌ Error initializing CloudinaryStorage:", error);
+  console.error("Cloudinary check:", { 
+    hasV2: !!cloudinary, 
+    hasUploader: !!cloudinary.uploader,
+    uploaderType: typeof cloudinary.uploader
+  });
   throw new Error(`Failed to initialize CloudinaryStorage: ${error.message}`);
 }
 
