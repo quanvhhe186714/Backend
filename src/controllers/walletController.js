@@ -10,8 +10,9 @@ const ensureWallet = async (userId) => {
 };
 
 const getBankInfo = (bankCode = "mb") => {
-  const code = bankCode.toLowerCase();
-  
+  const code = (bankCode || "mb").toLowerCase();
+
+  // MB Bank (mặc định)
   if (code === "mb" || code === "mbbank" || code === "mb bank") {
     return {
       bank: "MB Bank",
@@ -21,6 +22,26 @@ const getBankInfo = (bankCode = "mb") => {
       phone: process.env.MB_BANK_PHONE || "",
     };
   }
+
+  // VietinBank
+  if (
+    code === "vietin" ||
+    code === "vietinbank" ||
+    code === "vtb" ||
+    code === "vietin-bank"
+  ) {
+    return {
+      bank: "VietinBank",
+      accountName:
+        process.env.VIETIN_BANK_ACCOUNT_NAME || "VU HONG QUAN",
+      accountNumber:
+        process.env.VIETIN_BANK_ACCOUNT || "107876717017",
+      // BIN VietinBank chuẩn cho VietQR
+      bin: process.env.VIETIN_BANK_BIN || "970415",
+      phone: process.env.VIETIN_BANK_PHONE || "",
+    };
+  }
+
   // Fallback về MB Bank nếu không khớp
   return {
     bank: "MB Bank",
