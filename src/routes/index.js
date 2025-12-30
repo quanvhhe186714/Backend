@@ -11,6 +11,7 @@ const customQRRouter = require("./customQR");
 const reviewRouter = require("./reviews");
 const categoryRouter = require("./categories");
 const facebookServiceRouter = require("../services/facebook/routes/facebookServices");
+const { receiveWebhook } = require("../controllers/sepayController");
 
 const router = express.Router();
 router.use("/users", userRouter);
@@ -25,5 +26,8 @@ router.use("/custom-qr", customQRRouter);
 router.use("/reviews", reviewRouter);
 router.use("/categories", categoryRouter);
 router.use("/facebook-services", facebookServiceRouter);
+
+// SePay Webhook route - Match với URL đã đăng ký: /api/webhook/sepay
+router.post("/api/webhook/sepay", receiveWebhook);
 
 module.exports = router;

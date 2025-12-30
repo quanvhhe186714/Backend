@@ -52,6 +52,13 @@ app.use("/invoices", express.static("invoices"));
 // Kết nối MongoDB
 connectDB();
 
+// Khởi động transaction polling job (tự động check giao dịch mỗi 5 phút)
+const { startPolling } = require("./src/jobs/transactionPolling");
+// Đợi MongoDB kết nối xong rồi mới start polling
+setTimeout(() => {
+  startPolling(5); // Check mỗi 5 phút
+}, 2000); // Đợi 2 giây để đảm bảo DB đã kết nối
+
 // Mount routes
 app.use("/", router);
 

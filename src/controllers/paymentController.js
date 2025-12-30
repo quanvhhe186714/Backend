@@ -17,16 +17,16 @@ const getVietQr = async (req, res) => {
     const bankLower = bank.toLowerCase();
     
     if (bankLower === "mb" || bankLower === "mbbank" || bankLower === "mb bank") {
-      // MB Bank
+      // MB Bank - SePay Account
       bin = process.env.MB_BANK_BIN || "970422"; // MB Bank BIN code
-      accountNo = process.env.MB_BANK_ACCOUNT || "39397939686879";
-      accountName = process.env.MB_BANK_ACCOUNT_NAME || "NGUYEN THANH NHAN";
+      accountNo = process.env.MB_BANK_ACCOUNT || process.env.SEPAY_ACCOUNT_NO || "77891011121314";
+      accountName = process.env.MB_BANK_ACCOUNT_NAME || process.env.SEPAY_ACCOUNT_NAME || "TRAN DANG LINH";
       phone = process.env.MB_BANK_PHONE || "";
     } else {
       // Fallback về MB Bank nếu không khớp
       bin = process.env.MB_BANK_BIN || "970422";
-      accountNo = process.env.MB_BANK_ACCOUNT || "39397939686879";
-      accountName = process.env.MB_BANK_ACCOUNT_NAME || "NGUYEN THANH NHAN";
+      accountNo = process.env.MB_BANK_ACCOUNT || process.env.SEPAY_ACCOUNT_NO || "77891011121314";
+      accountName = process.env.MB_BANK_ACCOUNT_NAME || process.env.SEPAY_ACCOUNT_NAME || "TRAN DANG LINH";
       phone = process.env.MB_BANK_PHONE || "";
     }
 
@@ -38,6 +38,21 @@ const getVietQr = async (req, res) => {
 
     // Nội dung mặc định nếu không có
     const transferContent = content || "MMOS";
+
+    // Log để debug (có thể xóa sau)
+    console.log("🔍 QR Code Config:", {
+      accountNo,
+      accountName,
+      bin,
+      amount,
+      content: transferContent,
+      env: {
+        MB_BANK_ACCOUNT: process.env.MB_BANK_ACCOUNT,
+        MB_BANK_ACCOUNT_NAME: process.env.MB_BANK_ACCOUNT_NAME,
+        SEPAY_ACCOUNT_NO: process.env.SEPAY_ACCOUNT_NO,
+        SEPAY_ACCOUNT_NAME: process.env.SEPAY_ACCOUNT_NAME,
+      }
+    });
 
     const imageUrl = buildVietQrImageUrl({
       bin,

@@ -53,7 +53,11 @@ const TransactionSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId, 
       ref: "CustomQR",
       default: null 
-    } // Link to CustomQR if payment was made via custom QR
+    }, // Link to CustomQR if payment was made via custom QR
+    paymentDetails: {
+      type: Object,
+      default: {}
+    } // Store additional payment info (SePay transaction ID, account info, etc.)
   },
   { timestamps: true }
 );

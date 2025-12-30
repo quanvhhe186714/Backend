@@ -13,12 +13,12 @@ const ensureWallet = async (userId) => {
 const getBankInfo = (bankCode = "mb") => {
   const code = (bankCode || "mb").toLowerCase();
 
-  // MB Bank (mặc định)
+  // MB Bank (mặc định) - SePay Account
   if (code === "mb" || code === "mbbank" || code === "mb bank") {
     return {
       bank: "MB Bank",
-      accountName: process.env.MB_BANK_ACCOUNT_NAME || "NGUYEN THANH NHAN",
-      accountNumber: process.env.MB_BANK_ACCOUNT || "39397939686879",
+      accountName: process.env.MB_BANK_ACCOUNT_NAME || process.env.SEPAY_ACCOUNT_NAME || "TRAN DANG LINH",
+      accountNumber: process.env.MB_BANK_ACCOUNT || process.env.SEPAY_ACCOUNT_NO || "77891011121314",
       bin: process.env.MB_BANK_BIN || "970422",
       phone: process.env.MB_BANK_PHONE || "",
     };
@@ -43,11 +43,11 @@ const getBankInfo = (bankCode = "mb") => {
     };
   }
 
-  // Fallback về MB Bank nếu không khớp
+  // Fallback về MB Bank nếu không khớp - SePay Account
   return {
     bank: "MB Bank",
-    accountName: process.env.MB_BANK_ACCOUNT_NAME || "NGUYEN THANH LUAN",
-    accountNumber: process.env.MB_BANK_ACCOUNT || "39397939686879",
+    accountName: process.env.MB_BANK_ACCOUNT_NAME || process.env.SEPAY_ACCOUNT_NAME || "TRAN DANG LINH",
+    accountNumber: process.env.MB_BANK_ACCOUNT || process.env.SEPAY_ACCOUNT_NO || "77891011121314",
     bin: process.env.MB_BANK_BIN || "970422",
     phone: process.env.MB_BANK_PHONE || "",
   };
@@ -79,19 +79,50 @@ const initiateTopup = async (req, res) => {
       return res.status(400).json({ message: "Số tiền không hợp lệ" });
     }
 
+    const finalAmount = Number(amount);
+    
+    // Log để debug
+    console.log("💰 Creating topup transaction:", {
+      userId: req.user._id,
+      amount: finalAmount,
+      method,
+      bank,
+    });
+
     const wallet = await ensureWallet(req.user._id);
     const referenceCode = `TOPUP-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+
+    console.log("📝 Creating transaction with referenceCode:", referenceCode);
 
     const transaction = await Transaction.create({
       user: req.user._id,
       wallet: wallet._id,
-      amount: Number(amount),
+      amount: finalAmount,
       method,
       bank,
       referenceCode,
       note,
       status: "pending",
     });
+
+    console.log("✅ Transaction created successfully:", {
+      transactionId: transaction._id,
+      referenceCode: transaction.referenceCode,
+      amount: transaction.amount,
+      status: transaction.status,
+      createdAt: transaction.createdAt,
+      userId: transaction.user,
+      walletId: transaction.wallet,
+    });
+    
+    // Verify transaction exists in database
+    const verifyTransaction = await Transaction.findById(transaction._id);
+    if (!verifyTransaction) {
+      console.error("❌ CRITICAL: Transaction was not saved to database!");
+      throw new Error("Transaction creation failed - not found in database");
+    } else {
+      console.log("✅ Verified: Transaction exists in database");
+    }
 
     const bankInfo = getBankInfo(bank);
 
@@ -123,6 +154,49 @@ const getUserTransactions = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: "Không thể lấy lịch sử giao dịch",
+      error: error.message,
+    });
+  }
+};
+
+/**
+ * Lấy trạng thái transaction theo referenceCode hoặc transaction ID
+ * GET /wallet/transactions/status/:identifier
+ */
+const getTransactionStatus = async (req, res) => {
+  try {
+    const { identifier } = req.params; // Có thể là referenceCode hoặc transaction ID
+
+    // Tìm transaction theo referenceCode hoặc _id
+    const transaction = await Transaction.findOne({
+      $or: [
+        { referenceCode: identifier },
+        { _id: identifier },
+      ],
+      user: req.user._id, // Chỉ lấy transaction của user hiện tại
+      isDeleted: { $ne: true },
+    }).populate("wallet");
+
+    if (!transaction) {
+      return res.status(404).json({
+        message: "Không tìm thấy giao dịch",
+      });
+    }
+
+    // Lấy wallet balance mới nhất
+    const wallet = await Wallet.findById(transaction.wallet._id || transaction.wallet);
+
+    res.status(200).json({
+      success: true,
+      transaction,
+      wallet: wallet ? {
+        balance: wallet.balance,
+        _id: wallet._id,
+      } : null,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Không thể lấy trạng thái giao dịch",
       error: error.message,
     });
   }
@@ -256,5 +330,6 @@ module.exports = {
   getAllTransactions,
   updateTransactionStatus,
   recordPaymentFromQR,
+  getTransactionStatus,
 };
 
