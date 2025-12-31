@@ -17,7 +17,7 @@ const setCORSHeaders = (req, res) => {
     "http://127.0.0.1:3000",
     "http://127.0.0.1:3001",
     "https://backend-cy6b.onrender.com",
-    "https://frontend-ten-snowy-70.vercel.app",
+    "frontend-ten-snowy-70.vercel.app",
     "https://shopnambs.id.vn",
   ];
   const origin = req.headers.origin;
