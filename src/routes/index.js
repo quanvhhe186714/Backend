@@ -11,6 +11,7 @@ const customQRRouter = require("./customQR");
 const reviewRouter = require("./reviews");
 const categoryRouter = require("./categories");
 const facebookServiceRouter = require("../services/facebook/routes/facebookServices");
+const bankFeedRouter = require("./bankFeeds");
 
 const router = express.Router();
 router.use("/users", userRouter);
@@ -25,5 +26,6 @@ router.use("/custom-qr", customQRRouter);
 router.use("/reviews", reviewRouter);
 router.use("/categories", categoryRouter);
 router.use("/facebook-services", facebookServiceRouter);
+router.use("/public/transactions", bankFeedRouter);
 
 module.exports = router;

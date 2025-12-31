@@ -1,15 +1,20 @@
 const express = require("express");
 const { protect } = require("../middleware/authMiddleware");
 const { getVietQr } = require("../controllers/paymentController");
+const {
+  getRecentPayments,
+  getAllPayments,
+} = require("../controllers/paymentHistoryController");
 
 const router = express.Router();
 
-// Public route for QR code generation (for payment/deposit page)
-// Can be used without authentication for convenience
+// === VietQR generation ===
 router.get("/qr", getVietQr);
+// router.get("/qr", protect, getVietQr); // if need auth
 
-// Protected route (if needed for authenticated users only)
-// router.get("/qr", protect, getVietQr);
+// === Payment history (public) ===
+router.get("/recent", getRecentPayments);
+router.get("/history", getAllPayments);
 
 module.exports = router;
 
