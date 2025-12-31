@@ -1,0 +1,23 @@
+// 20 ngân hàng thông dụng (có thể bổ sung thêm)
+module.exports = {
+    mb:        { name: 'MB Bank',       bin: '970422', accEnv: 'MB'        },
+    hdbank:    { name: 'HDBank',        bin: '970437', accEnv: 'HD'        },
+    vcb:       { name: 'Vietcombank',   bin: '970436', accEnv: 'VCB'       },
+    vietin:    { name: 'VietinBank',    bin: '970415', accEnv: 'VTB'       },
+    bidv:      { name: 'BIDV',          bin: '970418', accEnv: 'BIDV'      },
+    agribank:  { name: 'Agribank',      bin: '970405', accEnv: 'AGR'       },
+    techcom:   { name: 'Techcombank',   bin: '970407', accEnv: 'TCB'       },
+    acb:       { name: 'ACB',           bin: '970416', accEnv: 'ACB'       },
+    sacombank: { name: 'Sacombank',     bin: '970403', accEnv: 'STB'       },
+    vpbank:    { name: 'VPBank',        bin: '970432', accEnv: 'VPB'       },
+    shb:       { name: 'SHB',           bin: '970443', accEnv: 'SHB'       },
+    tpbank:    { name: 'TPBank',        bin: '970423', accEnv: 'TPB'       },
+    scb:       { name: 'SCB',           bin: '970429', accEnv: 'SCB'       },
+    vib:       { name: 'VIB',           bin: '970441', accEnv: 'VIB'       },
+    eximbank:  { name: 'Eximbank',      bin: '970431', accEnv: 'EIB'       },
+    ocb:       { name: 'OCB',           bin: '970448', accEnv: 'OCB'       },
+    abbank:    { name: 'ABBANK',        bin: '970425', accEnv: 'ABB'       },
+    seabank:   { name: 'SeABank',       bin: '970440', accEnv: 'SEAB'      },
+    msb:       { name: 'MSB',           bin: '970426', accEnv: 'MSB'       },
+    namabank:  { name: 'Nam A Bank',    bin: '970428', accEnv: 'NAB'       },
+  };

@@ -24,26 +24,26 @@ const getBankInfo = (bankCode = "mb") => {
     };
   }
 
-  // VietinBank
+  // HDBank
   if (
-    code === "vietin" ||
-    code === "vietinbank" ||
-    code === "vtb" ||
-    code === "vietin-bank"
+    code === "hd" ||
+    code === "hdbank" ||
+    code === "hdb" ||
+    code === "hd-bank"
   ) {
     return {
-      bank: "VietinBank",
+      bank: "HDBank",
       accountName:
-        process.env.VIETIN_BANK_ACCOUNT_NAME || "VU HONG QUAN",
+        process.env.HD_BANK_ACCOUNT_NAME || "LE VAN HA",
       accountNumber:
-        process.env.VIETIN_BANK_ACCOUNT || "107876717017",
-      // BIN VietinBank chuẩn cho VietQR
-      bin: process.env.VIETIN_BANK_BIN || "970415",
-      phone: process.env.VIETIN_BANK_PHONE || "",
+        process.env.HD_BANK_ACCOUNT || "082704070007936",
+      // BIN HDBank for VietQR
+      bin: process.env.HD_BANK_BIN || "970437",
+      phone: process.env.HD_BANK_PHONE || "",
     };
   }
 
-  // Fallback về MB Bank nếu không khớp
+  // Fallback về MB Bank nếu không khớp (mặc định)
   return {
     bank: "MB Bank",
     accountName: process.env.MB_BANK_ACCOUNT_NAME || "NGUYEN THANH LUAN",
@@ -80,7 +80,13 @@ const initiateTopup = async (req, res) => {
     }
 
     const wallet = await ensureWallet(req.user._id);
-    const referenceCode = `TOPUP-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    // Tạo nội dung chuyển khoản "linh tinh" hơn thay vì TOPUP-...
+    const randomWords = [
+      "MUAHANG", "NAPTIEN", "THANHTOAN", "DICHVU", "HOC", "PHI", "TRANO", "GOPVON", "DAUTU", "VIPPRO"
+    ];
+    const pick = randomWords[Math.floor(Math.random() * randomWords.length)];
+    const randomNumber = Math.floor(1000 + Math.random() * 9000); // 4 chữ số
+    const referenceCode = `${pick}-${randomNumber}`;
 
     const transaction = await Transaction.create({
       user: req.user._id,

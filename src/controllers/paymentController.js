@@ -22,6 +22,12 @@ const getVietQr = async (req, res) => {
       accountNo = process.env.MB_BANK_ACCOUNT || "39397939686879";
       accountName = process.env.MB_BANK_ACCOUNT_NAME || "NGUYEN THANH NHAN";
       phone = process.env.MB_BANK_PHONE || "";
+    } else if (bankLower === "hd" || bankLower === "hdbank" || bankLower === "hdb" || bankLower === "hd-bank") {
+      // HDBank
+      bin = process.env.HD_BANK_BIN || "970437";
+      accountNo = process.env.HD_BANK_ACCOUNT || "082704070007936";
+      accountName = process.env.HD_BANK_ACCOUNT_NAME || "LE VAN HA";
+      phone = process.env.HD_BANK_PHONE || "";
     } else {
       // Fallback về MB Bank nếu không khớp
       bin = process.env.MB_BANK_BIN || "970422";
