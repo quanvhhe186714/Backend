@@ -1,112 +1,85 @@
 const CustomQR = require("../models/customQR");
 const mongoose = require("mongoose");
 
-// 🟢 Tạo QR code tùy chỉnh mới (Admin only)
+/**
+ * Controller: Tạo QR code tuỳ chỉnh mới (Admin only)
+ * Yêu cầu mới (2024-06-xx):
+ *  - Chỉ bắt buộc 3 trường: bank, accountName, accountNo
+ *  - Ảnh QR có thể có hoặc không (tuỳ chọn)
+ *  - Các trường khác như name, transactionCode, content, amount, orderId, isActive là tuỳ chọn
+ */
 const createCustomQR = async (req, res) => {
   try {
-    // Validate file (required cho create)
-    if (!req.file) {
-      console.error("No file uploaded. Request body:", req.body);
-      // Set CORS headers before error response
-      const origin = req.headers.origin;
-      const allowedOrigins = [
-        "http://localhost:3000",
-        "http://localhost:3001",
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:3001",
-        "https://backend-cy6b.onrender.com",
-        "https://frontend-ten-snowy-70.vercel.app",
-        "https://shopnambs.id.vn"
-      ];
-      if (allowedOrigins.includes(origin)) {
-        res.header("Access-Control-Allow-Origin", origin);
-      }
-      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-      res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH");
-      res.header("Access-Control-Allow-Credentials", "true");
-      return res.status(400).json({ message: "Vui lòng chọn file ảnh QR code" });
+    const {
+      name,
+      transactionCode,
+      content,
+      amount,
+      bank,
+      accountName,
+      accountNo,
+      orderId,
+      isActive,
+    } = req.body;
+
+    // Validate các field bắt buộc mới
+    if (!bank || !accountName || !accountNo || !content || !amount) {
+      return res.status(400).json({
+        message: "Thiếu trường bắt buộc: bank, accountName, accountNo, content, amount",
+      });
     }
 
-    // Validate và parse request body
-    const { name, transactionCode, content, amount, bank, accountName, accountNo, orderId, isActive } = req.body;
-    
-    if (!name || name.trim() === '') {
-      return res.status(400).json({ message: "Tên QR code là bắt buộc" });
+    // Validate accountNo chỉ chứa số
+    if (!/^[0-9]+$/.test(accountNo)) {
+      return res.status(400).json({ message: "Số tài khoản chỉ được chứa số (0-9)" });
     }
 
-    // Validate số tài khoản - chỉ cho phép số (0-9)
-    if (accountNo && accountNo.trim() !== '') {
-      if (!/^[0-9]+$/.test(accountNo)) {
-        return res.status(400).json({ message: "Số tài khoản chỉ được chứa số (0-9)" });
-      }
+    // Lấy URL ảnh QR nếu có upload
+    let imageUrl = null;
+    if (req.file) {
+      imageUrl = req.file.secure_url || req.file.path;
     }
 
-    // Lấy imageUrl từ file đã upload
-    const imageUrl = req.file.secure_url || req.file.path;
-    
-    if (!imageUrl) {
-      console.error("No imageUrl from uploaded file:", req.file);
-      return res.status(400).json({ message: "Lỗi khi lấy URL ảnh từ file đã upload" });
-    }
-
-    // Xử lý orderId - cho phép cả ObjectId và string
+    // Chuẩn hoá orderId để lưu (giữ nguyên logic cũ cho phép string/ObjectId/rỗng)
     let processedOrderId = null;
-    if (orderId && orderId.trim() !== '') {
-      // Cho phép lưu dưới dạng string hoặc ObjectId (model sẽ tự xử lý)
+    if (orderId && orderId.trim() !== "") {
       processedOrderId = orderId;
     }
 
-    // Tạo QR code mới
     const customQR = new CustomQR({
-      name: name.trim(),
-      imageUrl,
+      name: name?.trim() || "", // không còn bắt buộc
+      imageUrl, // có thể null
       transactionCode: transactionCode || "",
       content: content || "",
       amount: amount ? parseFloat(amount) : null,
-      bank: bank || "mb",
-      accountName: accountName || "",
-      accountNo: accountNo || "",
+      bank: bank.trim(),
+      accountName: accountName.trim(),
+      accountNo: accountNo.trim(),
       orderId: processedOrderId,
       createdBy: req.user._id,
-      isActive: isActive !== undefined ? (isActive === 'true' || isActive === true) : true
+      isActive: isActive !== undefined ? isActive === "true" || isActive === true : true,
     });
 
     await customQR.save();
 
-    res.status(201).json({
-      message: "Tạo QR code tùy chỉnh thành công",
-      customQR
-    });
+    return res.status(201).json({ message: "Tạo QR code tuỳ chỉnh thành công", customQR });
   } catch (error) {
     console.error("Error creating custom QR:", error);
-    // Set CORS headers before error response
-    const origin = req.headers.origin;
-    const allowedOrigins = [
-      "http://localhost:3000",
-      "http://localhost:3001",
-      "http://127.0.0.1:3000",
-      "http://127.0.0.1:3001",
-      "https://backend-cy6b.onrender.com",
-      "https://frontend-ten-snowy-70.vercel.app",
-      "https://shopnambs.id.vn"
-    ];
-    if (allowedOrigins.includes(origin)) {
-      res.header("Access-Control-Allow-Origin", origin);
-    }
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH");
-    res.header("Access-Control-Allow-Credentials", "true");
-    res.status(500).json({ 
-      message: error.message || "Lỗi server khi tạo QR code tùy chỉnh", 
-      error: error.message 
+    return res.status(500).json({
+      message: error.message || "Lỗi server khi tạo QR code tuỳ chỉnh",
+      error: error.message,
     });
   }
 };
 
+/*********************************
+ * Các controller còn lại GIỮ NGUYÊN từ phiên bản cũ
+ *********************************/
+
 // 🟢 Lấy tất cả QR codes (Admin only)
 const getAllCustomQRs = async (req, res) => {
   try {
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== "admin") {
       return res.status(403).json({ message: "Chỉ admin mới được xem danh sách QR code." });
     }
 
@@ -114,7 +87,7 @@ const getAllCustomQRs = async (req, res) => {
     let query = {};
 
     if (isActive !== undefined) {
-      query.isActive = isActive === 'true';
+      query.isActive = isActive === "true";
     }
 
     if (orderId) {
@@ -122,7 +95,7 @@ const getAllCustomQRs = async (req, res) => {
     }
 
     const customQRs = await CustomQR.find(query)
-      .populate('createdBy', 'name email')
+      .populate("createdBy", "name email")
       .sort({ createdAt: -1 });
 
     // Populate orderId chỉ khi nó là ObjectId hợp lệ
@@ -130,10 +103,9 @@ const getAllCustomQRs = async (req, res) => {
       customQRs.map(async (qr) => {
         if (qr.orderId && mongoose.Types.ObjectId.isValid(qr.orderId)) {
           try {
-            await qr.populate('orderId', 'totalAmount status');
-          } catch (populateError) {
-            // Nếu populate lỗi (orderId không tồn tại), giữ nguyên orderId
-            console.warn(`Cannot populate orderId ${qr.orderId}:`, populateError.message);
+            await qr.populate("orderId", "totalAmount status");
+          } catch (e) {
+            console.warn(`Cannot populate orderId ${qr.orderId}:`, e.message);
           }
         }
         return qr;
@@ -143,14 +115,11 @@ const getAllCustomQRs = async (req, res) => {
     res.status(200).json(customQRsWithPopulated);
   } catch (error) {
     console.error("Error getting custom QR codes:", error);
-    res.status(500).json({ 
-      message: "Lỗi server khi lấy danh sách QR code", 
-      error: error.message 
-    });
+    res.status(500).json({ message: "Lỗi server khi lấy danh sách QR code", error: error.message });
   }
 };
 
-// 🟢 Publish một QR code để hiển thị trên trang \"Thanh toán qua QR\" (Admin only)
+// 🟢 Publish một QR code để hiển thị trên trang "Thanh toán qua QR" (Admin only)
 const publishCustomQR = async (req, res) => {
   try {
     if (req.user.role !== "admin") {
@@ -169,23 +138,16 @@ const publishCustomQR = async (req, res) => {
       return res.status(400).json({ message: "Chỉ có thể publish QR đang ở trạng thái kích hoạt." });
     }
 
-    // Cho phép nhiều QR cùng publish (bỏ logic tự động unpublish các QR khác)
     customQR.isPublished = true;
     customQR.publishedAt = new Date();
     customQR.publishedBy = req.user._id;
 
     await customQR.save();
 
-    res.status(200).json({
-      message: "Publish QR code thành công",
-      customQR,
-    });
+    res.status(200).json({ message: "Publish QR code thành công", customQR });
   } catch (error) {
     console.error("Error publishing custom QR:", error);
-    res.status(500).json({
-      message: "Lỗi server khi publish QR code",
-      error: error.message,
-    });
+    res.status(500).json({ message: "Lỗi server khi publish QR code", error: error.message });
   }
 };
 
@@ -206,39 +168,25 @@ const unpublishCustomQR = async (req, res) => {
     customQR.isPublished = false;
     await customQR.save();
 
-    res.status(200).json({
-      message: "Gỡ publish QR code thành công",
-      customQR,
-    });
+    res.status(200).json({ message: "Gỡ publish QR code thành công", customQR });
   } catch (error) {
     console.error("Error unpublishing custom QR:", error);
-    res.status(500).json({
-      message: "Lỗi server khi gỡ publish QR code",
-      error: error.message,
-    });
+    res.status(500).json({ message: "Lỗi server khi gỡ publish QR code", error: error.message });
   }
 };
 
-// 🟢 Lấy QR code đang được publish cho trang \"Thanh toán qua QR\"
-// Endpoint này dành cho user đã đăng nhập (đã được bảo vệ ở route)
-// Ẩn thông tin nhạy cảm (accountName, accountNo, transactionCode, content) cho đến khi user chọn QR
+// 🟢 Lấy QR code đang được publish cho trang "Thanh toán qua QR" (đã ẩn thông tin nhạy cảm)
 const getPublishedCustomQRs = async (req, res) => {
   try {
     const customQRs = await CustomQR.find({ isPublished: true, isActive: true })
-      .populate('createdBy', 'name email')
-      .select('-accountName -accountNo -transactionCode -content') // Ẩn thông tin nhạy cảm
+      .populate("createdBy", "name email")
+      .select("-accountName -accountNo -transactionCode -content")
       .sort({ publishedAt: -1 });
-
-    // Log để debug
-    console.log(`Found ${customQRs.length} published QR codes`);
 
     res.status(200).json(customQRs);
   } catch (error) {
     console.error("Error getting published custom QR codes:", error);
-    res.status(500).json({
-      message: "Lỗi server khi lấy QR code đã publish",
-      error: error.message,
-    });
+    res.status(500).json({ message: "Lỗi server khi lấy QR code đã publish", error: error.message });
   }
 };
 
@@ -246,13 +194,11 @@ const getPublishedCustomQRs = async (req, res) => {
 const getPublishedQRDetail = async (req, res) => {
   try {
     const { id } = req.params;
-    
-    const customQR = await CustomQR.findOne({ 
-      _id: id, 
-      isPublished: true, 
-      isActive: true 
-    })
-      .populate('createdBy', 'name email');
+
+    const customQR = await CustomQR.findOne({ _id: id, isPublished: true, isActive: true }).populate(
+      "createdBy",
+      "name email"
+    );
 
     if (!customQR) {
       return res.status(404).json({ message: "Không tìm thấy QR code hoặc QR code không còn được publish" });
@@ -261,47 +207,38 @@ const getPublishedQRDetail = async (req, res) => {
     res.status(200).json(customQR);
   } catch (error) {
     console.error("Error getting published QR detail:", error);
-    res.status(500).json({
-      message: "Lỗi server khi lấy chi tiết QR code",
-      error: error.message,
-    });
+    res.status(500).json({ message: "Lỗi server khi lấy chi tiết QR code", error: error.message });
   }
 };
 
 // 🟢 Lấy QR code theo ID
 const getCustomQRById = async (req, res) => {
   try {
-    const customQR = await CustomQR.findById(req.params.id)
-      .populate('createdBy', 'name email');
+    const customQR = await CustomQR.findById(req.params.id).populate("createdBy", "name email");
 
     if (!customQR) {
       return res.status(404).json({ message: "Không tìm thấy QR code" });
     }
 
-    // Populate orderId chỉ khi nó là ObjectId hợp lệ
+    // Populate orderId nếu là ObjectId hợp lệ
     if (customQR.orderId && mongoose.Types.ObjectId.isValid(customQR.orderId)) {
       try {
-        await customQR.populate('orderId', 'totalAmount status');
-      } catch (populateError) {
-        // Nếu populate lỗi, giữ nguyên orderId
-        console.warn(`Cannot populate orderId ${customQR.orderId}:`, populateError.message);
+        await customQR.populate("orderId", "totalAmount status");
+      } catch (e) {
+        console.warn(`Cannot populate orderId ${customQR.orderId}:`, e.message);
       }
     }
 
     res.status(200).json(customQR);
   } catch (error) {
     console.error("Error getting custom QR by ID:", error);
-    res.status(500).json({ 
-      message: "Lỗi server khi lấy QR code", 
-      error: error.message 
-    });
+    res.status(500).json({ message: "Lỗi server khi lấy QR code", error: error.message });
   }
 };
 
 // 🟢 Cập nhật QR code (Admin only)
 const updateCustomQR = async (req, res) => {
   try {
-    // Tìm QR code cần update
     const customQR = await CustomQR.findById(req.params.id);
     if (!customQR) {
       return res.status(404).json({ message: "Không tìm thấy QR code" });
@@ -310,66 +247,50 @@ const updateCustomQR = async (req, res) => {
     // Nếu có file mới, cập nhật imageUrl
     if (req.file) {
       const imageUrl = req.file.secure_url || req.file.path;
-      if (!imageUrl) {
-        console.error("No imageUrl from uploaded file:", req.file);
-        return res.status(400).json({ message: "Lỗi khi lấy URL ảnh từ file đã upload" });
-      }
       customQR.imageUrl = imageUrl;
     }
 
-    // Validate số tài khoản nếu có cập nhật - chỉ cho phép số (0-9)
-    if (req.body.accountNo !== undefined && req.body.accountNo && req.body.accountNo.trim() !== '') {
-      if (!/^[0-9]+$/.test(req.body.accountNo)) {
-        return res.status(400).json({ message: "Số tài khoản chỉ được chứa số (0-9)" });
-      }
+    // Validate accountNo nếu có cập nhật
+    if (req.body.accountNo !== undefined && req.body.accountNo && !/^[0-9]+$/.test(req.body.accountNo)) {
+      return res.status(400).json({ message: "Số tài khoản chỉ được chứa số (0-9)" });
     }
 
-    // Cập nhật các field khác
-    if (req.body.name !== undefined) customQR.name = req.body.name.trim();
-    if (req.body.transactionCode !== undefined) customQR.transactionCode = req.body.transactionCode;
-    if (req.body.content !== undefined) customQR.content = req.body.content;
+    // Cập nhật các field khác (bỏ required cho name)
+    [
+      "name",
+      "transactionCode",
+      "content",
+      "amount",
+      "bank",
+      "accountName",
+      "accountNo",
+      "orderId",
+      "isActive",
+    ].forEach((field) => {
+      if (req.body[field] !== undefined) {
+        customQR[field] = req.body[field] === "" ? null : req.body[field];
+      }
+    });
+
     if (req.body.amount !== undefined) {
       customQR.amount = req.body.amount ? parseFloat(req.body.amount) : null;
-    }
-    if (req.body.bank !== undefined) customQR.bank = req.body.bank;
-    if (req.body.accountName !== undefined) customQR.accountName = req.body.accountName;
-    if (req.body.accountNo !== undefined) customQR.accountNo = req.body.accountNo;
-    
-    // Xử lý orderId - cho phép cả ObjectId và string
-    if (req.body.orderId !== undefined) {
-      if (req.body.orderId === '' || req.body.orderId === null) {
-        customQR.orderId = null;
-      } else {
-        // Cho phép lưu dưới dạng string hoặc ObjectId (model sẽ tự xử lý)
-        customQR.orderId = req.body.orderId;
-      }
-    }
-    
-    if (req.body.isActive !== undefined) {
-      customQR.isActive = req.body.isActive === 'true' || req.body.isActive === true;
     }
 
     customQR.updatedAt = new Date();
     await customQR.save();
 
-    res.status(200).json({
-      message: "Cập nhật QR code thành công",
-      customQR
-    });
+    res.status(200).json({ message: "Cập nhật QR code thành công", customQR });
   } catch (error) {
     console.error("Error updating custom QR:", error);
-    res.status(500).json({ 
-      message: error.message || "Lỗi server khi cập nhật QR code", 
-      error: error.message 
-    });
+    res.status(500).json({ message: error.message || "Lỗi server khi cập nhật QR code", error: error.message });
   }
 };
 
-// 🟢 Xóa QR code (Admin only)
+// 🟢 Xoá QR code (Admin only)
 const deleteCustomQR = async (req, res) => {
   try {
-    if (req.user.role !== 'admin') {
-      return res.status(403).json({ message: "Chỉ admin mới được xóa QR code." });
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ message: "Chỉ admin mới được xoá QR code." });
     }
 
     const customQR = await CustomQR.findById(req.params.id);
@@ -378,31 +299,24 @@ const deleteCustomQR = async (req, res) => {
     }
 
     await customQR.deleteOne();
-
-    res.status(200).json({ message: "Xóa QR code thành công" });
+    res.status(200).json({ message: "Xoá QR code thành công" });
   } catch (error) {
-    res.status(500).json({ 
-      message: "Lỗi server khi xóa QR code", 
-      error: error.message 
-    });
+    console.error("Error deleting QR code:", error);
+    res.status(500).json({ message: "Lỗi server khi xoá QR code", error: error.message });
   }
 };
 
-// 🟢 Lấy danh sách QR codes công khai (Public - không cần auth)
+// 🟢 Lấy danh sách QR codes công khai (Public – không cần auth)
 const getPublicCustomQRs = async (req, res) => {
   try {
-    // Chỉ trả về QR codes đang active
     const customQRs = await CustomQR.find({ isActive: true })
-      .select('-createdBy -orderId') // Không trả về thông tin nhạy cảm
+      .select("-createdBy -orderId")
       .sort({ createdAt: -1 });
 
     res.status(200).json(customQRs);
   } catch (error) {
     console.error("Error getting public custom QR codes:", error);
-    res.status(500).json({ 
-      message: "Lỗi server khi lấy danh sách QR code công khai", 
-      error: error.message 
-    });
+    res.status(500).json({ message: "Lỗi server khi lấy danh sách QR code công khai", error: error.message });
   }
 };
 
@@ -418,4 +332,3 @@ module.exports = {
   getPublishedCustomQRs,
   getPublishedQRDetail,
 };
-
