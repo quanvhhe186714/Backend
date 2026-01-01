@@ -1,8 +1,11 @@
 // Utility để encrypt/decrypt password (có thể decrypt được)
 const crypto = require('crypto');
 
-// Lấy encryption key từ environment variable hoặc dùng default
-const ENCRYPTION_KEY = process.env.PASSWORD_ENCRYPTION_KEY || 'your-secret-key-32-chars-long!!'; // Phải 32 ký tự
+// Lấy encryption key từ environment variable. Có thể độ dài tùy ý
+// Sẽ băm SHA-256 để tạo key 32 bytes (phù hợp aes-256)
+const RAW_KEY = process.env.PASSWORD_ENCRYPTION_KEY || 'change-me-in-env-file';
+// Luôn tạo key 32 bytes bằng SHA-256
+const ENCRYPTION_KEY = require('crypto').createHash('sha256').update(RAW_KEY).digest();
 const ALGORITHM = 'aes-256-cbc';
 
 /**
