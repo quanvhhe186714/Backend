@@ -1,3 +1,5 @@
+const { getContentFromData } = require("../utils/getContentFromData");
+
 const buildVietQrImageUrl = ({ bin, accountNo, accountName, amount, content }) => {
   const base = `https://img.vietqr.io/image/${encodeURIComponent(bin)}-${encodeURIComponent(accountNo)}-compact2.png`;
   const params = new URLSearchParams();
@@ -42,8 +44,32 @@ const getVietQr = async (req, res) => {
       });
     }
 
-    // Nội dung mặc định nếu không có
-    const transferContent = content || "MMOS";
+    // Validate số tiền bắt buộc
+    if (!amount || Number(amount) <= 0) {
+      return res.status(400).json({
+        message: "Vui lòng cung cấp số tiền hợp lệ",
+      });
+    }
+
+    // Tự động lấy nội dung từ file JSON nếu có số tiền nhưng chưa có content
+    let transferContent = content || "";
+    let isContentFromData = false;
+    
+    // Nếu có số tiền nhưng chưa có content, tự động tìm trong file nhập khoản_history.json
+    if (amount && Number(amount) > 0 && !transferContent) {
+      const contentFromData = getContentFromData(Number(amount), "in");
+      if (contentFromData) {
+        transferContent = contentFromData;
+        isContentFromData = true;
+        console.log(`Đã tự động lấy nội dung từ file nhập khoản_history.json cho số tiền: ${amount}`);
+      }
+    }
+    
+    // Nếu không tìm thấy trong file JSON, dùng nội dung mặc định (không quan trọng)
+    if (!transferContent) {
+      transferContent = `THANHTOAN${Date.now()}`; // Nội dung mặc định, có thể là gì cũng được
+      console.log(`Số tiền ${amount} không có trong file JSON, sử dụng nội dung mặc định`);
+    }
 
     const imageUrl = buildVietQrImageUrl({
       bin,
@@ -58,7 +84,10 @@ const getVietQr = async (req, res) => {
       accountName: accountName || "",
       accountNo: accountNo || "",
       phone: phone || "",
-      bank: bank.toLowerCase()
+      bank: bank.toLowerCase(),
+      amount: Number(amount),
+      content: transferContent, // Nội dung: từ file JSON nếu có, hoặc mặc định nếu không
+      isContentFromData // true nếu lấy từ file JSON, false nếu dùng mặc định
     });
   } catch (error) {
     res.status(500).json({ message: "Failed to generate QR", error: error.message });

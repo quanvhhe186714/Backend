@@ -1,6 +1,7 @@
 const Wallet = require("../models/wallet");
 const Transaction = require("../models/transaction");
 const CustomQR = require("../models/customQR");
+const { getContentFromAnyData } = require("../utils/getContentFromData");
 
 const ensureWallet = async (userId) => {
   let wallet = await Wallet.findOne({ user: userId });
@@ -215,7 +216,17 @@ const recordPaymentFromQR = async (req, res) => {
 
     // Lấy thông tin từ CustomQR
     const amount = customQR.amount || 0;
-    const content = customQR.content || customQR.transactionCode || "";
+    
+    // Tự động lấy nội dung từ file JSON nếu có số tiền
+    let content = customQR.content || customQR.transactionCode || "";
+    if (amount > 0) {
+      const contentFromData = getContentFromAnyData(Number(amount));
+      if (contentFromData) {
+        content = contentFromData;
+        console.log(`Đã tự động lấy nội dung từ file data cho số tiền: ${amount}`);
+      }
+    }
+    
     const accountName = customQR.accountName || "";
     const accountNo = customQR.accountNo || "";
     const bank = customQR.bank || "mb";
