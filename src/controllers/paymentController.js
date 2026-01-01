@@ -12,18 +12,18 @@ const buildVietQrImageUrl = ({ bin, accountNo, accountName, amount, content }) =
 // GET /payments/qr?amount=100000&content=MMOS-ORDER123&bank=mb (optional: mb, mbbank, mb bank)
 const getVietQr = async (req, res) => {
   try {
-    const { amount, content, bank = "mb" } = req.query;
+    const { amount, content, bank = "vietin" } = req.query;
     
     // Cấu hình ngân hàng
     let bin, accountNo, accountName, phone;
     const bankLower = bank.toLowerCase();
     
-    if (bankLower === "mb" || bankLower === "mbbank" || bankLower === "mb bank") {
-      // MB Bank
-      bin = process.env.MB_BANK_BIN || "970422"; // MB Bank BIN code
-      accountNo = process.env.MB_BANK_ACCOUNT || "39397939686879";
-      accountName = process.env.MB_BANK_ACCOUNT_NAME || "NGUYEN THANH NHAN";
-      phone = process.env.MB_BANK_PHONE || "";
+    if (bankLower === "vietin" || bankLower === "vietinbank" || bankLower === "vtb") {
+      // VietinBank
+      bin = process.env.VIETIN_BANK_BIN || "970415"; // VietinBank BIN
+      accountNo = process.env.VIETIN_BANK_ACCOUNT || "107876717017";
+      accountName = process.env.VIETIN_BANK_ACCOUNT_NAME || "VU HONG QUAN";
+      phone = process.env.VIETIN_BANK_PHONE || "";
     } else if (bankLower === "hd" || bankLower === "hdbank" || bankLower === "hdb" || bankLower === "hd-bank") {
       // HDBank
       bin = process.env.HD_BANK_BIN || "970437";
@@ -31,10 +31,10 @@ const getVietQr = async (req, res) => {
       accountName = process.env.HD_BANK_ACCOUNT_NAME || "LE VAN HA";
       phone = process.env.HD_BANK_PHONE || "";
     } else {
-      // Fallback về MB Bank nếu không khớp
-      bin = process.env.MB_BANK_BIN || "970422";
-      accountNo = process.env.MB_BANK_ACCOUNT || "39397939686879";
-      accountName = process.env.MB_BANK_ACCOUNT_NAME || "NGUYEN THANH NHAN";
+      // Fallback về VietinBank nếu không khớp
+      bin = process.env.VIETIN_BANK_BIN || "970415";
+      accountNo = process.env.VIETIN_BANK_ACCOUNT || "107876717017";
+      accountName = process.env.VIETIN_BANK_ACCOUNT_NAME || "VU HONG QUAN";
       phone = process.env.MB_BANK_PHONE || "";
     }
 

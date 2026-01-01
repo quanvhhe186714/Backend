@@ -1,10 +1,8 @@
 // 20 ngân hàng thông dụng (có thể bổ sung thêm)
 module.exports = {
-    mb:        { name: 'MB Bank',       bin: '970422', accEnv: 'MB'        },
+    vietin:    { name: 'VietinBank',    bin: '970415', accEnv: 'VTB'       },
     hdbank:    { name: 'HDBank',        bin: '970437', accEnv: 'HD'        },
     vcb:       { name: 'Vietcombank',   bin: '970436', accEnv: 'VCB'       },
-    vietin:    { name: 'VietinBank',    bin: '970415', accEnv: 'VTB'       },
-    bidv:      { name: 'BIDV',          bin: '970418', accEnv: 'BIDV'      },
     agribank:  { name: 'Agribank',      bin: '970405', accEnv: 'AGR'       },
     techcom:   { name: 'Techcombank',   bin: '970407', accEnv: 'TCB'       },
     acb:       { name: 'ACB',           bin: '970416', accEnv: 'ACB'       },

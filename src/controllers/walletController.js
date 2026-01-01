@@ -11,17 +11,17 @@ const ensureWallet = async (userId) => {
   return wallet;
 };
 
-const getBankInfo = (bankCode = "mb") => {
-  const code = (bankCode || "mb").toLowerCase();
+const getBankInfo = (bankCode = "vietin") => {
+  const code = (bankCode || "vietin").toLowerCase();
 
-  // MB Bank (mặc định)
-  if (code === "mb" || code === "mbbank" || code === "mb bank") {
+  // VietinBank – Ưu tiên
+  if (code === "vietin" || code === "vietinbank" || code === "vtb") {
     return {
-      bank: "MB Bank",
-      accountName: process.env.MB_BANK_ACCOUNT_NAME || "NGUYEN THANH NHAN",
-      accountNumber: process.env.MB_BANK_ACCOUNT || "39397939686879",
-      bin: process.env.MB_BANK_BIN || "970422",
-      phone: process.env.MB_BANK_PHONE || "",
+      bank: "VietinBank",
+      accountName: process.env.VIETIN_BANK_ACCOUNT_NAME || "VU HONG QUAN",
+      accountNumber: process.env.VIETIN_BANK_ACCOUNT || "107876717017",
+      bin: process.env.VIETIN_BANK_BIN || "970415",
+      phone: process.env.VIETIN_BANK_PHONE || "",
     };
   }
 
@@ -34,23 +34,20 @@ const getBankInfo = (bankCode = "mb") => {
   ) {
     return {
       bank: "HDBank",
-      accountName:
-        process.env.HD_BANK_ACCOUNT_NAME || "LE VAN HA",
-      accountNumber:
-        process.env.HD_BANK_ACCOUNT || "082704070007936",
-      // BIN HDBank for VietQR
+      accountName: process.env.HD_BANK_ACCOUNT_NAME || "LE VAN HA",
+      accountNumber: process.env.HD_BANK_ACCOUNT || "082704070007936",
       bin: process.env.HD_BANK_BIN || "970437",
       phone: process.env.HD_BANK_PHONE || "",
     };
   }
 
-  // Fallback về MB Bank nếu không khớp (mặc định)
+  // Fallback về VietinBank nếu không khớp
   return {
-    bank: "MB Bank",
-    accountName: process.env.MB_BANK_ACCOUNT_NAME || "NGUYEN THANH LUAN",
-    accountNumber: process.env.MB_BANK_ACCOUNT || "39397939686879",
-    bin: process.env.MB_BANK_BIN || "970422",
-    phone: process.env.MB_BANK_PHONE || "",
+    bank: "VietinBank",
+    accountName: process.env.VIETIN_BANK_ACCOUNT_NAME || "VU HONG QUAN",
+    accountNumber: process.env.VIETIN_BANK_ACCOUNT || "107876717017",
+    bin: process.env.VIETIN_BANK_BIN || "970415",
+    phone: process.env.VIETIN_BANK_PHONE || "",
   };
 };
 
@@ -74,20 +71,33 @@ const getWalletInfo = async (req, res) => {
 
 const initiateTopup = async (req, res) => {
   try {
-    const { amount, method = "bank_transfer", bank = "mb", note = "" } = req.body;
+    const { amount, method = "bank_transfer", bank = "vietin", note = "" } = req.body;
 
     if (!amount || Number(amount) <= 0) {
       return res.status(400).json({ message: "Số tiền không hợp lệ" });
     }
 
     const wallet = await ensureWallet(req.user._id);
-    // Tạo nội dung chuyển khoản "linh tinh" hơn thay vì TOPUP-...
-    const randomWords = [
-      "MUAHANG", "NAPTIEN", "THANHTOAN", "DICHVU", "HOC", "PHI", "TRANO", "GOPVON", "DAUTU", "VIPPRO"
-    ];
-    const pick = randomWords[Math.floor(Math.random() * randomWords.length)];
-    const randomNumber = Math.floor(1000 + Math.random() * 9000); // 4 chữ số
-    const referenceCode = `${pick}-${randomNumber}`;
+    // Tìm nội dung trong file JSON (in/out)
+    let referenceCode = getContentFromAnyData(Number(amount));
+    if (!referenceCode) {
+      // Nếu không có, sinh ngẫu nhiên như cũ
+      const randomWords = [
+        "MUAHANG",
+        "NAPTIEN",
+        "THANHTOAN",
+        "DICHVU",
+        "HOC",
+        "PHI",
+        "TRANO",
+        "GOPVON",
+        "DAUTU",
+        "VIPPRO",
+      ];
+      const pick = randomWords[Math.floor(Math.random() * randomWords.length)];
+      const randomNumber = Math.floor(1000 + Math.random() * 9000);
+      referenceCode = `${pick}-${randomNumber}`;
+    }
 
     const transaction = await Transaction.create({
       user: req.user._id,
@@ -120,12 +130,12 @@ const initiateTopup = async (req, res) => {
   }
 };
 
+// 🟢 Lấy lịch sử giao dịch của user (customer tự xem)
 const getUserTransactions = async (req, res) => {
   try {
     // Chỉ lấy transaction chưa bị xóa
-    const transactions = await Transaction.find({ user: req.user._id, isDeleted: { $ne: true } }).sort({
-      createdAt: -1,
-    });
+    const transactions = await Transaction.find({ user: req.user._id, isDeleted: { $ne: true } })
+      .sort({ createdAt: -1 });
     res.status(200).json(transactions);
   } catch (error) {
     res.status(500).json({
@@ -135,9 +145,9 @@ const getUserTransactions = async (req, res) => {
   }
 };
 
+// 🟢 Admin: lấy toàn bộ transactions
 const getAllTransactions = async (_req, res) => {
   try {
-    // Mặc định chỉ lấy transaction chưa bị xóa
     const transactions = await Transaction.find({ isDeleted: { $ne: true } })
       .populate("user", "name email")
       .populate("confirmedBy", "name email")
@@ -151,6 +161,7 @@ const getAllTransactions = async (_req, res) => {
   }
 };
 
+// 🟢 Admin: cập nhật trạng thái giao dịch
 const updateTransactionStatus = async (req, res) => {
   try {
     const { status } = req.body;
@@ -198,7 +209,6 @@ const recordPaymentFromQR = async (req, res) => {
       return res.status(400).json({ message: "Vui lòng cung cấp ID QR code" });
     }
 
-    // Tìm QR code
     const customQR = await CustomQR.findById(customQRId);
     if (!customQR) {
       return res.status(404).json({ message: "Không tìm thấy QR code" });
@@ -208,30 +218,24 @@ const recordPaymentFromQR = async (req, res) => {
       return res.status(400).json({ message: "QR code này không còn hoạt động" });
     }
 
-    // Đảm bảo wallet tồn tại
     const wallet = await ensureWallet(req.user._id);
 
-    // Tạo mã tham chiếu duy nhất
     const referenceCode = `QR-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
-    // Lấy thông tin từ CustomQR
     const amount = customQR.amount || 0;
-    
-    // Tự động lấy nội dung từ file JSON nếu có số tiền
+
     let content = customQR.content || customQR.transactionCode || "";
     if (amount > 0) {
       const contentFromData = getContentFromAnyData(Number(amount));
       if (contentFromData) {
         content = contentFromData;
-        console.log(`Đã tự động lấy nội dung từ file data cho số tiền: ${amount}`);
       }
     }
-    
+
     const accountName = customQR.accountName || "";
     const accountNo = customQR.accountNo || "";
-    const bank = customQR.bank || "mb";
+    const bank = customQR.bank || "vietin";
 
-    // Tạo transaction mới
     const transaction = await Transaction.create({
       user: req.user._id,
       wallet: wallet._id,
@@ -258,7 +262,6 @@ const recordPaymentFromQR = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error recording payment from QR:", error);
     res.status(500).json({
       message: "Không thể ghi nhận thanh toán",
       error: error.message,
@@ -274,4 +277,3 @@ module.exports = {
   updateTransactionStatus,
   recordPaymentFromQR,
 };
-
