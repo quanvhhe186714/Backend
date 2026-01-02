@@ -2,6 +2,7 @@
 module.exports = {
     vietin:    { name: 'VietinBank',    bin: '970415', accEnv: 'VTB'       },
     hdbank:    { name: 'HDBank',        bin: '970437', accEnv: 'HD'        },
+    bidv:      { name: 'BIDV',          bin: '970418', accEnv: 'BIDV'      },
     vcb:       { name: 'Vietcombank',   bin: '970436', accEnv: 'VCB'       },
     agribank:  { name: 'Agribank',      bin: '970405', accEnv: 'AGR'       },
     techcom:   { name: 'Techcombank',   bin: '970407', accEnv: 'TCB'       },
