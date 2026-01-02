@@ -1,4 +1,6 @@
 const { getContentFromData } = require("../utils/getContentFromData");
+const Wallet = require("../models/wallet");
+const Transaction = require("../models/transaction");
 
 const buildVietQrImageUrl = ({ bin, accountNo, accountName, amount, content }) => {
   const base = `https://img.vietqr.io/image/${encodeURIComponent(bin)}-${encodeURIComponent(accountNo)}-compact2.png`;
@@ -79,15 +81,47 @@ const getVietQr = async (req, res) => {
       content: transferContent,
     });
 
-    res.status(200).json({ 
+        // ✅ Tạo Transaction "pending" ngay khi tạo QR
+    // Yêu cầu: route này đã có `protect` => req.user tồn tại
+    let transaction = null;
+    try {
+      // Đảm bảo user có wallet
+      let wallet = await Wallet.findOne({ user: req.user._id });
+      if (!wallet) {
+        wallet = await Wallet.create({ user: req.user._id });
+      }
+
+      // Nếu referenceCode trùng, thêm hậu tố thời gian
+      let referenceCode = transferContent;
+      const duplicated = await Transaction.findOne({ referenceCode });
+      if (duplicated) {
+        referenceCode = `${referenceCode}-${Date.now().toString().slice(-4)}`;
+      }
+
+      transaction = await Transaction.create({
+        user: req.user._id,
+        wallet: wallet._id,
+        amount: Number(amount),
+        method: "bank_transfer",
+        bank: bankLower,
+        referenceCode,
+        note: transferContent,
+        status: "pending",
+      });
+    } catch (e) {
+      console.error("[Transaction] Failed to create pending transaction:", e);
+    }
+
+    res.status(200).json({
       imageUrl,
       accountName: accountName || "",
       accountNo: accountNo || "",
       phone: phone || "",
-      bank: bank.toLowerCase(),
+      bank: bankLower,
       amount: Number(amount),
-      content: transferContent, // Nội dung: từ file JSON nếu có, hoặc mặc định nếu không
-      isContentFromData // true nếu lấy từ file JSON, false nếu dùng mặc định
+      content: transferContent,
+      isContentFromData,
+      transactionId: transaction?._id || null,
     });
   } catch (error) {
     res.status(500).json({ message: "Failed to generate QR", error: error.message });

@@ -80,6 +80,16 @@ const initiateTopup = async (req, res) => {
     const wallet = await ensureWallet(req.user._id);
     // Tìm nội dung trong file JSON (in/out)
     let referenceCode = getContentFromAnyData(Number(amount));
+
+    // Đảm bảo referenceCode là duy nhất trong collection Transaction
+    if (referenceCode) {
+      const exists = await Transaction.findOne({ referenceCode });
+      if (exists) {
+        // Nếu trùng, thêm hậu tố thời gian để khác biệt
+        referenceCode = `${referenceCode}-${Date.now().toString().slice(-4)}`;
+      }
+    }
+
     if (!referenceCode) {
       // Nếu không có, sinh ngẫu nhiên như cũ
       const randomWords = [

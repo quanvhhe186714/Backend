@@ -9,7 +9,7 @@ const {
 const router = express.Router();
 
 // === VietQR generation ===
-router.get("/qr", getVietQr);
+router.get("/qr", protect, getVietQr);
 // router.get("/qr", protect, getVietQr); // if need auth
 
 // === Payment history (public) ===
