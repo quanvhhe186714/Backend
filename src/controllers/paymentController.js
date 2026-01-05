@@ -36,7 +36,7 @@ const getVietQr = async (req, res) => {
       // BIDV
       bin = process.env.BIDV_BANK_BIN || "970418";
       accountNo = process.env.BIDV_BANK_ACCOUNT || "8835915459";
-      accountName = process.env.BIDV_BANK_ACCOUNT_NAME || "HONG CONG BINH";
+      accountName = process.env.BIDV_BANK_ACCOUNT_NAME || "HONG CON BINH";
       phone = process.env.BIDV_BANK_PHONE || "";
     } else {
       // Fallback về VietinBank nếu không khớp
