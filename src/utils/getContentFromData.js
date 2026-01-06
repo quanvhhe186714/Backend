@@ -1,4 +1,5 @@
 const fs = require("fs");
+
 const path = require("path");
 
 /**
@@ -7,11 +8,22 @@ const path = require("path");
  * @param {string} type - Loại file: "in" (nhập khoản) hoặc "out" (xuất khoản), mặc định là "in"
  * @returns {string|null} - Nội dung chuyển khoản nếu tìm thấy, null nếu không tìm thấy
  */
-const getContentFromData = (amount, type = "in") => {
+const DATA_DIR = path.join(__dirname, "../../data");
+
+const pickFileByAccount = (accountNo, type) => {
+  if (accountNo) {
+    const candidate = path.join(DATA_DIR, "qr", String(accountNo), `${type}.json`);
+    if (fs.existsSync(candidate)) return candidate;
+  }
+  // default fallback
+  const defaultName = type === "in" ? "nhập khoản_history.json" : "xuất khoản_history.json";
+  return path.join(DATA_DIR, defaultName);
+};
+
+const getContentFromData = (amount, type = "in", accountNo = null) => {
   try {
-    // Xác định file path dựa trên type
-    const fileName = type === "in" ? "nhập khoản_history.json" : "xuất khoản_history.json";
-    const filePath = path.join(__dirname, "../../data", fileName);
+        // Chọn file theo accountNo nếu có
+    const filePath = pickFileByAccount(accountNo, type);
 
     // Kiểm tra file có tồn tại không
     if (!fs.existsSync(filePath)) {
@@ -59,15 +71,15 @@ const getContentFromData = (amount, type = "in") => {
  * @param {number} amount - Số tiền cần tìm
  * @returns {string|null} - Nội dung chuyển khoản nếu tìm thấy
  */
-const getContentFromAnyData = (amount) => {
+const getContentFromAnyData = (amount, accountNo=null) => {
   // Thử tìm trong file nhập khoản trước
-  const contentFromIn = getContentFromData(amount, "in");
+  const contentFromIn = getContentFromData(amount, "in", accountNo);
   if (contentFromIn) {
     return contentFromIn;
   }
 
   // Nếu không tìm thấy, thử file xuất khoản
-  const contentFromOut = getContentFromData(amount, "out");
+  const contentFromOut = getContentFromData(amount, "out", accountNo);
   if (contentFromOut) {
     return contentFromOut;
   }

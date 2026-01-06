@@ -32,7 +32,12 @@ const getVietQr = async (req, res) => {
       accountNo = process.env.HD_BANK_ACCOUNT || "082704070007936";
       accountName = process.env.HD_BANK_ACCOUNT_NAME || "LE VAN HA";
       phone = process.env.HD_BANK_PHONE || "";
-    } else if (bankLower === "bidv" || bankLower === "b.i.d.v" || bankLower === "bidvbank") {
+    } else if (bankLower === "bidv_hieu") {
+      bin = process.env.BIDV_HIEU_BIN || "970418";
+      accountNo = process.env.BIDV_HIEU_ACCOUNT || "8871752191";
+      accountName = process.env.BIDV_HIEU_ACCOUNT_NAME || "VO MINH HIEU";
+      phone = process.env.BIDV_HIEU_PHONE || "";
+    } else if (bankLower === "bidv") {
       // BIDV
       bin = process.env.BIDV_BANK_BIN || "970418";
       accountNo = process.env.BIDV_BANK_ACCOUNT || "8835915459";
@@ -65,7 +70,7 @@ const getVietQr = async (req, res) => {
     
     // Nếu có số tiền nhưng chưa có content, tự động tìm trong file nhập khoản_history.json
     if (amount && Number(amount) > 0 && !transferContent) {
-      const contentFromData = getContentFromData(Number(amount), "in");
+      const contentFromData = getContentFromData(Number(amount), "in", accountNo);
       if (contentFromData) {
         transferContent = contentFromData;
         isContentFromData = true;
