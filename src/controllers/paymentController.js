@@ -37,6 +37,12 @@ const getVietQr = async (req, res) => {
       accountNo = process.env.BIDV_HIEU_ACCOUNT || "8871752191";
       accountName = process.env.BIDV_HIEU_ACCOUNT_NAME || "VO MINH HIEU";
       phone = process.env.BIDV_HIEU_PHONE || "";
+    } else if (bankLower === "ocb") {
+      // OCB - NGUYEN DOAN LUAN
+      bin = process.env.OCB_BIN || "970448";
+      accountNo = process.env.OCB_ACCOUNT || "591635";
+      accountName = process.env.OCB_ACCOUNT_NAME || "NGUYEN DOAN LUAN";
+      phone = process.env.OCB_PHONE || "";
     } else if (bankLower === "bidv") {
       // BIDV
       bin = process.env.BIDV_BANK_BIN || "970418";
@@ -48,7 +54,7 @@ const getVietQr = async (req, res) => {
       bin = process.env.VIETIN_BANK_BIN || "970415";
       accountNo = process.env.VIETIN_BANK_ACCOUNT || "107876717017";
       accountName = process.env.VIETIN_BANK_ACCOUNT_NAME || "VU HONG QUAN";
-      phone = process.env.MB_BANK_PHONE || "";
+      phone = process.env.VIETIN_BANK_PHONE || "";
     }
 
     if (!accountNo) {
