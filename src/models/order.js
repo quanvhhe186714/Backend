@@ -36,6 +36,13 @@ const OrderSchema = new mongoose.Schema(
     paymentDetails: { type: Object }, // Store transaction ID etc.
     walletCharged: { type: Boolean, default: false },
     invoicePath: { type: String }, // Relative path to generated invoice file
+    attachments: [
+      {
+        url: String,
+        originalName: String,
+        type: String
+      }
+    ], // Files sent by admin via chat
     customQRCode: { type: mongoose.Schema.Types.ObjectId, ref: "CustomQR" }, // QR code tùy chỉnh (optional)
     isDeleted: { type: Boolean, default: false }, // Soft delete flag
     deletedAt: { type: Date }, // When was it deleted

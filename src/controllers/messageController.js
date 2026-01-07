@@ -86,25 +86,21 @@ const sendMessage = async (req, res) => {
         if (orderId && order) {
           targetOrder = order;
         } 
-        // Nếu không có orderId nhưng admin đang chat với một user cụ thể
+        // Nếu không có orderId: tự tìm đơn sớm nhất chưa giao
         else if (receiverId && receiver) {
-          // Tự động tìm đơn hàng gần nhất của user có status paid/completed/delivered
-          // Ưu tiên đơn hàng chưa có invoicePath, nếu không có thì lấy đơn hàng mới nhất
+          // 1) Đơn hàng pending hoặc paid cũ nhất
           targetOrder = await Order.findOne({
             user: receiverId,
-            status: { $in: ["paid", "completed", "delivered"] },
-            $or: [
-              { invoicePath: { $exists: false } },
-              { invoicePath: null },
-              { invoicePath: "" }
-            ]
-          }).sort({ createdAt: -1 });
-          
-          // Nếu không tìm thấy đơn hàng chưa có invoice, lấy đơn hàng mới nhất đã thanh toán
+            status: { $in: ["pending", "paid"] },
+            isDeleted: { $ne: true }
+          }).sort({ createdAt: 1 });
+
+          // 2) Nếu không còn pending/paid, fallback lấy đơn delivered/completed mới nhất (để lưu file dù đã giao)
           if (!targetOrder) {
             targetOrder = await Order.findOne({
               user: receiverId,
-              status: { $in: ["paid", "completed", "delivered"] }
+              status: { $in: ["delivered", "completed", "paid"] },
+              isDeleted: { $ne: true }
             }).sort({ createdAt: -1 });
           }
         }
