@@ -47,7 +47,7 @@ const allowedExtensions = new Set([
 const uploadChatAttachments = multer({
   storage,
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB
+    fileSize: 100 * 1024 * 1024, // 10MB
     files: 5,
   },
   fileFilter: (req, file, cb) => {
