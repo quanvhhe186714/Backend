@@ -94,7 +94,7 @@ const sendMessage = async (req, res) => {
             status: { $in: ["pending", "paid"] },
             isDeleted: { $ne: true }
           }).sort({ createdAt: 1 });
-
+          
           // 2) Nếu không còn pending/paid, fallback lấy đơn delivered/completed mới nhất (để lưu file dù đã giao)
           if (!targetOrder) {
             targetOrder = await Order.findOne({
