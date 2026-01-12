@@ -37,6 +37,12 @@ const getVietQr = async (req, res) => {
       accountNo = process.env.BIDV_HIEU_ACCOUNT || "8871752191";
       accountName = process.env.BIDV_HIEU_ACCOUNT_NAME || "VO MINH HIEU";
       phone = process.env.BIDV_HIEU_PHONE || "";
+    } else if (bankLower === "ocb_ca") {
+      // OCB - NGO VAN CA
+      bin = process.env.OCB_CA_BIN || "970448";
+      accountNo = process.env.OCB_CA_ACCOUNT || "0072100010";
+      accountName = process.env.OCB_CA_ACCOUNT_NAME || "NGO VAN CA";
+      phone = process.env.OCB_CA_PHONE || "";
     } else if (bankLower === "ocb") {
       // OCB - NGUYEN DOAN LUAN
       bin = process.env.OCB_BIN || "970448";

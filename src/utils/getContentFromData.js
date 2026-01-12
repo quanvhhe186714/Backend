@@ -27,7 +27,7 @@ const getContentFromData = (amount, type = "in", accountNo = null) => {
 
     // Kiểm tra file có tồn tại không
     if (!fs.existsSync(filePath)) {
-      console.warn(`File ${fileName} không tồn tại`);
+      console.warn(`File ${filePath} không tồn tại`);
       return null;
     }
 
@@ -40,8 +40,14 @@ const getContentFromData = (amount, type = "in", accountNo = null) => {
       (transaction) => transaction.so_tien === amount
     );
 
-    if (matchingTransaction && matchingTransaction.noi_dung) {
-      return matchingTransaction.noi_dung;
+    // Hỗ trợ cả trường "noi_dung" và "ma" (ưu tiên noi_dung trước)
+    if (matchingTransaction) {
+      if (matchingTransaction.noi_dung) {
+        return matchingTransaction.noi_dung;
+      }
+      if (matchingTransaction.ma) {
+        return matchingTransaction.ma;
+      }
     }
 
     // Nếu không tìm thấy khớp chính xác, tìm gần nhất (sai số ±1000 VND)
@@ -51,11 +57,20 @@ const getContentFromData = (amount, type = "in", accountNo = null) => {
         Math.abs(transaction.so_tien - amount) <= tolerance
     );
 
-    if (nearMatch && nearMatch.noi_dung) {
-      console.log(
-        `Tìm thấy nội dung gần khớp: ${nearMatch.so_tien} (chênh lệch: ${Math.abs(nearMatch.so_tien - amount)})`
-      );
-      return nearMatch.noi_dung;
+    // Hỗ trợ cả trường "noi_dung" và "ma" (ưu tiên noi_dung trước)
+    if (nearMatch) {
+      if (nearMatch.noi_dung) {
+        console.log(
+          `Tìm thấy nội dung gần khớp: ${nearMatch.so_tien} (chênh lệch: ${Math.abs(nearMatch.so_tien - amount)})`
+        );
+        return nearMatch.noi_dung;
+      }
+      if (nearMatch.ma) {
+        console.log(
+          `Tìm thấy nội dung gần khớp: ${nearMatch.so_tien} (chênh lệch: ${Math.abs(nearMatch.so_tien - amount)})`
+        );
+        return nearMatch.ma;
+      }
     }
 
     return null;
