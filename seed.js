@@ -1,12 +1,7 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const bcrypt = require("bcryptjs");
-
 // Load Models
-const User = require("./src/models/users");
 const Product = require("./src/models/product");
-const Order = require("./src/models/order");
-const Coupon = require("./src/models/coupon");
 
 dotenv.config();
 
@@ -17,36 +12,12 @@ mongoose.connect(process.env.MONGO_URI || "mongodb://localhost:27017/telepremium
 
 const seedData = async () => {
     try {
-        // Clear DB
-        await User.deleteMany({});
-        await Product.deleteMany({});
-        await Order.deleteMany({});
-        await Coupon.deleteMany({});
-        console.log("Data cleared");
+        const existingNames = new Set(
+            (await Product.find({}, { name: 1 })).map(p => p.name)
+        );
 
-        // 1. Create Users
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash("123456", salt);
-
-        const admin = await User.create({
-            name: "Admin User",
-            email: "admin@gmail.com",
-            password: hashedPassword,
-            role: "admin",
-            status: "active"
-        });
-
-        const user = await User.create({
-            name: "Test User",
-            email: "user@gmail.com",
-            password: hashedPassword,
-            role: "customer",
-            status: "active"
-        });
-        console.log("Users created");
-
-        // 2. Create Products
-        const products = await Product.insertMany([
+        // Create Products (only new ones)
+        const productsToInsert = [
             {
                 name: "Premium 1 Tháng",
                 description: "Trải nghiệm Telegram tốt nhất trong 1 tháng.",
@@ -122,6 +93,24 @@ const seedData = async () => {
             },
             // PROXY
             {
+                name: "Proxy Lẻ",
+                description: "Proxy chất lượng cao, sẵn có 5.180 proxy, phù hợp nhu cầu linh hoạt.",
+                price: 2000,
+                duration_months: 1,
+                features: ["Sẵn có: 5180 proxy", "Giá lẻ 2.000đ", "Cam kết ổn định"],
+                image: "https://cdn-icons-png.flaticon.com/512/2549/2549900.png",
+                category: "PROXY"
+            },
+            {
+                name: "Proxy Gói 500",
+                description: "Gói 500 proxy cho chiến dịch số lượng lớn, giá ưu đãi.",
+                price: 500000,
+                duration_months: 1,
+                features: ["500 proxy/gói", "Giá 500.000đ", "Bảo hành proxy"],
+                image: "https://cdn-icons-png.flaticon.com/512/2549/2549900.png",
+                category: "PROXY"
+            },
+            {
                 name: "Proxy Residential 4G VN 1 ngày",
                 description: "Proxy dân cư 4G Việt Nam, đổi IP linh hoạt, ổn định.",
                 price: 30000,
@@ -138,6 +127,88 @@ const seedData = async () => {
                 features: ["Tốc độ cao", "Ổn định", "Hỗ trợ HTTP/SOCKS5"],
                 image: "https://cdn-icons-png.flaticon.com/512/4248/4248443.png",
                 category: "PROXY"
+            },
+            // SESSION
+            {
+                name: "Session +1 KÉO MEM",
+                description: "Session +1 kéo mem ổn định, phù hợp nhóm nhỏ.",
+                price: 29000,
+                duration_months: 1,
+                features: ["Sẵn có: 0", "Hỗ trợ 24/7", "Cam kết ổn định"],
+                image: "https://cdn-icons-png.flaticon.com/512/3580/3580432.png",
+                category: "SS"
+            },
+            {
+                name: "Session +53 KÉO MEM",
+                description: "Session +53 kéo mem nhanh, phù hợp chiến dịch mở rộng.",
+                price: 29000,
+                duration_months: 1,
+                features: ["Sẵn có: 0", "Hỗ trợ 24/7", "Cam kết ổn định"],
+                image: "https://cdn-icons-png.flaticon.com/512/3580/3580432.png",
+                category: "SS"
+            },
+            {
+                name: "Session +66 KÉO MEM",
+                description: "Session +66 kéo mem hiệu quả, tối ưu chi phí.",
+                price: 29000,
+                duration_months: 1,
+                features: ["Sẵn có: 0", "Hỗ trợ 24/7", "Cam kết ổn định"],
+                image: "https://cdn-icons-png.flaticon.com/512/3580/3580432.png",
+                category: "SS"
+            },
+            {
+                name: "Session +86 KÉO MEM",
+                description: "Session +86 kéo mem chất lượng, phù hợp thị trường quốc tế.",
+                price: 29000,
+                duration_months: 1,
+                features: ["Sẵn có: 5", "Hỗ trợ 24/7", "Cam kết ổn định"],
+                image: "https://cdn-icons-png.flaticon.com/512/3580/3580432.png",
+                category: "SS"
+            },
+            {
+                name: "Session Buff Cảm Xúc",
+                description: "Buff cảm xúc nhanh và ổn định cho bài viết.",
+                price: 16000,
+                duration_months: 1,
+                features: ["Sẵn có: 1190", "Tốc độ nhanh", "Bảo hành ổn định"],
+                image: "https://cdn-icons-png.flaticon.com/512/742/742751.png",
+                category: "SS"
+            },
+            {
+                name: "Session Tương Tác Nhóm",
+                description: "Tăng tương tác nhóm, hỗ trợ phát triển cộng đồng.",
+                price: 16000,
+                duration_months: 1,
+                features: ["Sẵn có: 915", "Tăng tương tác", "Hỗ trợ 24/7"],
+                image: "https://cdn-icons-png.flaticon.com/512/681/681494.png",
+                category: "SS"
+            },
+            {
+                name: "Session +1 Share Contact (US)",
+                description: "Session +1 share contact thị trường US, ổn định.",
+                price: 20000,
+                duration_months: 1,
+                features: ["Sẵn có: 47", "Khu vực: US", "Cam kết ổn định"],
+                image: "https://cdn-icons-png.flaticon.com/512/197/197484.png",
+                category: "SS"
+            },
+            {
+                name: "Session +66 KÉO MEM (TH)",
+                description: "Session +66 kéo mem cho thị trường Thái Lan.",
+                price: 29000,
+                duration_months: 1,
+                features: ["Sẵn có: 0", "Khu vực: TH", "Cam kết ổn định"],
+                image: "https://cdn-icons-png.flaticon.com/512/197/197452.png",
+                category: "SS"
+            },
+            {
+                name: "Session +91 Share Contact (IN)",
+                description: "Session +91 share contact cho thị trường Ấn Độ.",
+                price: 20000,
+                duration_months: 1,
+                features: ["Sẵn có: 54", "Khu vực: IN", "Cam kết ổn định"],
+                image: "https://cdn-icons-png.flaticon.com/512/197/197419.png",
+                category: "SS"
             },
             // Dịch vụ MXH
             {
@@ -158,57 +229,13 @@ const seedData = async () => {
                 image: "https://cdn-icons-png.flaticon.com/512/889/889221.png",
                 category: "DICH_VU_MXH"
             }
-        ]);
-        console.log("Products created");
+        ];
 
-        // 3. Create Coupons
-        await Coupon.create({
-            code: "WELCOME",
-            discountType: "percent",
-            discountValue: 10,
-            expirationDate: new Date("2025-12-31"),
-            usageLimit: 1000
-        });
-        await Coupon.create({
-            code: "SAVE50K",
-            discountType: "amount",
-            discountValue: 50000, // 50,000 VND
-            minOrderValue: 200000,
-            expirationDate: new Date("2025-12-31"),
-            usageLimit: 50
-        });
-        console.log("Coupons created");
-
-        // 4. Create Orders
-        await Order.create([
-            {
-                user: user._id,
-                items: [{
-                    product: products[0]._id,
-                    name: products[0].name,
-                    price: products[0].price,
-                    quantity: 1
-                }],
-                totalAmount: products[0].price,
-                subTotal: products[0].price,
-                status: "completed",
-                createdAt: new Date("2023-10-01")
-            },
-            {
-                user: user._id,
-                items: [{
-                    product: products[3]._id, // 1 Year
-                    name: products[3].name,
-                    price: products[3].price,
-                    quantity: 1
-                }],
-                totalAmount: products[3].price,
-                subTotal: products[3].price,
-                status: "pending",
-                createdAt: new Date()
-            }
-        ]);
-        console.log("Orders created");
+        const newProducts = productsToInsert.filter(p => !existingNames.has(p.name));
+        if (newProducts.length > 0) {
+            await Product.insertMany(newProducts);
+        }
+        console.log(`Products created: ${newProducts.length}`);
 
         process.exit();
     } catch (error) {

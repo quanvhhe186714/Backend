@@ -20,7 +20,6 @@ const seedCategories = async () => {
         if (existingCategories.length > 0) {
             console.log("Categories already exist. Skipping migration.");
             process.exit(0);
-            return;
         }
 
         // Create default categories
@@ -38,9 +37,15 @@ const seedCategories = async () => {
                 isActive: true
             },
             {
+                code: "SS",
+                name: "Session",
+                order: 3,
+                isActive: true
+            },
+            {
                 code: "DICH_VU_MXH",
                 name: "Dịch vụ MXH hoàn chỉnh",
-                order: 3,
+                order: 4,
                 isActive: true
             },
             {

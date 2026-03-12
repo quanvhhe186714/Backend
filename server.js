@@ -19,6 +19,7 @@ const setCORSHeaders = (req, res) => {
     "https://backend-cy6b.onrender.com",
     "frontend-ten-snowy-70.vercel.app",
     "https://shopnambs.id.vn",
+    "https://webbuffmxh.online"
   ];
   const origin = req.headers.origin;
 
@@ -47,7 +48,7 @@ app.use((req, res, next) => {
   if (req.method === "OPTIONS") {
     return res.sendStatus(200);
   }
-  next();
+  return next();
 });
 
 // Middlewares - Đặt SAU CORS middleware
@@ -66,7 +67,7 @@ connectDB().then(() => {
 app.use("/", router);
 
 // Route test nhanh
-app.get("/", (req, res) => {
+app.get("/", (_req, res) => {
   res.send("🚀 Server is running and connected to MongoDB");
 });
 
@@ -78,6 +79,7 @@ app.use((err, req, res, next) => {
     message: err.message || "Internal server error",
     error: process.env.NODE_ENV === "development" ? err.stack : undefined,
   });
+  return next(err);
 });
 
 // 404 handler

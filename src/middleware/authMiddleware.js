@@ -12,7 +12,8 @@ const setCORSHeaders = (req, res) => {
     "http://127.0.0.1:3001",
     "https://backend-cy6b.onrender.com",
     "https://frontend-ten-snowy-70.vercel.app",
-    "https://shopnambs.id.vn"
+    "https://shopnambs.id.vn",
+    "https://webbuffmxh.online"
   ];
   if (allowedOrigins.includes(origin)) {
     res.header("Access-Control-Allow-Origin", origin);
