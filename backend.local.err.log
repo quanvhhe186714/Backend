@@ -1,0 +1,3 @@
+[Invoice] Failed to download NotoSans-Regular.ttf: Failed to download font: 301
+Unicode font not found. Place a TTF in backend/assets/fonts (e.g. NotoSans-Regular.ttf). Using PDFKit default may break Vietnamese text.
+File C:\Users\quanvh\OneDrive\Desktop\shopbs\Backend\data\nhập khoản_history.json không tồn tại

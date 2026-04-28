@@ -14,6 +14,11 @@ const FacebookServiceSchema = new mongoose.Schema(
       unique: true,
       uppercase: true
     },
+    platform: {
+      type: String,
+      enum: ["facebook", "tiktok", "youtube", "instagram", "twitter", "telegram"],
+      default: "facebook"
+    },
     description: { 
       type: String, 
       required: true 
@@ -94,6 +99,35 @@ const FacebookServiceSchema = new mongoose.Schema(
     displayOrder: {
       type: Number,
       default: 0
+    },
+    status: {
+      type: String,
+      enum: ["stable", "dropping", "slow", "maintenance"],
+      default: "stable"
+    },
+    dropRate: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 100
+    },
+    priceTable: [{
+      quantity: {
+        type: Number,
+        required: true
+      },
+      price: {
+        type: Number,
+        required: true
+      }
+    }],
+    warrantyDays: {
+      type: Number,
+      default: 30
+    },
+    totalReviewers: {
+      type: Number,
+      default: null
     },
     // Danh sách servers (tùy chọn)
     servers: [{

@@ -14,6 +14,12 @@ const FacebookServiceSchema = new mongoose.Schema(
       unique: true,
       uppercase: true
     },
+    // Platform dịch vụ thuộc về
+    platform: {
+      type: String,
+      enum: ["facebook", "tiktok", "youtube", "instagram", "twitter", "telegram"],
+      default: "facebook"
+    },
     description: { 
       type: String, 
       required: true 

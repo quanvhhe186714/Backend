@@ -18,7 +18,7 @@ const TransactionSchema = new mongoose.Schema(
     },
     method: {
       type: String,
-      enum: ["bank_transfer", "momo", "cash"],
+      enum: ["bank_transfer", "momo", "cash", "wallet"],
       default: "bank_transfer",
     },
     bank: {

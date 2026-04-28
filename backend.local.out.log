@@ -1,0 +1,1177 @@
+
+> back-end@1.0.0 start
+> nodemon server.js
+
+[33m[nodemon] 3.1.9[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,cjs,json[39m
+[32m[nodemon] starting `node server.js`[39m
+✅ CloudinaryStorage initialized successfully
+✅ Cloudinary configured via CLOUDINARY_URL
+✅ Cloudinary uploader is available
+✅ Server running on port 9999
+MongoDB connected successfully
+🏦 BankFeed đã có 578 bản ghi, bỏ qua seed.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+✅ CloudinaryStorage initialized successfully
+✅ Cloudinary configured via CLOUDINARY_URL
+✅ Cloudinary uploader is available
+✅ Server running on port 9999
+MongoDB connected successfully
+🏦 BankFeed đã có 578 bản ghi, bỏ qua seed.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+✅ CloudinaryStorage initialized successfully
+✅ Cloudinary configured via CLOUDINARY_URL
+✅ Cloudinary uploader is available
+✅ Server running on port 9999
+MongoDB connected successfully
+🏦 BankFeed đã có 578 bản ghi, bỏ qua seed.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+✅ CloudinaryStorage initialized successfully
+✅ Cloudinary configured via CLOUDINARY_URL
+✅ Cloudinary uploader is available
+✅ Server running on port 9999
+MongoDB connected successfully
+🏦 BankFeed đã có 578 bản ghi, bỏ qua seed.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+✅ CloudinaryStorage initialized successfully
+✅ Cloudinary configured via CLOUDINARY_URL
+✅ Cloudinary uploader is available
+✅ Server running on port 9999
+MongoDB connected successfully
+🏦 BankFeed đã có 578 bản ghi, bỏ qua seed.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+✅ CloudinaryStorage initialized successfully
+✅ Cloudinary configured via CLOUDINARY_URL
+✅ Cloudinary uploader is available
+✅ Server running on port 9999
+MongoDB connected successfully
+🏦 BankFeed đã có 578 bản ghi, bỏ qua seed.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+✅ CloudinaryStorage initialized successfully
+✅ Cloudinary configured via CLOUDINARY_URL
+✅ Cloudinary uploader is available
+✅ Server running on port 9999
+MongoDB connected successfully
+🏦 BankFeed đã có 578 bản ghi, bỏ qua seed.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+✅ CloudinaryStorage initialized successfully
+✅ Cloudinary configured via CLOUDINARY_URL
+✅ Cloudinary uploader is available
+✅ Server running on port 9999
+MongoDB connected successfully
+🏦 BankFeed đã có 578 bản ghi, bỏ qua seed.
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12fff, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13000, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12ff3, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13002, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13003, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13005, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13004, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13007, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13006, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13008, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b13009, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300a, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300b, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300c, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300e, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300d, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12fff, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13000, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13001, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13002, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12ff3, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13003, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13005, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13004, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13006, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13007, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13008, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b13009, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300a, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300b, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300c, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300d, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13001, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a4fa0f0bbf2660bb7c, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a4fa0f0bbf2660bb82, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a4fa0f0bbf2660bb76, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a4fa0f0bbf2660bb88, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a4fa0f0bbf2660bb8d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a3fa0f0bbf2660bb6e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a4fa0f0bbf2660bba4, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a4fa0f0bbf2660bb99, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a4fa0f0bbf2660bb9f, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a4fa0f0bbf2660bb93, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a5fa0f0bbf2660bbb9, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a5fa0f0bbf2660bbb4, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a5fa0f0bbf2660bbaf, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a4fa0f0bbf2660bba9, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a5fa0f0bbf2660bbc4, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a5fa0f0bbf2660bbce, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a5fa0f0bbf2660bbc9, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a5fa0f0bbf2660bbbf, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a5fa0f0bbf2660bbdf, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a5fa0f0bbf2660bbd9, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a5fa0f0bbf2660bbd3, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13003, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13000, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13002, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12fff, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12ff3, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13001, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13006, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13004, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13005, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13007, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b13009, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13008, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300a, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300b, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300c, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300d, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300e, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12ff3, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12ff3, found 0 reviews
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+✅ CloudinaryStorage initialized successfully
+✅ Cloudinary configured via CLOUDINARY_URL
+✅ Cloudinary uploader is available
+✅ Server running on port 9999
+MongoDB connected successfully
+🏦 BankFeed đã có 578 bản ghi, bỏ qua seed.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+✅ CloudinaryStorage initialized successfully
+✅ Cloudinary configured via CLOUDINARY_URL
+✅ Cloudinary uploader is available
+✅ Server running on port 9999
+MongoDB connected successfully
+🏦 BankFeed đã có 578 bản ghi, bỏ qua seed.
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12ff3, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12fff, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13000, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13003, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13002, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13004, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13005, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13006, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13007, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13008, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300a, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b13009, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300b, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300c, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300d, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d35, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d36, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d37, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13001, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3a, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3b, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d38, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3c, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3f, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d40, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d41, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d42, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d43, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12ff3, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12fff, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13000, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13003, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13004, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13002, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13007, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13005, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13008, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13006, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b13009, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300a, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300b, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300d, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300c, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d35, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d36, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d37, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13001, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3a, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3b, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d38, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3c, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d40, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3f, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d41, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d42, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d43, found 0 reviews
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+✅ CloudinaryStorage initialized successfully
+✅ Cloudinary configured via CLOUDINARY_URL
+✅ Cloudinary uploader is available
+✅ Server running on port 9999
+MongoDB connected successfully
+🏦 BankFeed đã có 578 bản ghi, bỏ qua seed.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+✅ CloudinaryStorage initialized successfully
+✅ Cloudinary configured via CLOUDINARY_URL
+✅ Cloudinary uploader is available
+✅ Server running on port 9999
+MongoDB connected successfully
+🏦 BankFeed đã có 578 bản ghi, bỏ qua seed.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+✅ CloudinaryStorage initialized successfully
+✅ Cloudinary configured via CLOUDINARY_URL
+✅ Cloudinary uploader is available
+✅ Server running on port 9999
+MongoDB connected successfully
+🏦 BankFeed đã có 578 bản ghi, bỏ qua seed.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+✅ CloudinaryStorage initialized successfully
+✅ Cloudinary configured via CLOUDINARY_URL
+✅ Cloudinary uploader is available
+✅ Server running on port 9999
+MongoDB connected successfully
+🏦 BankFeed đã có 578 bản ghi, bỏ qua seed.
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13000, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12fff, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12ff3, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13002, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13003, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13004, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13005, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13006, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13007, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13008, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b13009, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300b, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300a, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300c, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300d, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d35, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d37, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d36, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d38, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3a, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3c, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3b, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3f, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13001, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d40, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d41, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d42, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d43, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12fff, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13000, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13002, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12ff3, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13003, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13004, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13006, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13005, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13007, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13008, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b13009, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300b, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300e, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300a, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300d, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300c, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d35, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d38, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d36, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3c, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3a, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d37, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3b, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3f, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13001, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d40, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d41, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d42, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d43, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d43, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d43, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476e, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476d, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4764, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476c, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4770, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee628, found 2 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476a, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4768, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4769, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476b, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476f, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4766, found 0 reviews
+getProductRatingSummary - productId: 69a2ac1971191733f672bbad, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62c, found 1 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62e, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62f, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee629, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4763, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4762, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4767, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee624, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62a, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62d, found 1 reviews
+getProductRatingSummary - productId: 69525d6fe9a56deb8b1e79ec, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62b, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee626, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4765, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee625, found 0 reviews
+getProductRatingSummary - productId: 6929c4ec7d8efcbba7289e89, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee627, found 0 reviews
+getProductRatingSummary - productId: 6957ac76dcf046314a5b3c12, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476e, found 0 reviews
+getProductRatingSummary - productId: 6957ad27dcf046314a5b3e24, found 0 reviews
+getProductRatingSummary - productId: 6957ad03dcf046314a5b3e07, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476d, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4764, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476c, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee628, found 2 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4770, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476a, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4768, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4769, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476f, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476b, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4766, found 0 reviews
+getProductRatingSummary - productId: 69a2ac1971191733f672bbad, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62c, found 1 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62f, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62e, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4762, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee629, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4767, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4763, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee624, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62a, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee626, found 0 reviews
+getProductRatingSummary - productId: 69525d6fe9a56deb8b1e79ec, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62b, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62d, found 1 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee625, found 0 reviews
+getProductRatingSummary - productId: 6929c4ec7d8efcbba7289e89, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee627, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4765, found 0 reviews
+getProductRatingSummary - productId: 6957ac76dcf046314a5b3c12, found 0 reviews
+getProductRatingSummary - productId: 6957ad03dcf046314a5b3e07, found 0 reviews
+getProductRatingSummary - productId: 6957ad27dcf046314a5b3e24, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12ff3, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13000, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13001, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12fff, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13002, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13003, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13004, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13006, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13005, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13007, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13008, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b13009, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300a, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300b, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300c, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d35, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d36, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d37, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d38, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3a, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3b, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3c, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3f, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d40, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d41, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d42, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d43, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12ff3, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13000, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13001, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12fff, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13002, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13003, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13004, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13006, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13005, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13007, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13008, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b13009, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300a, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300b, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300c, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d35, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d37, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d36, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d38, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3a, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3b, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3c, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3f, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d41, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d40, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d42, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d43, found 0 reviews
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+✅ CloudinaryStorage initialized successfully
+✅ Cloudinary configured via CLOUDINARY_URL
+✅ Cloudinary uploader is available
+✅ Server running on port 9999
+MongoDB connected successfully
+🏦 BankFeed đã có 578 bản ghi, bỏ qua seed.
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12ff3, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12fff, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13000, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13002, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13003, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13005, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13006, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13004, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13007, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13008, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b13009, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300a, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300b, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300c, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300d, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13001, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d35, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d36, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d37, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d38, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3a, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3b, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3c, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3f, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d40, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d41, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d42, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d43, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12fff, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12ff3, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13000, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13002, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13003, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13005, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13006, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13004, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13007, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13008, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b13009, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300a, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300b, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300c, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300e, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300d, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13001, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d35, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d36, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d37, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d38, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3b, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3a, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3c, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d40, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3f, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d42, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d41, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d43, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d43, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d43, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12ff3, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12fff, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d43, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13000, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13001, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13005, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13004, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13003, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13002, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13006, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13007, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13008, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300b, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300a, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b13009, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300e, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300c, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d35, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d37, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d36, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d38, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3a, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3b, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3c, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3f, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d40, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d41, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d42, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12fff, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12ff3, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d43, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13000, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13001, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13004, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13005, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13002, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13003, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13006, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13007, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13008, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300b, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b13009, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300a, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300e, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300c, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d35, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d37, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d36, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3b, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3a, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d38, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3c, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3f, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d42, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d40, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d41, found 0 reviews
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+✅ CloudinaryStorage initialized successfully
+✅ Cloudinary configured via CLOUDINARY_URL
+✅ Cloudinary uploader is available
+✅ Server running on port 9999
+MongoDB connected successfully
+🏦 BankFeed đã có 578 bản ghi, bỏ qua seed.
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12ff3, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12fff, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13000, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13001, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13002, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13003, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13004, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13006, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13005, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13007, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13008, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b13009, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300b, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300a, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300c, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300d, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d37, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d35, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d36, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d38, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3a, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3b, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3c, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3f, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d40, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d41, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d42, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d43, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12ff3, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12fff, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13000, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13001, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13002, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13006, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13004, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13003, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13005, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13007, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b13009, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300b, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300a, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13008, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300c, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300d, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d35, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d36, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d38, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d37, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3a, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3b, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3c, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3f, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d40, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d41, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d42, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d43, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a4fa0f0bbf2660bba4, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a4fa0f0bbf2660bb99, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a4fa0f0bbf2660bb9f, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a4fa0f0bbf2660bb93, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d5d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d5c, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d5e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d5f, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d60, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d61, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d62, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d63, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d64, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d65, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d66, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d67, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d68, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a4fa0f0bbf2660bb76, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a4fa0f0bbf2660bb88, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a3fa0f0bbf2660bb6e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a4fa0f0bbf2660bb82, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a4fa0f0bbf2660bb8d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a4fa0f0bbf2660bb7c, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d4e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d4d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d4c, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec21c99763fd4488d51, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec21c99763fd4488d4f, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec21c99763fd4488d50, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec21c99763fd4488d52, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec21c99763fd4488d53, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec21c99763fd4488d54, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec21c99763fd4488d55, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec21c99763fd4488d56, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec21c99763fd4488d57, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec21c99763fd4488d58, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d59, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d5a, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d5b, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476d, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476c, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4764, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4770, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476e, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee628, found 2 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4769, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476b, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476f, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476a, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4768, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4766, found 0 reviews
+getProductRatingSummary - productId: 69a2ac1971191733f672bbad, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee629, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62c, found 1 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62f, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62e, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee624, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4763, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4767, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4762, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62a, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62d, found 1 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62b, found 0 reviews
+getProductRatingSummary - productId: 69525d6fe9a56deb8b1e79ec, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4765, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee626, found 0 reviews
+getProductRatingSummary - productId: 6929c4ec7d8efcbba7289e89, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee625, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee627, found 0 reviews
+getProductRatingSummary - productId: 6957ac76dcf046314a5b3c12, found 0 reviews
+getProductRatingSummary - productId: 6957ad03dcf046314a5b3e07, found 0 reviews
+getProductRatingSummary - productId: 6957ad27dcf046314a5b3e24, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476d, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476c, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4770, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4764, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee628, found 2 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476e, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4769, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476b, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476a, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4768, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476f, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4766, found 0 reviews
+getProductRatingSummary - productId: 69a2ac1971191733f672bbad, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee629, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62c, found 1 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62f, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee624, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62e, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4763, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62d, found 1 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4767, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4762, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62a, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62b, found 0 reviews
+getProductRatingSummary - productId: 69525d6fe9a56deb8b1e79ec, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee626, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4765, found 0 reviews
+getProductRatingSummary - productId: 6929c4ec7d8efcbba7289e89, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee625, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee627, found 0 reviews
+getProductRatingSummary - productId: 6957ac76dcf046314a5b3c12, found 0 reviews
+getProductRatingSummary - productId: 6957ad03dcf046314a5b3e07, found 0 reviews
+getProductRatingSummary - productId: 6957ad27dcf046314a5b3e24, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13000, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13001, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12fff, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13002, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12ff3, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13003, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13005, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13006, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13004, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13008, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b13009, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13007, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300a, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300b, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300d, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300c, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d35, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d36, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d37, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3a, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d38, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3b, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3c, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d40, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3f, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d41, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d43, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d42, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13001, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13000, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12fff, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13003, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13002, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13005, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13006, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12ff3, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13004, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b13009, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300b, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13008, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13007, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300a, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300d, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300c, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d35, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d36, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3a, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d37, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3c, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3b, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d38, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d40, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3f, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d41, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d43, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d42, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12fff, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12fff, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476d, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476e, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476c, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4764, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4770, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee628, found 2 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4769, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476a, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476b, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4768, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4766, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476f, found 0 reviews
+getProductRatingSummary - productId: 69a2ac1971191733f672bbad, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62c, found 1 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee629, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62f, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4763, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62e, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4762, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4767, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62a, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee624, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62d, found 1 reviews
+getProductRatingSummary - productId: 69525d6fe9a56deb8b1e79ec, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62b, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee625, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4765, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee626, found 0 reviews
+getProductRatingSummary - productId: 6929c4ec7d8efcbba7289e89, found 0 reviews
+getProductRatingSummary - productId: 6957ac76dcf046314a5b3c12, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee627, found 0 reviews
+getProductRatingSummary - productId: 6957ad03dcf046314a5b3e07, found 0 reviews
+getProductRatingSummary - productId: 6957ad27dcf046314a5b3e24, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476d, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476e, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476c, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee628, found 2 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4769, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4770, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4764, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476a, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476b, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4766, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4768, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476f, found 0 reviews
+getProductRatingSummary - productId: 69a2ac1971191733f672bbad, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62c, found 1 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62f, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee629, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4767, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62e, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4763, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4762, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62a, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee624, found 0 reviews
+getProductRatingSummary - productId: 69525d6fe9a56deb8b1e79ec, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62d, found 1 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62b, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee625, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4765, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee626, found 0 reviews
+getProductRatingSummary - productId: 6929c4ec7d8efcbba7289e89, found 0 reviews
+getProductRatingSummary - productId: 6957ac76dcf046314a5b3c12, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee627, found 0 reviews
+getProductRatingSummary - productId: 6957ad27dcf046314a5b3e24, found 0 reviews
+getProductRatingSummary - productId: 6957ad03dcf046314a5b3e07, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12fff, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13000, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13001, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12ff3, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13002, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13003, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13006, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13004, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13005, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13007, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13008, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b13009, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300c, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300a, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300b, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300e, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d35, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d36, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d37, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d38, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3a, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3b, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3c, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d40, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3f, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d41, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d42, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13000, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d43, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12fff, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13001, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12ff3, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13006, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13002, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13004, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13003, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13005, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13007, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b13009, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300c, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13008, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300a, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300b, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d35, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d36, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d37, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d38, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3a, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3b, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3c, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3f, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d40, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d42, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d41, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d43, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a4fa0f0bbf2660bba4, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a4fa0f0bbf2660bb99, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a4fa0f0bbf2660bb9f, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d5d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d5c, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a4fa0f0bbf2660bb93, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d60, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d5f, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d5e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d61, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d62, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d63, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d64, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d65, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d66, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d67, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d68, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a5fa0f0bbf2660bbb4, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a5fa0f0bbf2660bbaf, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d44, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d45, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a4fa0f0bbf2660bba9, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a5fa0f0bbf2660bbb9, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d47, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d46, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d49, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d4a, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d48, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d4b, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a5fa0f0bbf2660bbd9, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feae1c99763fd4488d25, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feae1c99763fd4488d24, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feae1c99763fd4488d23, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a5fa0f0bbf2660bbdf, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a5fa0f0bbf2660bbd3, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feae1c99763fd4488d26, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feae1c99763fd4488d27, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feae1c99763fd4488d2a, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feae1c99763fd4488d29, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feae1c99763fd4488d28, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feae1c99763fd4488d2b, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feae1c99763fd4488d2e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feae1c99763fd4488d2d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feae1c99763fd4488d2c, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feae1c99763fd4488d2f, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feae1c99763fd4488d30, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feae1c99763fd4488d31, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d34, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d33, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d32, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a5fa0f0bbf2660bbc9, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a5fa0f0bbf2660bbc4, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d69, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a5fa0f0bbf2660bbbf, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d6a, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a5fa0f0bbf2660bbce, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d6c, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d6b, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec41c99763fd4488d6d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec41c99763fd4488d6f, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec41c99763fd4488d6e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec41c99763fd4488d70, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec41c99763fd4488d71, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec41c99763fd4488d72, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec41c99763fd4488d73, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec41c99763fd4488d74, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a4fa0f0bbf2660bb9f, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a4fa0f0bbf2660bba4, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a4fa0f0bbf2660bb99, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a4fa0f0bbf2660bb93, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d5d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d5c, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d5e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d60, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d5f, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d62, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d61, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d63, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d64, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d65, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d66, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d67, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec31c99763fd4488d68, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d44, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a5fa0f0bbf2660bbb9, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a5fa0f0bbf2660bbaf, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a5fa0f0bbf2660bbb4, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0d1a4fa0f0bbf2660bba9, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d45, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d46, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d4a, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d48, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d49, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d47, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d4b, found 0 reviews
+[Invoice] Downloading NotoSans-Regular.ttf ...
+✅ Invoice uploaded to Cloudinary: https://res.cloudinary.com/duweanlqq/raw/upload/v1777402811/mmos/invoices/invoice_69f0fdc7c462c23046e66d4e
+✅ Tự động tạo tin nhắn ảo cho đơn hàng 69f0fdc7c462c23046e66d4e
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12ff3, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12ff3, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476c, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476e, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476d, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4770, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4764, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee628, found 2 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476a, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476b, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4769, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4768, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476f, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4766, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62e, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62f, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee629, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62c, found 1 reviews
+getProductRatingSummary - productId: 69a2ac1971191733f672bbad, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4763, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee624, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4762, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4767, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62a, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62d, found 1 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62b, found 0 reviews
+getProductRatingSummary - productId: 69525d6fe9a56deb8b1e79ec, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee625, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4765, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee626, found 0 reviews
+getProductRatingSummary - productId: 6929c4ec7d8efcbba7289e89, found 0 reviews
+getProductRatingSummary - productId: 6957ac76dcf046314a5b3c12, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee627, found 0 reviews
+getProductRatingSummary - productId: 6957ad27dcf046314a5b3e24, found 0 reviews
+getProductRatingSummary - productId: 6957ad03dcf046314a5b3e07, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476c, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476e, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476d, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4770, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee628, found 2 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4764, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476a, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4769, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476b, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4766, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476f, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4768, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62f, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62e, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee629, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62c, found 1 reviews
+getProductRatingSummary - productId: 69a2ac1971191733f672bbad, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee624, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4763, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4762, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4767, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62a, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62d, found 1 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62b, found 0 reviews
+getProductRatingSummary - productId: 69525d6fe9a56deb8b1e79ec, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee625, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4765, found 0 reviews
+getProductRatingSummary - productId: 6929c4ec7d8efcbba7289e89, found 0 reviews
+getProductRatingSummary - productId: 6957ac76dcf046314a5b3c12, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee626, found 0 reviews
+getProductRatingSummary - productId: 6957ad03dcf046314a5b3e07, found 0 reviews
+getProductRatingSummary - productId: 6957ad27dcf046314a5b3e24, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee627, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13001, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13000, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12ff3, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12fff, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13002, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13003, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13006, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13004, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13005, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13007, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13008, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b13009, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300c, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300a, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300b, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300d, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d35, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d36, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d37, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d38, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3a, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3b, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3c, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3f, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d41, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d40, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d42, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13001, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d43, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12fff, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13000, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b12ff3, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13003, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13002, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13006, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13004, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13008, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13005, found 0 reviews
+getServiceRatingSummary - serviceId: 692606da4a0eb5c236b13007, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b13009, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300c, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300a, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300b, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d35, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d37, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d36, found 0 reviews
+getServiceRatingSummary - serviceId: 692606db4a0eb5c236b1300d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0feaf1c99763fd4488d38, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3a, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3d, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3b, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3c, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3e, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d3f, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d41, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d40, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d42, found 0 reviews
+getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d43, found 0 reviews
+Số tiền 1000000 không có trong file JSON, sử dụng nội dung mặc định

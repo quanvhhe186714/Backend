@@ -1,9 +1,13 @@
 const FacebookService = require("../models/facebookService");
 
-// Lấy tất cả dịch vụ
+// Lấy tất cả dịch vụ (hỗ trợ filter theo platform)
 const getAllServices = async (req, res) => {
   try {
-    const services = await FacebookService.find({ isActive: true })
+    const filter = { isActive: true };
+    if (req.query.platform) {
+      filter.platform = req.query.platform;
+    }
+    const services = await FacebookService.find(filter)
       .sort({ displayOrder: 1, name: 1 });
     res.status(200).json(services);
   } catch (error) {

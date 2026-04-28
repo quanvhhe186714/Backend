@@ -2,6 +2,7 @@ const Order = require("../models/order");
 const Product = require("../models/product");
 const Coupon = require("../models/coupon");
 const Wallet = require("../models/wallet");
+const Transaction = require("../models/transaction");
 const Message = require("../models/message");
 const User = require("../models/users");
 const { generateInvoicePDF } = require("../utils/invoice.util");
@@ -118,6 +119,24 @@ const createOrder = async (req, res) => {
 
     const savedOrder = await newOrder.save();
 
+    if (totalAmount > 0) {
+      try {
+        await Transaction.create({
+          user: req.user.id,
+          wallet: wallet._id,
+          amount: -totalAmount,
+          method: "wallet",
+          bank: "wallet",
+          referenceCode: `ORDER-${savedOrder._id.toString().slice(-10).toUpperCase()}`,
+          note: `Thanh toán đơn hàng #${savedOrder._id.toString().slice(0, 8)}`,
+          status: "success",
+          confirmedAt: new Date(),
+        });
+      } catch (transactionError) {
+        console.error("Create order transaction error:", transactionError?.message || transactionError);
+      }
+    }
+
     // 5. Update Coupon Usage
     if (appliedCoupon) {
         appliedCoupon.usedCount += 1;
@@ -193,6 +212,22 @@ const updateOrderStatus = async (req, res) => {
       if (wallet) {
         wallet.balance += order.totalAmount;
         await wallet.save();
+        try {
+          await Transaction.create({
+            user: order.user,
+            wallet: wallet._id,
+            amount: order.totalAmount,
+            method: "wallet",
+            bank: "wallet",
+            referenceCode: `REFUND-${order._id.toString().slice(-8).toUpperCase()}-${Date.now().toString().slice(-4)}`,
+            note: `Hoàn tiền đơn hàng #${order._id.toString().slice(0, 8)}`,
+            status: "success",
+            confirmedBy: req.user._id,
+            confirmedAt: new Date(),
+          });
+        } catch (transactionError) {
+          console.error("Create refund transaction error:", transactionError?.message || transactionError);
+        }
       }
       order.walletCharged = false;
     }
