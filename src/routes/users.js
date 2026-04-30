@@ -8,6 +8,8 @@ const { protect, isAdmin } = require("../middleware/authMiddleware");
 // Các route không cần đăng nhập
 router.post("/register", userController.registerUser);
 router.post("/login", userController.loginUser);
+router.post("/oauth/google", userController.googleOAuthLogin);
+router.post("/oauth/facebook", userController.facebookOAuthLogin);
 
 
 // === Private Routes (Dành cho người dùng đã đăng nhập) ===

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const { seedFacebookServices } = require("./src/services/facebook/utils/seedFacebookServices");
+const { MongoGCPError } = require("mongodb");
 
 dotenv.config();
 
@@ -19,3 +20,6 @@ mongoose.connect(process.env.MONGO_URI || "mongodb://localhost:27017/mmos")
     process.exit(1);
   });
 
+
+MongoGCPError.apply.MONGO_URI.seedFacebookServices();
+s

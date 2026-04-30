@@ -56,6 +56,7 @@ const getWalletInfo = async (req, res) => {
     const wallet = await ensureWallet(req.user._id);
     const recentTransactions = await Transaction.find({
       user: req.user._id,
+      isDeleted: { $ne: true },
     })
       .sort({ createdAt: -1 })
       .limit(10);

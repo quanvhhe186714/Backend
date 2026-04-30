@@ -3,6 +3,8 @@ const User = require("../models/users");
 const Wallet = require("../models/wallet");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const { OAuth2Client } = require("google-auth-library");
 const { upload } = require("../utils/Upload");
 
 // Import passwordEncrypt với error handling để không ảnh hưởng login nếu có lỗi
@@ -17,6 +19,87 @@ try {
   encryptPassword = () => "";
   decryptPassword = () => "[Encryption not available]";
 }
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+const createTokenResponse = (user, message = "Login successful") => {
+  const payload = {
+    id: user._id,
+    name: user.name,
+    role: user.role,
+  };
+
+  const token = jwt.sign(
+    payload,
+    process.env.JWT_SECRET || "YOUR_JWT_SECRET",
+    { expiresIn: "1h" }
+  );
+
+  return {
+    message,
+    token: `Bearer ${token}`,
+    user: {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      avatar: user.avatar,
+    },
+  };
+};
+
+const ensureUserWallet = async (userId) => {
+  const existingWallet = await Wallet.findOne({ user: userId });
+  if (!existingWallet) {
+    await Wallet.create({ user: userId });
+  }
+};
+
+const findOrCreateOAuthUser = async ({ email, name, avatar }) => {
+  if (!email) {
+    const error = new Error("Email is required from OAuth provider");
+    error.status = 400;
+    throw error;
+  }
+
+  let user = await User.findOne({ email: email.toLowerCase() });
+  if (user) {
+    if (user.status === "blocked") {
+      const error = new Error("Account is blocked");
+      error.status = 403;
+      throw error;
+    }
+
+    let changed = false;
+    if (!user.avatar && avatar) {
+      user.avatar = avatar;
+      changed = true;
+    }
+    if (!user.name && name) {
+      user.name = name;
+      changed = true;
+    }
+    if (changed) await user.save();
+    await ensureUserWallet(user._id);
+    return user;
+  }
+
+  const randomPassword = crypto.randomBytes(32).toString("hex");
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(randomPassword, salt);
+
+  user = await User.create({
+    name: name || email.split("@")[0],
+    email: email.toLowerCase(),
+    password: hashedPassword,
+    passwordEncrypted: "",
+    avatar: avatar || "",
+    role: "customer",
+  });
+
+  await Wallet.create({ user: user._id });
+  return user;
+};
 
 // 🟢 Upload avatar lên Cloudinary
 const uploadAvatar = async (req, res) => {
@@ -211,6 +294,98 @@ const loginUser = async (req, res) => {
 };
 
 // 🟢 Lấy thông tin người dùng theo ID
+const googleOAuthLogin = async (req, res) => {
+  try {
+    const { credential } = req.body;
+
+    if (!process.env.GOOGLE_CLIENT_ID) {
+      return res.status(500).json({ message: "Google login is not configured" });
+    }
+
+    if (!credential) {
+      return res.status(400).json({ message: "Missing Google credential" });
+    }
+
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+
+    if (!payload?.email_verified) {
+      return res.status(400).json({ message: "Google email is not verified" });
+    }
+
+    const user = await findOrCreateOAuthUser({
+      email: payload.email,
+      name: payload.name,
+      avatar: payload.picture,
+    });
+
+    res.status(200).json(createTokenResponse(user, "Google login successful"));
+  } catch (error) {
+    res.status(error.status || 401).json({
+      message: error.message || "Google login failed",
+    });
+  }
+};
+
+const facebookOAuthLogin = async (req, res) => {
+  try {
+    const { accessToken } = req.body;
+
+    if (!process.env.FACEBOOK_APP_ID) {
+      return res.status(500).json({ message: "Facebook login is not configured" });
+    }
+
+    if (!accessToken) {
+      return res.status(400).json({ message: "Missing Facebook access token" });
+    }
+
+    if (process.env.FACEBOOK_APP_SECRET) {
+      const appToken = `${process.env.FACEBOOK_APP_ID}|${process.env.FACEBOOK_APP_SECRET}`;
+      const debugUrl = `https://graph.facebook.com/debug_token?input_token=${encodeURIComponent(accessToken)}&access_token=${encodeURIComponent(appToken)}`;
+      const debugResponse = await fetch(debugUrl);
+      const debugJson = await debugResponse.json();
+
+      if (
+        !debugJson?.data?.is_valid ||
+        String(debugJson.data.app_id) !== String(process.env.FACEBOOK_APP_ID)
+      ) {
+        return res.status(401).json({ message: "Invalid Facebook access token" });
+      }
+    }
+
+    const profileUrl = `https://graph.facebook.com/me?fields=id,name,email,picture.type(large)&access_token=${encodeURIComponent(accessToken)}`;
+    const profileResponse = await fetch(profileUrl);
+    const profile = await profileResponse.json();
+
+    if (!profileResponse.ok || profile.error) {
+      return res.status(401).json({
+        message: profile.error?.message || "Facebook login failed",
+      });
+    }
+
+    if (!profile.email) {
+      return res.status(400).json({
+        message: "Facebook account did not provide an email",
+      });
+    }
+
+    const user = await findOrCreateOAuthUser({
+      email: profile.email,
+      name: profile.name,
+      avatar: profile.picture?.data?.url,
+    });
+
+    res.status(200).json(createTokenResponse(user, "Facebook login successful"));
+  } catch (error) {
+    res.status(error.status || 401).json({
+      message: error.message || "Facebook login failed",
+    });
+  }
+};
+
 const getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id).select("-password");
@@ -880,6 +1055,8 @@ const demoteUser = async (req, res) => {
 module.exports = {
   registerUser,
   loginUser,
+  googleOAuthLogin,
+  facebookOAuthLogin,
   getUserById,
   getMyProfile,
   updateMyProfile,

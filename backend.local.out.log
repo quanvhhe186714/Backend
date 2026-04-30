@@ -1175,3 +1175,118 @@ getServiceRatingSummary - serviceId: 69f0fec01c99763fd4488d40, found 0 reviews
 getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d42, found 0 reviews
 getServiceRatingSummary - serviceId: 69f0fec11c99763fd4488d43, found 0 reviews
 Số tiền 1000000 không có trong file JSON, sử dụng nội dung mặc định
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+✅ CloudinaryStorage initialized successfully
+✅ Cloudinary configured via CLOUDINARY_URL
+✅ Cloudinary uploader is available
+✅ Server running on port 9999
+MongoDB connected successfully
+🏦 BankFeed đã có 578 bản ghi, bỏ qua seed.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+✅ CloudinaryStorage initialized successfully
+✅ Cloudinary configured via CLOUDINARY_URL
+✅ Cloudinary uploader is available
+✅ Server running on port 9999
+MongoDB connected successfully
+🏦 BankFeed đã có 578 bản ghi, bỏ qua seed.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+✅ CloudinaryStorage initialized successfully
+✅ Cloudinary configured via CLOUDINARY_URL
+✅ Cloudinary uploader is available
+✅ Server running on port 9999
+MongoDB connected successfully
+🏦 BankFeed đã có 578 bản ghi, bỏ qua seed.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+✅ CloudinaryStorage initialized successfully
+✅ Cloudinary configured via CLOUDINARY_URL
+✅ Cloudinary uploader is available
+✅ Server running on port 9999
+MongoDB connected successfully
+🏦 BankFeed đã có 578 bản ghi, bỏ qua seed.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+✅ CloudinaryStorage initialized successfully
+✅ Cloudinary configured via CLOUDINARY_URL
+✅ Cloudinary uploader is available
+✅ Server running on port 9999
+MongoDB connected successfully
+🏦 BankFeed đã có 578 bản ghi, bỏ qua seed.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+✅ CloudinaryStorage initialized successfully
+✅ Cloudinary configured via CLOUDINARY_URL
+✅ Cloudinary uploader is available
+✅ Server running on port 9999
+MongoDB connected successfully
+🏦 BankFeed đã có 578 bản ghi, bỏ qua seed.
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476d, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4764, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476c, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4770, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee628, found 2 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4768, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476a, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476b, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4769, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62f, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476f, found 0 reviews
+getProductRatingSummary - productId: 69a2ac1971191733f672bbad, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4766, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62c, found 1 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476e, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4762, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee624, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee629, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4763, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62e, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4767, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62a, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee625, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62d, found 1 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62b, found 0 reviews
+getProductRatingSummary - productId: 69525d6fe9a56deb8b1e79ec, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4765, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee626, found 0 reviews
+getProductRatingSummary - productId: 6929c4ec7d8efcbba7289e89, found 0 reviews
+getProductRatingSummary - productId: 6957ac76dcf046314a5b3c12, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee627, found 0 reviews
+getProductRatingSummary - productId: 6957ad03dcf046314a5b3e07, found 0 reviews
+getProductRatingSummary - productId: 6957ad27dcf046314a5b3e24, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4764, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476d, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476c, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4770, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4768, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee628, found 2 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476b, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476a, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4769, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62f, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476f, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e476e, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62c, found 1 reviews
+getProductRatingSummary - productId: 69a2ac1971191733f672bbad, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4766, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4762, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee629, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4763, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee624, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4767, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62e, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62a, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee625, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62d, found 1 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee62b, found 0 reviews
+getProductRatingSummary - productId: 69b26012d3fc00860e1e4765, found 0 reviews
+getProductRatingSummary - productId: 69525d6fe9a56deb8b1e79ec, found 0 reviews
+getProductRatingSummary - productId: 6929c4ec7d8efcbba7289e89, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee626, found 0 reviews
+getProductRatingSummary - productId: 6957ac76dcf046314a5b3c12, found 0 reviews
+getProductRatingSummary - productId: 6925688ea431e5f06d0ee627, found 0 reviews
+getProductRatingSummary - productId: 6957ad03dcf046314a5b3e07, found 0 reviews
+getProductRatingSummary - productId: 6957ad27dcf046314a5b3e24, found 0 reviews

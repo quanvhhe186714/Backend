@@ -561,10 +561,10 @@ module.exports = {
       const { userId } = req.params;
       const orders = await Order.find({
         user: userId,
-        status: { $in: ["pending", "paid"] },
+        status: { $in: ["pending", "paid", "delivered"] },
         isDeleted: { $ne: true }
       })
-        .select("_id status totalAmount createdAt")
+        .select("_id status totalAmount createdAt items paymentDetails walletCharged")
         .sort({ createdAt: 1 });
       res.status(200).json(orders);
     } catch (e) {
