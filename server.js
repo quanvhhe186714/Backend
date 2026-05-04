@@ -19,7 +19,8 @@ const setCORSHeaders = (req, res) => {
     "https://backend-cy6b.onrender.com",
     "frontend-ten-snowy-70.vercel.app",
     "https://shopnambs.id.vn",
-    "https://webbuffmxh.online"
+    "https://webbuffmxh.online",
+    "https://www.webbuffmxh.online"
   ];
   const origin = req.headers.origin;
 
