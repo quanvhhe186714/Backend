@@ -180,7 +180,7 @@ const getPublishedCustomQRs = async (req, res) => {
   try {
     const customQRs = await CustomQR.find({ isPublished: true, isActive: true })
       .populate("createdBy", "name email")
-      .select("-accountName -accountNo -transactionCode -content")
+      .select("name amount isActive publishedAt")
       .sort({ publishedAt: -1 });
 
     res.status(200).json(customQRs);
@@ -310,7 +310,7 @@ const deleteCustomQR = async (req, res) => {
 const getPublicCustomQRs = async (req, res) => {
   try {
     const customQRs = await CustomQR.find({ isActive: true })
-      .select("-createdBy -orderId")
+      .select("name amount isActive createdAt")
       .sort({ createdAt: -1 });
 
     res.status(200).json(customQRs);

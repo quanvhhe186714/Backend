@@ -11,17 +11,24 @@ const app = express();
 
 // Helper function để set CORS headers
 const setCORSHeaders = (req, res) => {
-  const allowedOrigins = [
+  const defaultAllowedOrigins = [
     "http://localhost:3000",
     "http://localhost:3001",
     "http://127.0.0.1:3000",
     "http://127.0.0.1:3001",
     "https://backend-cy6b.onrender.com",
-    "frontend-ten-snowy-70.vercel.app",
+    "https://frontend-ten-snowy-70.vercel.app",
     "https://shopnambs.id.vn",
     "https://webbuffmxh.online",
     "https://www.webbuffmxh.online",
     "https://www.shopnambs.id.vn"
+  ];
+  const allowedOrigins = [
+    ...defaultAllowedOrigins,
+    ...(process.env.CORS_ORIGINS || "")
+      .split(",")
+      .map((origin) => origin.trim())
+      .filter(Boolean),
   ];
   const origin = req.headers.origin;
 

@@ -2,6 +2,74 @@ const { getContentFromData } = require("../utils/getContentFromData");
 const Wallet = require("../models/wallet");
 const Transaction = require("../models/transaction");
 
+const BANK_CONFIGS = {
+  vietin: {
+    aliases: ["vietin", "vietinbank", "vtb"],
+    bin: () => process.env.VIETIN_BANK_BIN || "970415",
+    accountNo: () => process.env.VIETIN_BANK_ACCOUNT || "107876717017",
+    accountName: () => process.env.VIETIN_BANK_ACCOUNT_NAME || "VU HONG QUAN",
+    phone: () => process.env.VIETIN_BANK_PHONE || "",
+  },
+  hdbank: {
+    aliases: ["hd", "hdbank", "hdb", "hd-bank"],
+    bin: () => process.env.HD_BANK_BIN || "970437",
+    accountNo: () => process.env.HD_BANK_ACCOUNT || "082704070007936",
+    accountName: () => process.env.HD_BANK_ACCOUNT_NAME || "LE VAN HA",
+    phone: () => process.env.HD_BANK_PHONE || "",
+  },
+  bidv_hieu: {
+    aliases: ["bidv_hieu"],
+    bin: () => process.env.BIDV_HIEU_BIN || "970418",
+    accountNo: () => process.env.BIDV_HIEU_ACCOUNT || "8871752191",
+    accountName: () => process.env.BIDV_HIEU_ACCOUNT_NAME || "VO MINH HIEU",
+    phone: () => process.env.BIDV_HIEU_PHONE || "",
+  },
+  acb: {
+    aliases: ["acb", "acbbank"],
+    bin: () => process.env.ACB_BIN || "970416",
+    accountNo: () => process.env.ACB_ACCOUNT || "570468",
+    accountName: () => process.env.ACB_ACCOUNT_NAME || "NGUYEN THANH NHAN",
+    phone: () => process.env.ACB_PHONE || "",
+  },
+  ocb_ca: {
+    aliases: ["ocb_ca"],
+    bin: () => process.env.OCB_CA_BIN || "970448",
+    accountNo: () => process.env.OCB_CA_ACCOUNT || "0072100010",
+    accountName: () => process.env.OCB_CA_ACCOUNT_NAME || "NGO VAN CA",
+    phone: () => process.env.OCB_CA_PHONE || "",
+  },
+  ocb: {
+    aliases: ["ocb"],
+    bin: () => process.env.OCB_BIN || "970448",
+    accountNo: () => process.env.OCB_ACCOUNT || "591635",
+    accountName: () => process.env.OCB_ACCOUNT_NAME || "NGUYEN DOAN LUAN",
+    phone: () => process.env.OCB_PHONE || "",
+  },
+  bidv: {
+    aliases: ["bidv"],
+    bin: () => process.env.BIDV_BANK_BIN || "970418",
+    accountNo: () => process.env.BIDV_BANK_ACCOUNT || "8835915459",
+    accountName: () => process.env.BIDV_BANK_ACCOUNT_NAME || "HONG CON BINH",
+    phone: () => process.env.BIDV_BANK_PHONE || "",
+  },
+};
+
+const resolveBank = (bank = "vietin") => {
+  const requested = String(bank || "vietin").toLowerCase();
+  const key =
+    Object.keys(BANK_CONFIGS).find((name) =>
+      BANK_CONFIGS[name].aliases.includes(requested)
+    ) || "vietin";
+  const config = BANK_CONFIGS[key];
+  return {
+    code: key,
+    bin: config.bin(),
+    accountNo: config.accountNo(),
+    accountName: config.accountName(),
+    phone: config.phone(),
+  };
+};
+
 const buildVietQrImageUrl = ({ bin, accountNo, accountName, amount, content }) => {
   const base = `https://img.vietqr.io/image/${encodeURIComponent(bin)}-${encodeURIComponent(accountNo)}-compact2.png`;
   const params = new URLSearchParams();
@@ -11,152 +79,90 @@ const buildVietQrImageUrl = ({ bin, accountNo, accountName, amount, content }) =
   return `${base}?${params.toString()}`;
 };
 
-// GET /payments/qr?amount=100000&content=MMOS-ORDER123&bank=mb (optional: mb, mbbank, mb bank)
+const ensureUniqueReferenceCode = async (baseCode) => {
+  let referenceCode = String(baseCode || "").trim();
+  if (!referenceCode) {
+    referenceCode = `NAP${Date.now()}`;
+  }
+
+  const duplicated = await Transaction.findOne({ referenceCode });
+  if (!duplicated) return referenceCode;
+
+  return `${referenceCode}-${Date.now().toString().slice(-4)}`;
+};
+
+// GET /payments/qr?amount=100000&bank=vietin
+// Creates a pending top-up transaction and returns a VietQR that contains the
+// exact referenceCode used for webhook/manual confirmation.
 const getVietQr = async (req, res) => {
   try {
     const { amount, content, bank = "vietin" } = req.query;
-    
-    // Cấu hình ngân hàng
-    let bin, accountNo, accountName, phone;
-    const bankLower = bank.toLowerCase();
-    
-    if (bankLower === "vietin" || bankLower === "vietinbank" || bankLower === "vtb") {
-      // VietinBank
-      bin = process.env.VIETIN_BANK_BIN || "970415"; // VietinBank BIN
-      accountNo = process.env.VIETIN_BANK_ACCOUNT || "107876717017";
-      accountName = process.env.VIETIN_BANK_ACCOUNT_NAME || "VU HONG QUAN";
-      phone = process.env.VIETIN_BANK_PHONE || "";
-    } else if (bankLower === "hd" || bankLower === "hdbank" || bankLower === "hdb" || bankLower === "hd-bank") {
-      // HDBank
-      bin = process.env.HD_BANK_BIN || "970437";
-      accountNo = process.env.HD_BANK_ACCOUNT || "082704070007936";
-      accountName = process.env.HD_BANK_ACCOUNT_NAME || "LE VAN HA";
-      phone = process.env.HD_BANK_PHONE || "";
-    } else if (bankLower === "bidv_hieu") {
-      bin = process.env.BIDV_HIEU_BIN || "970418";
-      accountNo = process.env.BIDV_HIEU_ACCOUNT || "8871752191";
-      accountName = process.env.BIDV_HIEU_ACCOUNT_NAME || "VO MINH HIEU";
-      phone = process.env.BIDV_HIEU_PHONE || "";
-    } else if (bankLower === "acb" || bankLower === "acbbank") {
-      // ACB - NGUYEN THANH NHAN
-      bin = process.env.ACB_BIN || "970416";
-      accountNo = process.env.ACB_ACCOUNT || "570468";
-      accountName = process.env.ACB_ACCOUNT_NAME || "NGUYEN THANH NHAN";
-      phone = process.env.ACB_PHONE || "";
-    } else if (bankLower === "ocb_ca") {
-      // OCB - NGO VAN CA
-      bin = process.env.OCB_CA_BIN || "970448";
-      accountNo = process.env.OCB_CA_ACCOUNT || "0072100010";
-      accountName = process.env.OCB_CA_ACCOUNT_NAME || "NGO VAN CA";
-      phone = process.env.OCB_CA_PHONE || "";
-    } else if (bankLower === "ocb") {
-      // OCB - NGUYEN DOAN LUAN
-      bin = process.env.OCB_BIN || "970448";
-      accountNo = process.env.OCB_ACCOUNT || "591635";
-      accountName = process.env.OCB_ACCOUNT_NAME || "NGUYEN DOAN LUAN";
-      phone = process.env.OCB_PHONE || "";
-    } else if (bankLower === "bidv") {
-      // BIDV
-      bin = process.env.BIDV_BANK_BIN || "970418";
-      accountNo = process.env.BIDV_BANK_ACCOUNT || "8835915459";
-      accountName = process.env.BIDV_BANK_ACCOUNT_NAME || "HONG CON BINH";
-      phone = process.env.BIDV_BANK_PHONE || "";
-    } else {
-      // Fallback về VietinBank nếu không khớp
-      bin = process.env.VIETIN_BANK_BIN || "970415";
-      accountNo = process.env.VIETIN_BANK_ACCOUNT || "107876717017";
-      accountName = process.env.VIETIN_BANK_ACCOUNT_NAME || "VU HONG QUAN";
-      phone = process.env.VIETIN_BANK_PHONE || "";
+    const amountNum = Number(amount);
+
+    if (!Number.isFinite(amountNum) || amountNum <= 0) {
+      return res.status(400).json({ message: "Vui long cung cap so tien hop le" });
     }
 
-    if (!accountNo) {
+    const bankInfo = resolveBank(bank);
+    if (!bankInfo.accountNo) {
       return res.status(400).json({
         message: "Bank account is not configured. Please set bank account in environment.",
       });
     }
 
-    // Validate số tiền bắt buộc
-    if (!amount || Number(amount) <= 0) {
-      return res.status(400).json({
-        message: "Vui lòng cung cấp số tiền hợp lệ",
-      });
-    }
-
-    // Tự động lấy nội dung từ file JSON nếu có số tiền nhưng chưa có content
-    let transferContent = content || "";
+    let transferContent = String(content || "").trim();
     let isContentFromData = false;
-    
-    // Nếu có số tiền nhưng chưa có content, tự động tìm trong file nhập khoản_history.json
-    if (amount && Number(amount) > 0 && !transferContent) {
-      const contentFromData = getContentFromData(Number(amount), "in", accountNo);
+    if (!transferContent) {
+      const contentFromData = getContentFromData(amountNum, "in", bankInfo.accountNo);
       if (contentFromData) {
         transferContent = contentFromData;
         isContentFromData = true;
-        console.log(`Đã tự động lấy nội dung từ file nhập khoản_history.json cho số tiền: ${amount}`);
       }
     }
-    
-    // Nếu không tìm thấy trong file JSON, dùng nội dung mặc định (không quan trọng)
     if (!transferContent) {
-      transferContent = `THANHTOAN${Date.now()}`; // Nội dung mặc định, có thể là gì cũng được
-      console.log(`Số tiền ${amount} không có trong file JSON, sử dụng nội dung mặc định`);
+      transferContent = `NAP${Date.now()}`;
     }
+
+    const referenceCode = await ensureUniqueReferenceCode(transferContent);
+    const wallet =
+      (await Wallet.findOne({ user: req.user._id })) ||
+      (await Wallet.create({ user: req.user._id }));
+
+    const transaction = await Transaction.create({
+      user: req.user._id,
+      wallet: wallet._id,
+      amount: amountNum,
+      method: "bank_transfer",
+      bank: bankInfo.code,
+      referenceCode,
+      note: referenceCode,
+      status: "pending",
+    });
 
     const imageUrl = buildVietQrImageUrl({
-      bin,
-      accountNo,
-      accountName,
-      amount,
-      content: transferContent,
+      bin: bankInfo.bin,
+      accountNo: bankInfo.accountNo,
+      accountName: bankInfo.accountName,
+      amount: amountNum,
+      content: referenceCode,
     });
 
-        // ✅ Tạo Transaction "pending" ngay khi tạo QR
-    // Yêu cầu: route này đã có `protect` => req.user tồn tại
-    let transaction = null;
-    try {
-      // Đảm bảo user có wallet
-      let wallet = await Wallet.findOne({ user: req.user._id });
-      if (!wallet) {
-        wallet = await Wallet.create({ user: req.user._id });
-      }
-
-      // Nếu referenceCode trùng, thêm hậu tố thời gian
-      let referenceCode = transferContent;
-      const duplicated = await Transaction.findOne({ referenceCode });
-      if (duplicated) {
-        referenceCode = `${referenceCode}-${Date.now().toString().slice(-4)}`;
-      }
-
-      transaction = await Transaction.create({
-        user: req.user._id,
-        wallet: wallet._id,
-        amount: Number(amount),
-        method: "bank_transfer",
-        bank: bankLower,
-        referenceCode,
-        note: transferContent,
-        status: "pending",
-      });
-    } catch (e) {
-      console.error("[Transaction] Failed to create pending transaction:", e);
-    }
-
-    res.status(200).json({
+    return res.status(200).json({
       imageUrl,
-      accountName: accountName || "",
-      accountNo: accountNo || "",
-      phone: phone || "",
-      bank: bankLower,
-      amount: Number(amount),
-      content: transferContent,
+      accountName: bankInfo.accountName || "",
+      accountNo: bankInfo.accountNo || "",
+      phone: bankInfo.phone || "",
+      bank: bankInfo.code,
+      amount: amountNum,
+      content: referenceCode,
+      referenceCode,
       isContentFromData,
-      transactionId: transaction?._id || null,
+      transactionId: transaction._id,
+      status: transaction.status,
     });
   } catch (error) {
-    res.status(500).json({ message: "Failed to generate QR", error: error.message });
+    return res.status(500).json({ message: "Failed to generate QR", error: error.message });
   }
 };
 
 module.exports = { getVietQr };
-
-

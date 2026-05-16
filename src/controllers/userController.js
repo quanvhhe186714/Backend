@@ -1,4 +1,4 @@
-// controllers/userController.js
+﻿// controllers/userController.js
 const User = require("../models/users");
 const Wallet = require("../models/wallet");
 const bcrypt = require("bcryptjs");
@@ -7,20 +7,14 @@ const crypto = require("crypto");
 const { OAuth2Client } = require("google-auth-library");
 const { upload } = require("../utils/Upload");
 
-// Import passwordEncrypt với error handling để không ảnh hưởng login nếu có lỗi
-let encryptPassword, decryptPassword;
-try {
-  const passwordEncrypt = require("../utils/passwordEncrypt");
-  encryptPassword = passwordEncrypt.encryptPassword;
-  decryptPassword = passwordEncrypt.decryptPassword;
-} catch (error) {
-  console.warn("⚠️ Failed to load passwordEncrypt utility (non-critical):", error.message);
-  // Fallback functions - không làm gì cả, chỉ để tránh lỗi
-  encryptPassword = () => "";
-  decryptPassword = () => "[Encryption not available]";
-}
-
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+const getJwtSecret = () => {
+  if (!process.env.JWT_SECRET) {
+    throw new Error("JWT_SECRET is required");
+  }
+  return process.env.JWT_SECRET;
+};
 
 const createTokenResponse = (user, message = "Login successful") => {
   const payload = {
@@ -29,11 +23,7 @@ const createTokenResponse = (user, message = "Login successful") => {
     role: user.role,
   };
 
-  const token = jwt.sign(
-    payload,
-    process.env.JWT_SECRET || "YOUR_JWT_SECRET",
-    { expiresIn: "1h" }
-  );
+  const token = jwt.sign(payload, getJwtSecret(), { expiresIn: "1h" });
 
   return {
     message,
@@ -92,7 +82,6 @@ const findOrCreateOAuthUser = async ({ email, name, avatar }) => {
     name: name || email.split("@")[0],
     email: email.toLowerCase(),
     password: hashedPassword,
-    passwordEncrypted: "",
     avatar: avatar || "",
     role: "customer",
   });
@@ -101,207 +90,120 @@ const findOrCreateOAuthUser = async ({ email, name, avatar }) => {
   return user;
 };
 
-// 🟢 Upload avatar lên Cloudinary
 const uploadAvatar = async (req, res) => {
-  // Kiểm tra Cloudinary config (hỗ trợ cả CLOUDINARY_URL và các biến riêng lẻ)
-  const hasCloudinaryConfig = process.env.CLOUDINARY_URL || 
-    (process.env.CLOUDINARY_NAME && process.env.CLOUDINARY_KEY && process.env.CLOUDINARY_SECRET);
-  
+  const hasCloudinaryConfig =
+    process.env.CLOUDINARY_URL ||
+    (process.env.CLOUDINARY_NAME &&
+      process.env.CLOUDINARY_KEY &&
+      process.env.CLOUDINARY_SECRET);
+
   if (!hasCloudinaryConfig) {
-    console.error("❌ Cloudinary config missing!");
-    return res.status(500).json({ 
-      message: "Cloudinary configuration is missing. Please set CLOUDINARY_URL or CLOUDINARY_NAME, CLOUDINARY_KEY, CLOUDINARY_SECRET.",
-      error: "CLOUDINARY_CONFIG_MISSING"
+    return res.status(500).json({
+      message: "Cloudinary configuration is missing.",
+      error: "CLOUDINARY_CONFIG_MISSING",
     });
   }
-
-  // Log request info để debug
-  console.log("📤 Upload request received:", {
-    hasFile: !!req.file,
-    contentType: req.headers['content-type'],
-    contentLength: req.headers['content-length'],
-    bodyKeys: Object.keys(req.body || {})
-  });
 
   upload.single("avatar")(req, res, async (err) => {
     try {
       if (err) {
-        console.error("❌ Multer error:", err);
-        console.error("❌ Multer error details:", {
-          message: err.message,
-          code: err.code,
-          field: err.field,
-          storageErrors: err.storageErrors
-        });
-        return res.status(400).json({ 
-          message: err.message || "Lỗi khi upload file",
+        return res.status(400).json({
+          message: err.message || "Upload failed",
           error: err.code || "UPLOAD_ERROR",
-          details: err.storageErrors || err
         });
       }
 
       if (!req.file) {
-        console.error("❌ No file received:", {
-          files: req.files,
-          body: req.body,
-          headers: req.headers
-        });
-        return res.status(400).json({ 
-          message: "Vui lòng chọn file ảnh",
-          received: {
-            hasFile: false,
-            body: req.body,
-            files: req.files
-          }
-        });
+        return res.status(400).json({ message: "Vui long chon file anh" });
       }
 
-      // Sử dụng secure_url để đảm bảo có full HTTPS URL
       const avatarUrl = req.file.secure_url || req.file.path;
-      
-      // Log để debug
-      console.log("📸 Avatar upload info:", {
-        path: req.file.path,
-        secure_url: req.file.secure_url,
-        url: req.file.url,
-        finalUrl: avatarUrl
-      });
-
       const user = await User.findById(req.user._id);
       if (!user) {
-        return res.status(404).json({ message: "Không tìm thấy người dùng" });
+        return res.status(404).json({ message: "Khong tim thay nguoi dung" });
       }
 
       user.avatar = avatarUrl;
       await user.save();
 
-      res.status(200).json({
-        message: "✅ Upload avatar thành công!",
+      return res.status(200).json({
+        message: "Upload avatar thanh cong",
         avatarUrl,
       });
     } catch (error) {
-      console.error("🔥 Upload error:", error);
-      res.status(500).json({
-        message: "Lỗi server khi upload ảnh",
+      return res.status(500).json({
+        message: "Loi server khi upload anh",
         error: error.message,
       });
     }
   });
 };
 
-// 🟢 Đăng ký người dùng mới
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password } = req.body;
 
-    // 1. Kiểm tra email đã tồn tại chưa
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: "Email đã tồn tại." });
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "Name, email and password are required." });
+    }
+    if (String(password).length < 6) {
+      return res.status(400).json({ message: "Password must be at least 6 characters." });
     }
 
-    // 2. Mã hóa mật khẩu (bcrypt hash để verify login)
+    const normalizedEmail = String(email).trim().toLowerCase();
+    const existingUser = await User.findOne({ email: normalizedEmail });
+    if (existingUser) {
+      return res.status(400).json({ message: "Email da ton tai." });
+    }
+
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    
-    // 3. Encrypt password để có thể xem lại (optional - nếu fail thì bỏ qua)
-    let encryptedPassword = "";
-    try {
-      encryptedPassword = encryptPassword(password);
-    } catch (encryptError) {
-      console.warn("⚠️ Failed to encrypt password (non-critical):", encryptError.message);
-      // Không throw error, chỉ log warning - user vẫn được tạo với bcrypt hash
-      encryptedPassword = "";
-    }
 
-    // 4. Tạo người dùng mới
-    const newUser = new User({
-      name,
-      email,
-      password: hashedPassword, // bcrypt hash
-      passwordEncrypted: encryptedPassword, // encrypted để xem lại (có thể empty nếu encrypt fail)
-      role: role || 'customer', 
+    const newUser = await User.create({
+      name: String(name).trim(),
+      email: normalizedEmail,
+      password: hashedPassword,
+      role: "customer",
     });
-
-    await newUser.save();
     await Wallet.create({ user: newUser._id });
 
-    res.status(201).json({
-      message: "Đăng ký thành công!",
+    return res.status(201).json({
+      message: "Dang ky thanh cong!",
       userId: newUser._id,
       email: newUser.email,
     });
   } catch (error) {
-    res.status(500).json({ message: "Lỗi server khi đăng ký", error });
+    return res.status(500).json({ message: "Loi server khi dang ky", error: error.message });
   }
 };
 
-// 🟢 Đăng nhập
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
+    const user = await User.findOne({ email: String(email || "").trim().toLowerCase() });
 
-    // 1. Tìm người dùng theo email
-    const user = await User.findOne({ email });
     if (!user) {
-      return res
-        .status(400)
-        .json({ message: "Email hoặc mật khẩu không đúng." });
+      return res.status(400).json({ message: "Email hoac mat khau khong dung." });
     }
-
-    // 2. Kiểm tra trạng thái tài khoản
     if (user.status === "blocked") {
-      return res.status(403).json({
-        message: "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ Admin.",
-      });
+      return res.status(403).json({ message: "Tai khoan cua ban da bi khoa." });
     }
 
-    // 3. So sánh mật khẩu
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password || "", user.password);
     if (!isMatch) {
-      return res
-        .status(400)
-        .json({ message: "Email hoặc mật khẩu không đúng." });
+      return res.status(400).json({ message: "Email hoac mat khau khong dung." });
     }
 
-    // 3. Tạo JSON Web Token (JWT)
-    const payload = {
-      id: user._id,
-      name: user.name,
-      role: user.role,
-    };
-
-    const token = jwt.sign(
-      payload,
-      process.env.JWT_SECRET || "YOUR_JWT_SECRET",
-      { expiresIn: "1h" }
-    );
-
-    res.status(200).json({
-      message: "Đăng nhập thành công!",
-      token: `Bearer ${token}`,
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        avatar: user.avatar
-      },
-    });
+    await ensureUserWallet(user._id);
+    return res.status(200).json(createTokenResponse(user, "Dang nhap thanh cong!"));
   } catch (error) {
-    res.status(500).json({ message: "Lỗi server khi đăng nhập", error });
+    return res.status(500).json({ message: "Loi server khi dang nhap", error: error.message });
   }
 };
 
-// 🟢 Lấy thông tin người dùng theo ID
 const googleOAuthLogin = async (req, res) => {
   try {
     const { credential } = req.body;
-
-    if (!process.env.GOOGLE_CLIENT_ID) {
-      return res.status(500).json({ message: "Google login is not configured" });
-    }
-
     if (!credential) {
       return res.status(400).json({ message: "Missing Google credential" });
     }
@@ -311,7 +213,6 @@ const googleOAuthLogin = async (req, res) => {
       audience: process.env.GOOGLE_CLIENT_ID,
     });
     const payload = ticket.getPayload();
-
     if (!payload?.email_verified) {
       return res.status(400).json({ message: "Google email is not verified" });
     }
@@ -321,10 +222,9 @@ const googleOAuthLogin = async (req, res) => {
       name: payload.name,
       avatar: payload.picture,
     });
-
-    res.status(200).json(createTokenResponse(user, "Google login successful"));
+    return res.status(200).json(createTokenResponse(user, "Google login successful"));
   } catch (error) {
-    res.status(error.status || 401).json({
+    return res.status(error.status || 500).json({
       message: error.message || "Google login failed",
     });
   }
@@ -333,43 +233,14 @@ const googleOAuthLogin = async (req, res) => {
 const facebookOAuthLogin = async (req, res) => {
   try {
     const { accessToken } = req.body;
-
-    if (!process.env.FACEBOOK_APP_ID) {
-      return res.status(500).json({ message: "Facebook login is not configured" });
-    }
-
     if (!accessToken) {
       return res.status(400).json({ message: "Missing Facebook access token" });
     }
 
-    if (process.env.FACEBOOK_APP_SECRET) {
-      const appToken = `${process.env.FACEBOOK_APP_ID}|${process.env.FACEBOOK_APP_SECRET}`;
-      const debugUrl = `https://graph.facebook.com/debug_token?input_token=${encodeURIComponent(accessToken)}&access_token=${encodeURIComponent(appToken)}`;
-      const debugResponse = await fetch(debugUrl);
-      const debugJson = await debugResponse.json();
-
-      if (
-        !debugJson?.data?.is_valid ||
-        String(debugJson.data.app_id) !== String(process.env.FACEBOOK_APP_ID)
-      ) {
-        return res.status(401).json({ message: "Invalid Facebook access token" });
-      }
-    }
-
     const profileUrl = `https://graph.facebook.com/me?fields=id,name,email,picture.type(large)&access_token=${encodeURIComponent(accessToken)}`;
-    const profileResponse = await fetch(profileUrl);
-    const profile = await profileResponse.json();
-
-    if (!profileResponse.ok || profile.error) {
-      return res.status(401).json({
-        message: profile.error?.message || "Facebook login failed",
-      });
-    }
-
+    const profile = await fetch(profileUrl).then((response) => response.json());
     if (!profile.email) {
-      return res.status(400).json({
-        message: "Facebook account did not provide an email",
-      });
+      return res.status(400).json({ message: "Facebook account did not provide an email" });
     }
 
     const user = await findOrCreateOAuthUser({
@@ -377,10 +248,9 @@ const facebookOAuthLogin = async (req, res) => {
       name: profile.name,
       avatar: profile.picture?.data?.url,
     });
-
-    res.status(200).json(createTokenResponse(user, "Facebook login successful"));
+    return res.status(200).json(createTokenResponse(user, "Facebook login successful"));
   } catch (error) {
-    res.status(error.status || 401).json({
+    return res.status(error.status || 500).json({
       message: error.message || "Facebook login failed",
     });
   }
@@ -390,225 +260,147 @@ const getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id).select("-password");
     if (!user) {
-      return res.status(404).json({ message: "Không tìm thấy người dùng." });
+      return res.status(404).json({ message: "User not found" });
     }
-    res.status(200).json(user);
+    return res.status(200).json(user);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Lỗi server khi lấy thông tin người dùng", error });
+    return res.status(500).json({ message: "Error fetching user", error: error.message });
   }
 };
 
-// 🟢 Đổi mật khẩu
-const changePassword = async (req, res) => {
-  try {
-    const { oldPassword, newPassword } = req.body;
-    const user = await User.findById(req.user.id);
-
-    // Kiểm tra mật khẩu cũ
-    const isMatch = await bcrypt.compare(oldPassword, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: "Mật khẩu hiện tại không đúng." });
-    }
-
-    // Mã hóa mật khẩu mới (bcrypt hash)
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(newPassword, salt);
-    
-    // Encrypt password mới để có thể xem lại (optional - nếu fail thì bỏ qua)
-    try {
-      user.passwordEncrypted = encryptPassword(newPassword);
-    } catch (encryptError) {
-      console.warn("⚠️ Failed to encrypt password (non-critical):", encryptError.message);
-      // Không throw error, chỉ log warning - password vẫn được đổi với bcrypt hash
-      user.passwordEncrypted = user.passwordEncrypted || ""; // Giữ nguyên nếu có, hoặc empty
-    }
-    
-    await user.save();
-
-    res.status(200).json({ message: "Đổi mật khẩu thành công!" });
-  } catch (error) {
-    res.status(500).json({ message: "Lỗi server khi đổi mật khẩu", error });
-  }
-};
-
-// 🟢 Lấy thông tin cá nhân (người dùng đã đăng nhập)
 const getMyProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select("-password");
     if (!user) {
-      return res.status(404).json({ message: "Không tìm thấy người dùng." });
+      return res.status(404).json({ message: "User not found" });
     }
-    res.status(200).json(user);
+    return res.status(200).json(user);
   } catch (error) {
-    res.status(500).json({ message: "Lỗi server khi lấy hồ sơ", error });
+    return res.status(500).json({ message: "Error fetching profile", error: error.message });
   }
 };
 
-// 🟢 Cập nhật thông tin cá nhân
 const updateMyProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
-
-    if (user) {
-      user.name = req.body.name || user.name;
-      user.avatar = req.body.avatar || user.avatar;
-
-      const updatedUser = await user.save();
-
-      res.status(200).json({
-        _id: updatedUser._id,
-        name: updatedUser.name,
-        email: updatedUser.email,
-        role: updatedUser.role,
-        avatar: updatedUser.avatar,
-      });
-    } else {
-      res.status(404).json({ message: "Không tìm thấy người dùng." });
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+    if (req.body.name) {
+      user.name = String(req.body.name).trim();
+    }
+    if (req.body.avatar !== undefined) {
+      user.avatar = req.body.avatar;
+    }
+    await user.save();
+    return res.status(200).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      avatar: user.avatar,
+    });
   } catch (error) {
-    res.status(500).json({ message: "Lỗi server khi cập nhật hồ sơ", error });
+    return res.status(500).json({ message: "Error updating profile", error: error.message });
   }
 };
 
-// === CHỨC NĂNG CỦA ADMIN ===
-
-// 🟢 Lấy tất cả người dùng (chỉ Admin) - bao gồm wallet balance
-const getAllUsers = async (req, res) => {
+const getAllUsers = async (_req, res) => {
   try {
-    const users = await User.find({})
-      .select("-password")
-      .select("name email role status avatar");
-    
-    // Lấy wallet balance cho mỗi user
-    const usersWithBalance = await Promise.all(
-      users.map(async (user) => {
-        let wallet = await Wallet.findOne({ user: user._id });
-        if (!wallet) {
-          wallet = await Wallet.create({ user: user._id, balance: 0 });
-        }
-        return {
-          ...user.toObject(),
-          balance: wallet.balance
-        };
-      })
-    );
-
-    res.status(200).json(usersWithBalance);
+    const users = await User.find().select("-password").sort({ createdAt: -1 });
+    return res.status(200).json(users);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Lỗi server khi lấy danh sách người dùng", error });
+    return res.status(500).json({ message: "Error fetching users", error: error.message });
   }
 };
 
-// 🟢 Cập nhật người dùng bất kỳ (chỉ Admin)
 const updateUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
-
-    if (user) {
-      user.name = req.body.name || user.name;
-      // Admin có thể thay đổi role và status
-      user.role = req.body.role || user.role;
-      // Cập nhật trạng thái nếu được cung cấp
-      if (req.body.status) {
-        user.status = req.body.status;
-      }
-
-      const updatedUser = await user.save();
-      res.status(200).json({
-        _id: updatedUser._id,
-        name: updatedUser.name,
-        email: updatedUser.email,
-        role: updatedUser.role,
-        status: updatedUser.status,
-      });
-    } else {
-      res.status(404).json({ message: "Không tìm thấy người dùng" });
-    }
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Lỗi server khi cập nhật người dùng", error });
-  }
-};
-
-// 🟢 Xóa người dùng (chỉ Admin)
-const deleteUser = async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-    if (user) {
-      await user.deleteOne(); // Hoặc user.remove() ở Mongoose cũ
-      res.status(200).json({ message: "Người dùng đã được xóa." });
-    } else {
-      res.status(404).json({ message: "Không tìm thấy người dùng." });
-    }
-  } catch (error) {
-    res.status(500).json({ message: "Lỗi server khi xóa người dùng", error });
-  }
-};
-
-// 🟢 Xem password của user (chỉ Admin) - DECRYPT password
-const getUserPassword = async (req, res) => {
-  try {
-    // Chỉ admin mới được xem password
-    if (req.user.role !== 'admin') {
-      return res.status(403).json({ message: "Chỉ admin mới được xem password." });
-    }
-
-    const user = await User.findById(req.params.id);
     if (!user) {
-      return res.status(404).json({ message: "Không tìm thấy người dùng." });
+      return res.status(404).json({ message: "User not found" });
     }
 
-    // Decrypt password
-    let decryptedPassword = null;
-    if (user.passwordEncrypted) {
-      try {
-        decryptedPassword = decryptPassword(user.passwordEncrypted);
-      } catch (error) {
-        console.error('Decrypt error:', error);
-        decryptedPassword = "[Không thể decrypt - có thể là password cũ chưa được encrypt]";
-      }
-    } else {
-      decryptedPassword = "[Chưa có encrypted password - user cũ]";
-    }
+    if (req.body.name !== undefined) user.name = String(req.body.name).trim();
+    if (req.body.avatar !== undefined) user.avatar = req.body.avatar;
+    if (req.body.status !== undefined) user.status = req.body.status;
+    if (req.body.role !== undefined) user.role = req.body.role;
 
-    res.status(200).json({
-      userId: user._id,
-      email: user.email,
+    await user.save();
+    return res.status(200).json({
+      _id: user._id,
       name: user.name,
-      password: decryptedPassword,
-      note: "⚠️ Password này chỉ hiển thị cho admin. Hãy bảo mật thông tin này."
+      email: user.email,
+      role: user.role,
+      status: user.status,
+      avatar: user.avatar,
     });
   } catch (error) {
-    res.status(500).json({ message: "Lỗi server khi lấy password", error: error.message });
+    return res.status(500).json({ message: "Error updating user", error: error.message });
   }
 };
 
-// 🟢 Admin login as user (impersonate) - Admin có thể đăng nhập vào tài khoản user
+const deleteUser = async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    return res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: "Error deleting user", error: error.message });
+  }
+};
+
+const changePassword = async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+    if (!newPassword || String(newPassword).length < 6) {
+      return res.status(400).json({ message: "Password must be at least 6 characters." });
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const isMatch = await bcrypt.compare(oldPassword || "", user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Current password is incorrect." });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+    await user.save();
+
+    return res.status(200).json({ message: "Password changed successfully." });
+  } catch (error) {
+    return res.status(500).json({ message: "Error changing password", error: error.message });
+  }
+};
+
+
+// ðŸŸ¢ Admin login as user (impersonate) - Admin cÃ³ thá»ƒ Ä‘Äƒng nháº­p vÃ o tÃ i khoáº£n user
 const loginAsUser = async (req, res) => {
   try {
-    // Chỉ admin mới được login as user
+    // Chá»‰ admin má»›i Ä‘Æ°á»£c login as user
     if (req.user.role !== 'admin') {
-      return res.status(403).json({ message: "Chỉ admin mới được login as user." });
+      return res.status(403).json({ message: "Chá»‰ admin má»›i Ä‘Æ°á»£c login as user." });
     }
 
     const targetUser = await User.findById(req.params.id);
     if (!targetUser) {
-      return res.status(404).json({ message: "Không tìm thấy người dùng." });
+      return res.status(404).json({ message: "KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i dÃ¹ng." });
     }
 
-    // Kiểm tra trạng thái tài khoản
+    // Kiá»ƒm tra tráº¡ng thÃ¡i tÃ i khoáº£n
     if (targetUser.status === "blocked") {
       return res.status(403).json({
-        message: "Tài khoản này đã bị khóa.",
+        message: "TÃ i khoáº£n nÃ y Ä‘Ã£ bá»‹ khÃ³a.",
       });
     }
 
-    // Tạo JWT token cho user đó (giống như login bình thường)
+    // Táº¡o JWT token cho user Ä‘Ã³ (giá»‘ng nhÆ° login bÃ¬nh thÆ°á»ng)
     const payload = {
       id: targetUser._id,
       name: targetUser.name,
@@ -617,12 +409,12 @@ const loginAsUser = async (req, res) => {
 
     const token = jwt.sign(
       payload,
-      process.env.JWT_SECRET || "YOUR_JWT_SECRET",
+      getJwtSecret(),
       { expiresIn: "1h" }
     );
 
     res.status(200).json({
-      message: `Đăng nhập thành công với tài khoản ${targetUser.email}`,
+      message: `ÄÄƒng nháº­p thÃ nh cÃ´ng vá»›i tÃ i khoáº£n ${targetUser.email}`,
       token: `Bearer ${token}`,
       user: {
         _id: targetUser._id,
@@ -631,28 +423,28 @@ const loginAsUser = async (req, res) => {
         role: targetUser.role,
         avatar: targetUser.avatar
       },
-      impersonated: true, // Flag để biết đây là login as user
-      originalAdminId: req.user.id // Lưu ID admin gốc để có thể quay lại
+      impersonated: true, // Flag Ä‘á»ƒ biáº¿t Ä‘Ã¢y lÃ  login as user
+      originalAdminId: req.user.id // LÆ°u ID admin gá»‘c Ä‘á»ƒ cÃ³ thá»ƒ quay láº¡i
     });
   } catch (error) {
-    res.status(500).json({ message: "Lỗi server khi login as user", error: error.message });
+    res.status(500).json({ message: "Lá»—i server khi login as user", error: error.message });
   }
 };
 
-// 🟢 Admin: Lấy số dư ví của user (chỉ Admin)
+// ðŸŸ¢ Admin: Láº¥y sá»‘ dÆ° vÃ­ cá»§a user (chá»‰ Admin)
 const getUserWalletBalance = async (req, res) => {
   try {
-    // Chỉ admin mới được xem balance
+    // Chá»‰ admin má»›i Ä‘Æ°á»£c xem balance
     if (req.user.role !== 'admin') {
-      return res.status(403).json({ message: "Chỉ admin mới được xem số dư ví." });
+      return res.status(403).json({ message: "Chá»‰ admin má»›i Ä‘Æ°á»£c xem sá»‘ dÆ° vÃ­." });
     }
 
     const user = await User.findById(req.params.id);
     if (!user) {
-      return res.status(404).json({ message: "Không tìm thấy người dùng." });
+      return res.status(404).json({ message: "KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i dÃ¹ng." });
     }
 
-    // Tìm hoặc tạo wallet cho user
+    // TÃ¬m hoáº·c táº¡o wallet cho user
     let wallet = await Wallet.findOne({ user: user._id });
     if (!wallet) {
       wallet = await Wallet.create({ user: user._id, balance: 0 });
@@ -666,35 +458,35 @@ const getUserWalletBalance = async (req, res) => {
       currency: wallet.currency || "VND"
     });
   } catch (error) {
-    res.status(500).json({ message: "Lỗi server khi lấy số dư ví", error: error.message });
+    res.status(500).json({ message: "Lá»—i server khi láº¥y sá»‘ dÆ° vÃ­", error: error.message });
   }
 };
 
-// 🟢 Admin: Cập nhật số dư ví của user (chỉ Admin) - có thể cộng hoặc trừ
+// ðŸŸ¢ Admin: Cáº­p nháº­t sá»‘ dÆ° vÃ­ cá»§a user (chá»‰ Admin) - cÃ³ thá»ƒ cá»™ng hoáº·c trá»«
 const updateUserWalletBalance = async (req, res) => {
   try {
-    // Chỉ admin mới được cập nhật balance
+    // Chá»‰ admin má»›i Ä‘Æ°á»£c cáº­p nháº­t balance
     if (req.user.role !== 'admin') {
-      return res.status(403).json({ message: "Chỉ admin mới được cập nhật số dư ví." });
+      return res.status(403).json({ message: "Chá»‰ admin má»›i Ä‘Æ°á»£c cáº­p nháº­t sá»‘ dÆ° vÃ­." });
     }
 
-    const { amount, operation } = req.body; // operation: 'add' hoặc 'subtract'
+    const { amount, operation } = req.body; // operation: 'add' hoáº·c 'subtract'
     const userId = req.params.id;
 
     if (!amount || isNaN(amount)) {
-      return res.status(400).json({ message: "Số tiền không hợp lệ." });
+      return res.status(400).json({ message: "Sá»‘ tiá»n khÃ´ng há»£p lá»‡." });
     }
 
     if (!['add', 'subtract'].includes(operation)) {
-      return res.status(400).json({ message: "Operation phải là 'add' hoặc 'subtract'." });
+      return res.status(400).json({ message: "Operation pháº£i lÃ  'add' hoáº·c 'subtract'." });
     }
 
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ message: "Không tìm thấy người dùng." });
+      return res.status(404).json({ message: "KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i dÃ¹ng." });
     }
 
-    // Tìm hoặc tạo wallet cho user
+    // TÃ¬m hoáº·c táº¡o wallet cho user
     let wallet = await Wallet.findOne({ user: userId });
     if (!wallet) {
       wallet = await Wallet.create({ user: userId, balance: 0 });
@@ -708,7 +500,7 @@ const updateUserWalletBalance = async (req, res) => {
     } else if (operation === 'subtract') {
       if (wallet.balance < amountNum) {
         return res.status(400).json({ 
-          message: `Số dư hiện tại (${oldBalance}) không đủ để trừ ${amountNum}.` 
+          message: `Sá»‘ dÆ° hiá»‡n táº¡i (${oldBalance}) khÃ´ng Ä‘á»§ Ä‘á»ƒ trá»« ${amountNum}.` 
         });
       }
       wallet.balance -= amountNum;
@@ -717,7 +509,7 @@ const updateUserWalletBalance = async (req, res) => {
     await wallet.save();
 
     res.status(200).json({
-      message: `Đã ${operation === 'add' ? 'cộng' : 'trừ'} ${amountNum} vào ví của ${user.email}`,
+      message: `ÄÃ£ ${operation === 'add' ? 'cá»™ng' : 'trá»«'} ${amountNum} vÃ o vÃ­ cá»§a ${user.email}`,
       userId: user._id,
       email: user.email,
       name: user.name,
@@ -727,48 +519,48 @@ const updateUserWalletBalance = async (req, res) => {
       amount: amountNum
     });
   } catch (error) {
-    res.status(500).json({ message: "Lỗi server khi cập nhật số dư ví", error: error.message });
+    res.status(500).json({ message: "Lá»—i server khi cáº­p nháº­t sá»‘ dÆ° vÃ­", error: error.message });
   }
 };
 
-// 🟢 Admin: Xóa lịch sử mua hàng của user (chỉ Admin) - Hard delete (giữ lại để tương thích)
+// ðŸŸ¢ Admin: XÃ³a lá»‹ch sá»­ mua hÃ ng cá»§a user (chá»‰ Admin) - Hard delete (giá»¯ láº¡i Ä‘á»ƒ tÆ°Æ¡ng thÃ­ch)
 const deleteUserOrderHistory = async (req, res) => {
   try {
-    // Chỉ admin mới được xóa lịch sử mua hàng
+    // Chá»‰ admin má»›i Ä‘Æ°á»£c xÃ³a lá»‹ch sá»­ mua hÃ ng
     if (req.user.role !== 'admin') {
-      return res.status(403).json({ message: "Chỉ admin mới được xóa lịch sử mua hàng." });
+      return res.status(403).json({ message: "Chá»‰ admin má»›i Ä‘Æ°á»£c xÃ³a lá»‹ch sá»­ mua hÃ ng." });
     }
 
     const user = await User.findById(req.params.id);
     if (!user) {
-      return res.status(404).json({ message: "Không tìm thấy người dùng." });
+      return res.status(404).json({ message: "KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i dÃ¹ng." });
     }
 
     const Order = require("../models/order");
     const result = await Order.deleteMany({ user: user._id });
 
     res.status(200).json({
-      message: `Đã xóa ${result.deletedCount} đơn hàng của ${user.email}`,
+      message: `ÄÃ£ xÃ³a ${result.deletedCount} Ä‘Æ¡n hÃ ng cá»§a ${user.email}`,
       userId: user._id,
       email: user.email,
       name: user.name,
       deletedCount: result.deletedCount
     });
   } catch (error) {
-    res.status(500).json({ message: "Lỗi server khi xóa lịch sử mua hàng", error: error.message });
+    res.status(500).json({ message: "Lá»—i server khi xÃ³a lá»‹ch sá»­ mua hÃ ng", error: error.message });
   }
 };
 
-// 🟢 Admin: Lấy đơn hàng của user (chỉ Admin) - có thể filter theo status
+// ðŸŸ¢ Admin: Láº¥y Ä‘Æ¡n hÃ ng cá»§a user (chá»‰ Admin) - cÃ³ thá»ƒ filter theo status
 const getUserOrders = async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
-      return res.status(403).json({ message: "Chỉ admin mới được xem đơn hàng của user." });
+      return res.status(403).json({ message: "Chá»‰ admin má»›i Ä‘Æ°á»£c xem Ä‘Æ¡n hÃ ng cá»§a user." });
     }
 
     const user = await User.findById(req.params.id);
     if (!user) {
-      return res.status(404).json({ message: "Không tìm thấy người dùng." });
+      return res.status(404).json({ message: "KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i dÃ¹ng." });
     }
 
     const Order = require("../models/order");
@@ -776,13 +568,13 @@ const getUserOrders = async (req, res) => {
     
     let query = { user: user._id };
     
-    // Filter theo status nếu có
+    // Filter theo status náº¿u cÃ³
     if (status) {
       query.status = status;
     }
     
-    // Bao gồm đơn hàng đã xóa nếu includeDeleted=true
-    // Sử dụng $ne: true để match cả document cũ không có trường isDeleted
+    // Bao gá»“m Ä‘Æ¡n hÃ ng Ä‘Ã£ xÃ³a náº¿u includeDeleted=true
+    // Sá»­ dá»¥ng $ne: true Ä‘á»ƒ match cáº£ document cÅ© khÃ´ng cÃ³ trÆ°á»ng isDeleted
     if (includeDeleted !== 'true') {
       query.isDeleted = { $ne: true };
     }
@@ -798,20 +590,20 @@ const getUserOrders = async (req, res) => {
       orders
     });
   } catch (error) {
-    res.status(500).json({ message: "Lỗi server khi lấy đơn hàng", error: error.message });
+    res.status(500).json({ message: "Lá»—i server khi láº¥y Ä‘Æ¡n hÃ ng", error: error.message });
   }
 };
 
-// 🟢 Admin: Lấy lịch sử thanh toán (transactions) của user (chỉ Admin)
+// ðŸŸ¢ Admin: Láº¥y lá»‹ch sá»­ thanh toÃ¡n (transactions) cá»§a user (chá»‰ Admin)
 const getUserTransactions = async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
-      return res.status(403).json({ message: "Chỉ admin mới được xem lịch sử thanh toán của user." });
+      return res.status(403).json({ message: "Chá»‰ admin má»›i Ä‘Æ°á»£c xem lá»‹ch sá»­ thanh toÃ¡n cá»§a user." });
     }
 
     const user = await User.findById(req.params.id);
     if (!user) {
-      return res.status(404).json({ message: "Không tìm thấy người dùng." });
+      return res.status(404).json({ message: "KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i dÃ¹ng." });
     }
 
     const Transaction = require("../models/transaction");
@@ -819,13 +611,13 @@ const getUserTransactions = async (req, res) => {
     
     let query = { user: user._id };
     
-    // Filter theo status nếu có
+    // Filter theo status náº¿u cÃ³
     if (status) {
       query.status = status;
     }
     
-    // Bao gồm transaction đã xóa nếu includeDeleted=true
-    // Sử dụng $ne: true để match cả document cũ không có trường isDeleted
+    // Bao gá»“m transaction Ä‘Ã£ xÃ³a náº¿u includeDeleted=true
+    // Sá»­ dá»¥ng $ne: true Ä‘á»ƒ match cáº£ document cÅ© khÃ´ng cÃ³ trÆ°á»ng isDeleted
     if (includeDeleted !== 'true') {
       query.isDeleted = { $ne: true };
     }
@@ -842,26 +634,26 @@ const getUserTransactions = async (req, res) => {
       transactions
     });
   } catch (error) {
-    res.status(500).json({ message: "Lỗi server khi lấy lịch sử thanh toán", error: error.message });
+    res.status(500).json({ message: "Lá»—i server khi láº¥y lá»‹ch sá»­ thanh toÃ¡n", error: error.message });
   }
 };
 
-// 🟢 Admin: Xóa mềm đơn hàng (chỉ Admin)
+// ðŸŸ¢ Admin: XÃ³a má»m Ä‘Æ¡n hÃ ng (chá»‰ Admin)
 const softDeleteOrder = async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
-      return res.status(403).json({ message: "Chỉ admin mới được xóa đơn hàng." });
+      return res.status(403).json({ message: "Chá»‰ admin má»›i Ä‘Æ°á»£c xÃ³a Ä‘Æ¡n hÃ ng." });
     }
 
     const Order = require("../models/order");
-    const order = await Order.findById(req.params.id); // Sửa từ orderId thành id
+    const order = await Order.findById(req.params.id); // Sá»­a tá»« orderId thÃ nh id
     
     if (!order) {
-      return res.status(404).json({ message: "Không tìm thấy đơn hàng." });
+      return res.status(404).json({ message: "KhÃ´ng tÃ¬m tháº¥y Ä‘Æ¡n hÃ ng." });
     }
 
     if (order.isDeleted) {
-      return res.status(400).json({ message: "Đơn hàng đã bị xóa trước đó." });
+      return res.status(400).json({ message: "ÄÆ¡n hÃ ng Ä‘Ã£ bá»‹ xÃ³a trÆ°á»›c Ä‘Ã³." });
     }
 
     order.isDeleted = true;
@@ -870,30 +662,30 @@ const softDeleteOrder = async (req, res) => {
     await order.save();
 
     res.status(200).json({
-      message: "Đã xóa đơn hàng thành công",
+      message: "ÄÃ£ xÃ³a Ä‘Æ¡n hÃ ng thÃ nh cÃ´ng",
       order
     });
   } catch (error) {
-    res.status(500).json({ message: "Lỗi server khi xóa đơn hàng", error: error.message });
+    res.status(500).json({ message: "Lá»—i server khi xÃ³a Ä‘Æ¡n hÃ ng", error: error.message });
   }
 };
 
-// 🟢 Admin: Khôi phục đơn hàng (chỉ Admin)
+// ðŸŸ¢ Admin: KhÃ´i phá»¥c Ä‘Æ¡n hÃ ng (chá»‰ Admin)
 const restoreOrder = async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
-      return res.status(403).json({ message: "Chỉ admin mới được khôi phục đơn hàng." });
+      return res.status(403).json({ message: "Chá»‰ admin má»›i Ä‘Æ°á»£c khÃ´i phá»¥c Ä‘Æ¡n hÃ ng." });
     }
 
     const Order = require("../models/order");
-    const order = await Order.findById(req.params.id); // Sửa từ orderId thành id
+    const order = await Order.findById(req.params.id); // Sá»­a tá»« orderId thÃ nh id
     
     if (!order) {
-      return res.status(404).json({ message: "Không tìm thấy đơn hàng." });
+      return res.status(404).json({ message: "KhÃ´ng tÃ¬m tháº¥y Ä‘Æ¡n hÃ ng." });
     }
 
     if (!order.isDeleted) {
-      return res.status(400).json({ message: "Đơn hàng chưa bị xóa." });
+      return res.status(400).json({ message: "ÄÆ¡n hÃ ng chÆ°a bá»‹ xÃ³a." });
     }
 
     order.isDeleted = false;
@@ -902,30 +694,30 @@ const restoreOrder = async (req, res) => {
     await order.save();
 
     res.status(200).json({
-      message: "Đã khôi phục đơn hàng thành công",
+      message: "ÄÃ£ khÃ´i phá»¥c Ä‘Æ¡n hÃ ng thÃ nh cÃ´ng",
       order
     });
   } catch (error) {
-    res.status(500).json({ message: "Lỗi server khi khôi phục đơn hàng", error: error.message });
+    res.status(500).json({ message: "Lá»—i server khi khÃ´i phá»¥c Ä‘Æ¡n hÃ ng", error: error.message });
   }
 };
 
-// 🟢 Admin: Xóa mềm transaction (chỉ Admin)
+// ðŸŸ¢ Admin: XÃ³a má»m transaction (chá»‰ Admin)
 const softDeleteTransaction = async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
-      return res.status(403).json({ message: "Chỉ admin mới được xóa giao dịch." });
+      return res.status(403).json({ message: "Chá»‰ admin má»›i Ä‘Æ°á»£c xÃ³a giao dá»‹ch." });
     }
 
     const Transaction = require("../models/transaction");
-    const transaction = await Transaction.findById(req.params.id); // Sửa từ transactionId thành id
+    const transaction = await Transaction.findById(req.params.id); // Sá»­a tá»« transactionId thÃ nh id
     
     if (!transaction) {
-      return res.status(404).json({ message: "Không tìm thấy giao dịch." });
+      return res.status(404).json({ message: "KhÃ´ng tÃ¬m tháº¥y giao dá»‹ch." });
     }
 
     if (transaction.isDeleted) {
-      return res.status(400).json({ message: "Giao dịch đã bị xóa trước đó." });
+      return res.status(400).json({ message: "Giao dá»‹ch Ä‘Ã£ bá»‹ xÃ³a trÆ°á»›c Ä‘Ã³." });
     }
 
     transaction.isDeleted = true;
@@ -934,30 +726,30 @@ const softDeleteTransaction = async (req, res) => {
     await transaction.save();
 
     res.status(200).json({
-      message: "Đã xóa giao dịch thành công",
+      message: "ÄÃ£ xÃ³a giao dá»‹ch thÃ nh cÃ´ng",
       transaction
     });
   } catch (error) {
-    res.status(500).json({ message: "Lỗi server khi xóa giao dịch", error: error.message });
+    res.status(500).json({ message: "Lá»—i server khi xÃ³a giao dá»‹ch", error: error.message });
   }
 };
 
-// 🟢 Admin: Khôi phục transaction (chỉ Admin)
+// ðŸŸ¢ Admin: KhÃ´i phá»¥c transaction (chá»‰ Admin)
 const restoreTransaction = async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
-      return res.status(403).json({ message: "Chỉ admin mới được khôi phục giao dịch." });
+      return res.status(403).json({ message: "Chá»‰ admin má»›i Ä‘Æ°á»£c khÃ´i phá»¥c giao dá»‹ch." });
     }
 
     const Transaction = require("../models/transaction");
-    const transaction = await Transaction.findById(req.params.id); // Sửa từ transactionId thành id
+    const transaction = await Transaction.findById(req.params.id); // Sá»­a tá»« transactionId thÃ nh id
     
     if (!transaction) {
-      return res.status(404).json({ message: "Không tìm thấy giao dịch." });
+      return res.status(404).json({ message: "KhÃ´ng tÃ¬m tháº¥y giao dá»‹ch." });
     }
 
     if (!transaction.isDeleted) {
-      return res.status(400).json({ message: "Giao dịch chưa bị xóa." });
+      return res.status(400).json({ message: "Giao dá»‹ch chÆ°a bá»‹ xÃ³a." });
     }
 
     transaction.isDeleted = false;
@@ -966,41 +758,41 @@ const restoreTransaction = async (req, res) => {
     await transaction.save();
 
     res.status(200).json({
-      message: "Đã khôi phục giao dịch thành công",
+      message: "ÄÃ£ khÃ´i phá»¥c giao dá»‹ch thÃ nh cÃ´ng",
       transaction
     });
   } catch (error) {
-    res.status(500).json({ message: "Lỗi server khi khôi phục giao dịch", error: error.message });
+    res.status(500).json({ message: "Lá»—i server khi khÃ´i phá»¥c giao dá»‹ch", error: error.message });
   }
 };
 
-// 🟢 Admin: Promote user lên admin (chỉ Admin)
+// ðŸŸ¢ Admin: Promote user lÃªn admin (chá»‰ Admin)
 const promoteUser = async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
-      return res.status(403).json({ message: "Chỉ admin mới được promote user." });
+      return res.status(403).json({ message: "Chá»‰ admin má»›i Ä‘Æ°á»£c promote user." });
     }
 
     const targetUser = await User.findById(req.params.id);
     if (!targetUser) {
-      return res.status(404).json({ message: "Không tìm thấy người dùng." });
+      return res.status(404).json({ message: "KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i dÃ¹ng." });
     }
 
-    // Không cho phép promote chính mình
+    // KhÃ´ng cho phÃ©p promote chÃ­nh mÃ¬nh
     if (targetUser._id.toString() === req.user._id.toString()) {
-      return res.status(400).json({ message: "Bạn không thể promote chính mình." });
+      return res.status(400).json({ message: "Báº¡n khÃ´ng thá»ƒ promote chÃ­nh mÃ¬nh." });
     }
 
-    // Kiểm tra user đã là admin chưa
+    // Kiá»ƒm tra user Ä‘Ã£ lÃ  admin chÆ°a
     if (targetUser.role === 'admin') {
-      return res.status(400).json({ message: "Người dùng này đã là admin." });
+      return res.status(400).json({ message: "NgÆ°á»i dÃ¹ng nÃ y Ä‘Ã£ lÃ  admin." });
     }
 
     targetUser.role = 'admin';
     await targetUser.save();
 
     res.status(200).json({
-      message: `Đã promote ${targetUser.email} lên admin thành công`,
+      message: `ÄÃ£ promote ${targetUser.email} lÃªn admin thÃ nh cÃ´ng`,
       user: {
         _id: targetUser._id,
         name: targetUser.name,
@@ -1009,37 +801,37 @@ const promoteUser = async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ message: "Lỗi server khi promote user", error: error.message });
+    res.status(500).json({ message: "Lá»—i server khi promote user", error: error.message });
   }
 };
 
-// 🟢 Admin: Demote admin về customer (chỉ Admin)
+// ðŸŸ¢ Admin: Demote admin vá» customer (chá»‰ Admin)
 const demoteUser = async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
-      return res.status(403).json({ message: "Chỉ admin mới được demote user." });
+      return res.status(403).json({ message: "Chá»‰ admin má»›i Ä‘Æ°á»£c demote user." });
     }
 
     const targetUser = await User.findById(req.params.id);
     if (!targetUser) {
-      return res.status(404).json({ message: "Không tìm thấy người dùng." });
+      return res.status(404).json({ message: "KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i dÃ¹ng." });
     }
 
-    // Không cho phép demote chính mình
+    // KhÃ´ng cho phÃ©p demote chÃ­nh mÃ¬nh
     if (targetUser._id.toString() === req.user._id.toString()) {
-      return res.status(400).json({ message: "Bạn không thể demote chính mình." });
+      return res.status(400).json({ message: "Báº¡n khÃ´ng thá»ƒ demote chÃ­nh mÃ¬nh." });
     }
 
-    // Kiểm tra user đã là customer chưa
+    // Kiá»ƒm tra user Ä‘Ã£ lÃ  customer chÆ°a
     if (targetUser.role === 'customer') {
-      return res.status(400).json({ message: "Người dùng này đã là customer." });
+      return res.status(400).json({ message: "NgÆ°á»i dÃ¹ng nÃ y Ä‘Ã£ lÃ  customer." });
     }
 
     targetUser.role = 'customer';
     await targetUser.save();
 
     res.status(200).json({
-      message: `Đã demote ${targetUser.email} về customer thành công`,
+      message: `ÄÃ£ demote ${targetUser.email} vá» customer thÃ nh cÃ´ng`,
       user: {
         _id: targetUser._id,
         name: targetUser.name,
@@ -1048,7 +840,7 @@ const demoteUser = async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ message: "Lỗi server khi demote user", error: error.message });
+    res.status(500).json({ message: "Lá»—i server khi demote user", error: error.message });
   }
 };
 
@@ -1065,7 +857,6 @@ module.exports = {
   deleteUser,
   changePassword,
   uploadAvatar,
-  getUserPassword,
   loginAsUser,
   getUserWalletBalance,
   updateUserWalletBalance,

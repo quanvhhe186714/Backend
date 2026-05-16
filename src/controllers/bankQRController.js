@@ -82,7 +82,6 @@ const updateBankQRVisibility = async (req, res) => {
         bin: bank.bin,
         accountNo: bank.accountNo,
         accountName: bank.accountName,
-        qrImage: bank.qrImage,
         isVisible: isVisible,
         updatedBy: req.user._id
       });

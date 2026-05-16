@@ -53,10 +53,17 @@ const TransactionSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId, 
       ref: "CustomQR",
       default: null 
-    } // Link to CustomQR if payment was made via custom QR
+    }, // Link to CustomQR if payment was made via custom QR
+    provider: { type: String, default: null },
+    providerTransactionId: { type: String, default: null },
+    autoConfirmedAt: { type: Date, default: null },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Transaction", TransactionSchema);
+TransactionSchema.index(
+  { providerTransactionId: 1 },
+  { unique: true, sparse: true }
+);
 
+module.exports = mongoose.model("Transaction", TransactionSchema);

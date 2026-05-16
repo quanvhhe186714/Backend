@@ -1,5 +1,36 @@
 const Product = require("../models/product");
 const Category = require("../models/category");
+const Review = require("../models/review");
+
+const buildRatingMap = async (field, ids) => {
+  const summaries = await Review.aggregate([
+    { $match: { [field]: { $in: ids } } },
+    {
+      $group: {
+        _id: `$${field}`,
+        averageRating: { $avg: "$rating" },
+        totalReviews: { $sum: 1 },
+        totalUsers: { $addToSet: "$user" },
+      },
+    },
+    {
+      $project: {
+        averageRating: { $round: ["$averageRating", 1] },
+        totalReviews: 1,
+        totalUsers: { $size: "$totalUsers" },
+      },
+    },
+  ]);
+
+  return summaries.reduce((map, item) => {
+    map[item._id.toString()] = {
+      averageRating: item.averageRating || 0,
+      totalReviews: item.totalReviews || 0,
+      totalUsers: item.totalUsers || 0,
+    };
+    return map;
+  }, {});
+};
 
 // Public: Get all products
 const getAllProducts = async (req, res) => {
@@ -9,8 +40,20 @@ const getAllProducts = async (req, res) => {
     if (category) {
       filter.category = category.toUpperCase();
     }
-    const products = await Product.find(filter).sort({ price: 1 });
-    res.status(200).json(products);
+    const products = await Product.find(filter).sort({ price: 1 }).lean();
+    const ratingMap = await buildRatingMap(
+      "product",
+      products.map((product) => product._id)
+    );
+    const productsWithRatings = products.map((product) => ({
+      ...product,
+      ratingSummary: ratingMap[product._id.toString()] || {
+        averageRating: 0,
+        totalReviews: 0,
+        totalUsers: 0,
+      },
+    }));
+    res.status(200).json(productsWithRatings);
   } catch (error) {
     res.status(500).json({ message: "Error fetching products", error: error.message });
   }

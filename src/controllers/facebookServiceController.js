@@ -1,4 +1,35 @@
 const FacebookService = require("../models/facebookService");
+const Review = require("../models/review");
+
+const buildRatingMap = async (serviceIds) => {
+  const summaries = await Review.aggregate([
+    { $match: { facebookService: { $in: serviceIds } } },
+    {
+      $group: {
+        _id: "$facebookService",
+        averageRating: { $avg: "$rating" },
+        totalReviews: { $sum: 1 },
+        totalUsers: { $addToSet: "$user" },
+      },
+    },
+    {
+      $project: {
+        averageRating: { $round: ["$averageRating", 1] },
+        totalReviews: 1,
+        totalUsers: { $size: "$totalUsers" },
+      },
+    },
+  ]);
+
+  return summaries.reduce((map, item) => {
+    map[item._id.toString()] = {
+      averageRating: item.averageRating || 0,
+      totalReviews: item.totalReviews || 0,
+      totalUsers: item.totalUsers || 0,
+    };
+    return map;
+  }, {});
+};
 
 // Lấy tất cả dịch vụ (hỗ trợ filter theo platform)
 const getAllServices = async (req, res) => {
@@ -8,8 +39,18 @@ const getAllServices = async (req, res) => {
       filter.platform = req.query.platform;
     }
     const services = await FacebookService.find(filter)
-      .sort({ displayOrder: 1, name: 1 });
-    res.status(200).json(services);
+      .sort({ displayOrder: 1, name: 1 })
+      .lean();
+    const ratingMap = await buildRatingMap(services.map((service) => service._id));
+    const servicesWithRatings = services.map((service) => ({
+      ...service,
+      ratingSummary: ratingMap[service._id.toString()] || {
+        averageRating: 0,
+        totalReviews: 0,
+        totalUsers: 0,
+      },
+    }));
+    res.status(200).json(servicesWithRatings);
   } catch (error) {
     res.status(500).json({ 
       message: "Lỗi khi lấy danh sách dịch vụ", 

@@ -13,8 +13,10 @@ const reviewRouter = require("./reviews");
 const categoryRouter = require("./categories");
 const facebookServiceRouter = require("../services/facebook/routes/facebookServices");
 const bankFeedRouter = require("./bankFeeds");
+const webhookRouter = require("./webhooks");
 
 const router = express.Router();
+router.use("/webhooks", webhookRouter);
 router.use("/users", userRouter);
 router.use("/products", productRouter);
 router.use("/orders", orderRouter);

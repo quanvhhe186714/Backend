@@ -2,6 +2,13 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/users");
 
+const getJwtSecret = () => {
+  if (!process.env.JWT_SECRET) {
+    throw new Error("JWT_SECRET is required");
+  }
+  return process.env.JWT_SECRET;
+};
+
 // Helper function để set CORS headers
 const setCORSHeaders = (req, res) => {
   const origin = req.headers.origin;
@@ -38,7 +45,7 @@ const protect = async (req, res, next) => {
       // 2. Giải mã token để lấy user ID
       const decoded = jwt.verify(
         token,
-        process.env.JWT_SECRET || "YOUR_JWT_SECRET"
+        getJwtSecret()
       );
 
       // 3. Lấy thông tin user từ DB và gán vào request

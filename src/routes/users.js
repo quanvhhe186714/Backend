@@ -32,8 +32,6 @@ router.route("/")
     .get(protect, isAdmin, userController.getAllUsers);
 
 // Route xem password của user (chỉ Admin) - DEPRECATED (sẽ xóa sau)
-router.get("/:id/password", protect, isAdmin, userController.getUserPassword);
-
 // Route admin login as user (chỉ Admin)
 router.post("/:id/login-as", protect, isAdmin, userController.loginAsUser);
 
